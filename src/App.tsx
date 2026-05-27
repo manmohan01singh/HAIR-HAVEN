@@ -331,63 +331,72 @@ const services = {
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    name: "Kalsotra Aman",
+    name: "Manmohan Singh",
     rating: 5,
-    quote: "Excellent treatment, accurate diagnosis. Hair Haven offers excellent customer service and easy booking. The staff provides gentle care.",
-    tag: "Easy Booking",
-    date: "2 days ago",
-    daysAgo: 2
-  },
-  {
-    id: 2,
-    name: "Neevad Kumar",
-    rating: 5,
-    quote: "Easy booking, great customer service. I had an excellent experience with Hair Haven. Booking an appointment was very easy. The customer service was top tier.",
-    tag: "Good Supervision",
+    quote: "That was the best experience of my life, it gave me new life, thank you hair haven, the best staff and people treating.",
+    tag: "Attentive Care",
     date: "1 week ago",
     daysAgo: 7
   },
   {
-    id: 3,
-    name: "Shubam Sakolia",
+    id: 2,
+    name: "Kalsotra Aman",
     rating: 5,
-    quote: "Speedy recovery. I recently visited Hair Haven in Channi Himmat, and I must say, it was a delightful experience! The ambiance is wonderful.",
-    tag: "Speedy Recovery",
+    quote: "Excellent treatment, accurate diagnosis. Hair Haven offers excellent customer service and easy booking. The staff provides gentle care.",
+    tag: "Easy Booking",
     date: "2 weeks ago",
     daysAgo: 14
   },
   {
-    id: 4,
-    name: "Saleem",
+    id: 3,
+    name: "Neevad Kumar",
     rating: 5,
-    quote: "I am really satisfied with the behaviour of staff members and work, especially Shazia mam and rimpy mam... my results are very good. I'm very happy.",
-    tag: "Attentive Care",
+    quote: "Easy booking, great customer service. I had an excellent experience with Hair Haven. Booking an appointment was very easy. The customer service was top tier.",
+    tag: "Good Supervision",
+    date: "3 weeks ago",
+    daysAgo: 21
+  },
+  {
+    id: 4,
+    name: "Shubam Sakolia",
+    rating: 5,
+    quote: "I recently visited Hair Haven in Channi Himmat, and I must say, it was a delightful experience! The ambiance is wonderful and the results are amazing.",
+    tag: "Speedy Recovery",
     date: "1 month ago",
     daysAgo: 30
   },
   {
     id: 5,
-    name: "Sunny",
+    name: "Saleem",
     rating: 5,
-    quote: "Great customer service, subsidies available. I recently underwent a hair transplant treatment here. The staff is very friendly, I'm very happy, thank you team.",
-    tag: "Reasonably Priced",
+    quote: "I am really satisfied with the behaviour of staff members and work, especially Shazia mam and Rimpy mam... my results are very good. I'm very happy.",
+    tag: "Attentive Care",
     date: "2 months ago",
     daysAgo: 60
   },
   {
     id: 6,
+    name: "Sunny",
+    rating: 5,
+    quote: "I recently underwent a hair transplant treatment here. The staff is very friendly, I'm very happy, thank you team. Great customer service.",
+    tag: "Reasonably Priced",
+    date: "2 months ago",
+    daysAgo: 65
+  },
+  {
+    id: 7,
     name: "Vishwa Nath",
     rating: 5,
-    quote: "Clean & hygienic, sterilized equipment. As far as the result is concerned is very good. Hair Haven clinic provided me good facilities and the staff is too good.",
+    quote: "Clean & hygienic, sterilized equipment. As far as the result is concerned it is very good. Hair Haven clinic provided me good facilities and the staff is too good.",
     tag: "Clean & Hygienic",
     date: "3 months ago",
     daysAgo: 90
   },
   {
-    id: 7,
+    id: 8,
     name: "Jannu",
     rating: 5,
-    quote: "Reasonably priced, subsidies available. Best clinic in Jammu. 100% result in Hair Haven transplant.",
+    quote: "Best clinic in Jammu. 100% result in Hair Haven transplant. Reasonably priced and subsidies available.",
     tag: "Reasonably Priced",
     date: "4 months ago",
     daysAgo: 120
@@ -430,6 +439,7 @@ export default function App() {
   
   // Parallax Scroll State
   const [scrollY, setScrollY] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   // Booking Form States
 
@@ -477,6 +487,9 @@ export default function App() {
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
+      const el = document.documentElement;
+      const progress = (window.scrollY / (el.scrollHeight - el.clientHeight)) * 100;
+      setScrollProgress(Math.min(progress, 100));
       if (window.scrollY > 50) {
         setScrolled(true);
       } else {
@@ -746,7 +759,7 @@ export default function App() {
                   ))}
                 </div>
                 <div>
-                  <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>4.8 / 5 Stars</div>
+                  <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>4.9 / 5 Stars</div>
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>191+ Verified Reviews</div>
                 </div>
               </div>
@@ -2093,45 +2106,68 @@ export default function App() {
               </p>
             </div>
 
-            {/* Google Ratings Summary Card */}
+            {/* Google Ratings Summary Card — 4.9 header on top, stats below */}
             <div className="col-span-7 flex justify-center">
-              <div className="glass-card p-6 flex align-center gap-6" style={{ width: '100%', maxWidth: '480px' }}>
-                <div style={{ textAlign: 'center' }}>
-                  {/* Google G logo with 4.8 */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '4px' }}>
-                    <svg viewBox="0 0 24 24" width="24" height="24" style={{ display: 'block' }}>
-                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                    </svg>
-                    <span style={{ fontSize: '2.8rem', fontWeight: 900, color: 'var(--text-primary)', lineHeight: '1' }}>4.9</span>
+              <div className="glass-card" style={{ width: '100%', maxWidth: '480px', padding: '28px 32px' }}>
+                {/* Top: Google branding + 4.9 rating */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <svg viewBox="0 0 24 24" width="26" height="26" style={{ display: 'block' }}>
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                      </svg>
+                      <span style={{ fontSize: '3rem', fontWeight: 900, color: 'var(--text-primary)', lineHeight: '1', fontFamily: 'var(--font-display)' }}>4.9</span>
+                    </div>
+                    <div style={{ display: 'flex', color: '#ffb627', gap: '2px' }}>
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={13} fill="#ffb627" color="#ffb627" />
+                      ))}
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 600, whiteSpace: 'nowrap' }}>168 Reviews · Google</div>
                   </div>
-                  <div style={{ display: 'flex', color: '#ffb627', margin: '4px 0', justifyContent: 'center' }}>
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={14} fill="#ffb627" color="#ffb627" />
-                    ))}
+
+                  {/* Vertical divider */}
+                  <div style={{ width: '1px', alignSelf: 'stretch', background: 'var(--border-light)', flexShrink: 0 }}></div>
+
+                  {/* Right: clinic name + open button */}
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)', marginBottom: '2px' }}>Hair Haven</div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>Hair transplantation clinic in Jammu, J&K · <span style={{ color: 'var(--green-deep)', fontWeight: 700 }}>Open</span></div>
+                    <button
+                      onClick={() => window.open('https://search.google.com/local/writereview?placeid=ChIJs6M6SlqF_TgRu-9aVMqEn18', '_blank')}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '6px',
+                        padding: '8px 14px', borderRadius: '20px',
+                        background: 'rgba(66,133,244,0.08)', border: '1px solid rgba(66,133,244,0.25)',
+                        color: '#4285F4', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                      Write a Review
+                    </button>
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>191+ Reviews on Google Maps</div>
                 </div>
 
-                <div className="flex-1 flex flex-col gap-2" style={{ borderLeft: '1px solid var(--border-light)', paddingLeft: '24px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 500 }}>
-                    <span className="text-secondary-color">Cleanliness & Hygiene</span>
-                    <span className="font-semibold" style={{ color: 'var(--green-deep)' }}>98% Positive</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 500 }}>
-                    <span className="text-secondary-color">Graft Survival Rate</span>
-                    <span className="font-semibold" style={{ color: 'var(--green-deep)' }}>99.2% success</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 500 }}>
-                    <span className="text-secondary-color">Staff Professionalism</span>
-                    <span className="font-semibold" style={{ color: 'var(--green-deep)' }}>5/5 Stars</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 500 }}>
-                    <span className="text-secondary-color">Post-Op Supervision</span>
-                    <span className="font-semibold" style={{ color: 'var(--green-deep)' }}>Highly Rated</span>
-                  </div>
+                {/* Separator */}
+                <div style={{ height: '1px', background: 'var(--border-light)', marginBottom: '16px' }}></div>
+
+                {/* Stats grid below the header */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 24px' }}>
+                  {[
+                    { label: 'Cleanliness & Hygiene', value: '98% Positive' },
+                    { label: 'Graft Survival Rate', value: '99.2% Success' },
+                    { label: 'Staff Professionalism', value: '5 / 5 Stars' },
+                    { label: 'Post-Op Supervision', value: 'Highly Rated' }
+                  ].map((stat) => (
+                    <div key={stat.label} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', fontWeight: 500 }}>{stat.label}</span>
+                      <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--green-deep)' }}>{stat.value}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -2545,6 +2581,83 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Scroll Progress Bar */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        height: '3px',
+        width: `${scrollProgress}%`,
+        background: 'linear-gradient(90deg, var(--green-deep) 0%, var(--green-primary) 60%, #22d3ee 100%)',
+        zIndex: 10000,
+        transition: 'width 0.1s linear',
+        borderRadius: '0 2px 2px 0',
+        boxShadow: '0 0 8px rgba(11, 167, 89, 0.5)'
+      }} />
+
+      {/* Floating WhatsApp Quick-Contact Button */}
+      <div style={{
+        position: 'fixed',
+        bottom: '88px',
+        right: '24px',
+        zIndex: 1000,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '10px'
+      }}>
+        {/* Scroll to top */}
+        {scrollY > 400 && (
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            title="Back to top"
+            style={{
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              background: '#ffffff',
+              border: '1.5px solid var(--border-light)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s ease',
+              color: 'var(--text-secondary)'
+            }}
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 15l-6-6-6 6"/>
+            </svg>
+          </button>
+        )}
+
+        {/* WhatsApp button */}
+        <a
+          href="https://wa.me/918899708659?text=Hello%20Hair%20Haven%2C%20I%20would%20like%20to%20book%20a%20consultation."
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Chat on WhatsApp"
+          style={{
+            width: '56px',
+            height: '56px',
+            borderRadius: '50%',
+            background: '#25D366',
+            boxShadow: '0 4px 20px rgba(37, 211, 102, 0.45)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
+            textDecoration: 'none',
+            animation: 'pulse-wa 2.5s infinite'
+          }}
+        >
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="#ffffff">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+        </a>
+      </div>
     </>
   );
 }
