@@ -3,14 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0ba759" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Hair Haven" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="description" content="Hair Haven - Premium Hair Restoration Clinic in Jammu. FUE Hair Transplant, PRP Therapy, Scalp Dermatology. Book a free consultation today." />
     <meta name="keywords" content="hair transplant jammu, FUE hair transplant, PRP therapy jammu, hair restoration, hair haven" />
     <meta name="author" content="Hair Haven Jammu" />
     <meta property="og:title" content="Hair Haven — Premium Hair Restoration, Jammu" />
     <meta property="og:description" content="World-class FUE Hair Transplant and PRP Therapy in Jammu. Led by Dr. Suby Kakkar." />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="/logo.png" />
     <title>Hair Haven — Premium Hair Restoration, Jammu</title>
+    <script>
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

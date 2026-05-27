@@ -1,0 +1,37 @@
+{
+  "name": "Hair Haven — Premium Hair Restoration",
+  "short_name": "Hair Haven",
+  "description": "Jammu's premier FUE Hair Transplant & PRP Therapy clinic. Book your consultation online.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0ba759",
+  "background_color": "#ffffff",
+  "lang": "en-IN",
+  "categories": ["health", "medical"],
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Book Consultation",
+      "short_name": "Book",
+      "description": "Book a clinical appointment at Hair Haven",
+      "url": "/?page=consultation",
+      "icons": [{ "src": "/logo.png", "sizes": "96x96" }]
+    }
+  ]
+}
