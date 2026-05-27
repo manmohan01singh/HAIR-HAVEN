@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useId } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   MapPin, Clock, Shield, Star, CheckCircle2, 
   Sparkles, Menu, X, ArrowRight, 
@@ -8,42 +8,37 @@ import {
 // @ts-ignore
 import confetti from 'canvas-confetti';
 
-// Hair Haven SVG Logo Component (Clean vector matching official logo)
+// Hair Haven Official Logo Component (Circular cropped PNG with premium luxury gold border)
 function HairHavenLogo({ className = "", size = 40 }: { className?: string; size?: number }) {
-  const id = useId();
-  const clipId = `logo-circle-clip-${id.replace(/:/g, '-')}`;
   return (
-    <svg viewBox="0 0 500 500" width={size} height={size} className={className} style={{ display: 'block' }}>
-      {/* Outer green circle */}
-      <circle cx="250" cy="250" r="235" fill="#0ba759" />
-      {/* White inner ring */}
-      <circle cx="250" cy="250" r="225" fill="none" stroke="#ffffff" strokeWidth="8" />
-      
-      <clipPath id={clipId}>
-        <circle cx="250" cy="250" r="225" />
-      </clipPath>
-      
-      <g clipPath={`url(#${clipId})`}>
-        {/* Scalp line & Follicle (White) */}
-        <path d="M 60,270 L 200,270 Q 215,270 220,290 C 225,310 230,340 250,340 C 270,340 275,310 280,290 Q 285,270 300,270 L 440,270" 
-              fill="none" stroke="#ffffff" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-        
-        {/* Hair follicle root inside bulb */}
-        <path d="M 250,335 C 242,320 248,300 250,290 C 252,300 258,320 250,335 Z" fill="#ffffff" />
-        
-        {/* Hair strand growing up */}
-        <path d="M 250,290 C 245,260 260,200 300,145 C 275,200 255,245 250,290 Z" fill="#ffffff" />
-        
-        {/* Bottom White Section for text */}
-        <rect x="0" y="340" width="500" height="100" fill="#ffffff" />
-        
-        {/* Text HAIR HAVEN in green */}
-        <text x="250" y="412" fontFamily="var(--font-display)" fontWeight="900" fontSize="48" fill="#0ba759" textAnchor="middle" letterSpacing="1">HAIR HAVEN</text>
-        
-        {/* Green line below text */}
-        <rect x="90" y="432" width="320" height="12" fill="#0ba759" />
-      </g>
-    </svg>
+    <div 
+      className={className} 
+      style={{ 
+        width: `${size}px`, 
+        height: `${size}px`, 
+        borderRadius: '50%', 
+        overflow: 'hidden', 
+        border: '1.8px solid var(--gold-light)', 
+        display: 'inline-flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        background: '#ffffff', 
+        boxShadow: 'var(--shadow-sm), 0 0 10px rgba(212, 175, 55, 0.1)',
+        boxSizing: 'border-box',
+        flexShrink: 0
+      }}
+    >
+      <img 
+        src="/logo.png" 
+        alt="Hair Haven Logo" 
+        style={{ 
+          width: '100%', 
+          height: '100%', 
+          objectFit: 'cover',
+          display: 'block'
+        }} 
+      />
+    </div>
   );
 }
 
@@ -72,9 +67,9 @@ interface Testimonial {
 const norwoodStages: NorwoodStage[] = [
   {
     stage: 1,
-    name: "Minimal Hairline Recession",
-    description: "No significant hair loss or recession. Excellent donor density and healthy hairline. No surgery is recommended at this stage.",
-    grafts: "0",
+    name: "Minimal Hair Loss",
+    description: "No significant hair loss. Healthy hairline. No surgical intervention is recommended at this stage.",
+    grafts: "0 Grafts",
     priceRange: "₹0",
     basePrice: 0,
     density: "Optimal",
@@ -83,10 +78,10 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 2,
-    name: "Minor Receding Hairline",
-    description: "Slight recession around the temples. Often managed with non-surgical treatments like PRP therapy or topical solutions.",
+    name: "Minor Receding Temples",
+    description: "Slight recession at the temples. Best managed early with growth-factor PRP therapies or preventive care.",
     grafts: "500 - 1,000",
-    priceRange: "₹15,000 - ₹20,000 (PRP + Mild Restoration)",
+    priceRange: "₹15,000 - ₹20,000",
     basePrice: 15000,
     density: "High",
     duration: "2 - 3 Hours",
@@ -94,10 +89,10 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 3,
-    name: "Deep Temple Recession",
-    description: "Distinct recession at the temples forming a V or M shape. This is the baseline stage for surgical hair restoration.",
+    name: "Moderate Temple Recession (V-Shape)",
+    description: "Distinct V or M-shaped temple recession. This is the baseline stage for starting a surgical FUE restoration.",
     grafts: "1,200 - 1,800",
-    priceRange: "₹30,000 (Half-Head Base)",
+    priceRange: "₹30,000 (Base)",
     basePrice: 30000,
     density: "Good",
     duration: "4 - 5 Hours",
@@ -105,8 +100,8 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 4,
-    name: "Recessed Hairline & Vertex Thinning",
-    description: "Deep frontal recession combined with a distinct thinning spot at the crown (vertex). Needs targeted graft distribution.",
+    name: "Recessed Hairline & Crown Thinning",
+    description: "Deep frontal recession plus a distinct thinning spot at the crown (vertex). Requires targeted FUE packing.",
     grafts: "2,000 - 2,800",
     priceRange: "₹35,000 - ₹40,000",
     basePrice: 35000,
@@ -116,8 +111,8 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 5,
-    name: "Advanced Hair Loss",
-    description: "The bridge of hair separating the receding hairline and the bald vertex becomes very thin and sparse.",
+    name: "Advanced Pattern Hair Loss",
+    description: "Recession merges, leaving only a thin bridge separating the hairline and crown. Highly dense graft packing required.",
     grafts: "2,800 - 3,500",
     priceRange: "₹40,000 - ₹45,000",
     basePrice: 40000,
@@ -127,10 +122,10 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 6,
-    name: "Severe Hair Loss",
-    description: "The bridge of hair between front and back is completely gone. A large single bald area merges the front and crown.",
+    name: "Severe Hair Loss (Merged Zones)",
+    description: "The separating bridge is gone. Front and back bald zones merge into a single area. Requires full-head reconstruction.",
     grafts: "3,500 - 4,500",
-    priceRange: "₹45,000 (Full-Head Base)",
+    priceRange: "₹45,000 (Base)",
     basePrice: 45000,
     density: "Requires Evaluation",
     duration: "7 - 8 Hours",
@@ -138,10 +133,10 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 7,
-    name: "Extreme Hair Loss",
-    description: "Most severe stage. Only a narrow horseshoe band of hair remains at the back and sides. Requires highly precise donor mapping.",
+    name: "Extreme Horseshoe Hair Loss",
+    description: "Most severe stage. Only a narrow donor band remains at the back and sides. Requires precise, scientific mapping.",
     grafts: "4,500+",
-    priceRange: "₹45,000+ (Based on donor feasibility)",
+    priceRange: "₹45,000+ (Custom)",
     basePrice: 45000,
     density: "Low Donor Density",
     duration: "8+ Hours (Split sessions)",
@@ -325,8 +320,28 @@ export default function App() {
   const [scrollY, setScrollY] = useState(0);
 
   // Booking Form States
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+
   const [bookingStep, setBookingStep] = useState(1);
+
+  const handleBookScroll = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    const el = document.getElementById('booking');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleBookService = (serviceValue: string) => {
+    setBookingForm(prev => ({ ...prev, service: serviceValue }));
+    if (bookingStep === 4) {
+      setBookingStep(1);
+      setBookingTicket(null);
+    }
+    const el = document.getElementById('booking');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   const [bookingForm, setBookingForm] = useState({
     fullName: '',
     phone: '',
@@ -534,7 +549,7 @@ export default function App() {
             <a href="#calculator" onClick={() => setActiveSection('calculator')} className={`nav-link ${activeSection === 'calculator' ? 'active' : ''}`}>Graft Calculator</a>
             <a href="#team" onClick={() => setActiveSection('team')} className={`nav-link ${activeSection === 'team' ? 'active' : ''}`}>Our Team</a>
             <a href="#reviews" onClick={() => setActiveSection('reviews')} className={`nav-link ${activeSection === 'reviews' ? 'active' : ''}`}>Reviews</a>
-            <button onClick={() => setIsBookingModalOpen(true)} className="btn btn-primary btn-sm pulse-button">Book Consultation</button>
+            <button onClick={handleBookScroll} className="btn btn-primary btn-sm pulse-button">Book Consultation</button>
           </div>
 
           {/* Mobile Menu Icon */}
@@ -561,7 +576,7 @@ export default function App() {
             <a href="#team" onClick={() => { setActiveSection('team'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'team' ? 'active' : ''}`}>Our Team</a>
             <a href="#reviews" onClick={() => { setActiveSection('reviews'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'reviews' ? 'active' : ''}`}>Reviews</a>
             <div className="mobile-nav-divider"></div>
-            <button onClick={() => { setIsBookingModalOpen(true); setMobileMenuOpen(false); }} className="btn btn-primary btn-sm text-center w-100">Book Consultation</button>
+            <button onClick={(e) => { handleBookScroll(e); setMobileMenuOpen(false); }} className="btn btn-primary btn-sm text-center w-100">Book Consultation</button>
           </div>
         )}
       </nav>
@@ -569,7 +584,7 @@ export default function App() {
       {/* Hero Section */}
       <section id="home" className="pt-20 py-24 flex align-center" style={{ minHeight: '90vh', position: 'relative' }}>
         <div className="container grid grid-cols-2 align-center gap-12 flex-col-mobile">
-          <div className="fade-in-up flex flex-col align-start-desktop align-center-mobile text-center-mobile" style={{ animationDelay: '0.1s' }}>
+          <div className="fade-in-up flex flex-col align-start-desktop align-center-mobile text-center-mobile" style={{ animationDelay: '0.1s', alignSelf: 'center', paddingTop: '48px' }}>
             <div className="badge badge-gradient mb-4">
               <Sparkles size={14} className="mr-2" style={{ marginRight: '8px', color: 'var(--gemini-purple)' }} />
               Premium Hair Restoration in Jammu
@@ -586,7 +601,7 @@ export default function App() {
             </p>
 
             <div className="flex gap-4 flex-wrap mb-8 justify-center-mobile">
-              <button onClick={() => setIsBookingModalOpen(true)} className="btn btn-primary">
+              <button onClick={handleBookScroll} className="btn btn-primary">
                 Consult Our Team <ArrowRight size={16} style={{ marginLeft: '8px' }} />
               </button>
               <a href="#calculator" className="btn btn-secondary">
@@ -747,21 +762,36 @@ export default function App() {
               </div>
 
               {services.surgical.map((srv, idx) => (
-                <div key={idx} className="glass-card p-6 flex flex-col justify-between" style={{ minHeight: '260px' }}>
+                <div 
+                  key={idx} 
+                  className={`glass-card p-6 flex flex-col justify-between ${srv.title === 'FUE Hair Transplant' ? 'card-vip-gold' : ''}`} 
+                  style={{ minHeight: '310px' }}
+                >
                   <div>
                     <div className="flex justify-between align-center mb-3">
-                      <h4 className="font-semibold text-lg">{srv.title}</h4>
-                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(66, 133, 244, 0.2)', color: 'var(--gemini-blue)' }}>{srv.price}</span>
+                      <h4 className="font-semibold text-lg" style={{ paddingRight: srv.title === 'FUE Hair Transplant' ? '90px' : '0px' }}>{srv.title}</h4>
+                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: srv.title === 'FUE Hair Transplant' ? 'var(--gold-light)' : 'rgba(66, 133, 244, 0.2)', color: srv.title === 'FUE Hair Transplant' ? 'var(--gold-dark)' : 'var(--gemini-blue)', fontWeight: 700 }}>{srv.price}</span>
                     </div>
                     <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {srv.features.slice(0, 3).map((feat, fidx) => (
-                      <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                        <CheckCircle2 size={12} color="var(--gemini-blue)" />
-                        <span>{feat}</span>
-                      </div>
-                    ))}
+                  
+                  <div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                      {srv.features.slice(0, 3).map((feat, fidx) => (
+                        <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                          <CheckCircle2 size={12} color={srv.title === 'FUE Hair Transplant' ? 'var(--gold-dark)' : 'var(--gemini-blue)'} />
+                          <span>{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <button 
+                      onClick={() => handleBookService(srv.title === 'PRP Therapy (Platelet-Rich Plasma)' ? 'PRP Therapy (Platelet-Rich Plasma)' : srv.title)}
+                      className={`btn w-100 ${srv.title === 'FUE Hair Transplant' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      style={{ marginTop: 'auto' }}
+                    >
+                      {srv.title === 'FUE Hair Transplant' ? 'Reserve Transplant Slot' : srv.title.includes('PRP') ? 'Book PRP Session' : 'Book Free Evaluation'}
+                    </button>
                   </div>
                 </div>
               ))}
@@ -786,21 +816,31 @@ export default function App() {
               </div>
 
               {services.lasers.map((srv, idx) => (
-                <div key={idx} className="glass-card p-6 flex flex-col justify-between" style={{ minHeight: '260px' }}>
+                <div key={idx} className="glass-card p-6 flex flex-col justify-between card-laser-premium" style={{ minHeight: '310px' }}>
                   <div>
                     <div className="flex justify-between align-center mb-3">
                       <h4 className="font-semibold text-lg">{srv.title}</h4>
-                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(155, 81, 224, 0.2)', color: 'var(--gemini-purple)' }}>{srv.price}</span>
+                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(155, 81, 224, 0.2)', color: 'var(--gemini-purple)', fontWeight: 700 }}>{srv.price}</span>
                     </div>
                     <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {srv.features.slice(0, 3).map((feat, fidx) => (
-                      <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                        <CheckCircle2 size={12} color="var(--gemini-purple)" />
-                        <span>{feat}</span>
-                      </div>
-                    ))}
+
+                  <div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                      {srv.features.slice(0, 3).map((feat, fidx) => (
+                        <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                          <CheckCircle2 size={12} color="var(--gemini-purple)" />
+                          <span>{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <button 
+                      onClick={() => handleBookService(srv.title)}
+                      className="btn btn-secondary btn-sm w-100"
+                    >
+                      Book Laser Service
+                    </button>
                   </div>
                 </div>
               ))}
@@ -825,25 +865,498 @@ export default function App() {
               </div>
 
               {services.dermatology.map((srv, idx) => (
-                <div key={idx} className="glass-card p-6 flex flex-col justify-between" style={{ minHeight: '260px' }}>
+                <div key={idx} className="glass-card p-6 flex flex-col justify-between card-dermatology-premium" style={{ minHeight: '310px' }}>
                   <div>
                     <div className="flex justify-between align-center mb-3">
                       <h4 className="font-semibold text-lg">{srv.title}</h4>
-                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(208, 21, 105, 0.2)', color: 'var(--gemini-pink)' }}>{srv.price}</span>
+                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(208, 21, 105, 0.2)', color: 'var(--gemini-pink)', fontWeight: 700 }}>{srv.price}</span>
                     </div>
                     <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {srv.features.slice(0, 3).map((feat, fidx) => (
-                      <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                        <CheckCircle2 size={12} color="var(--gemini-pink)" />
-                        <span>{feat}</span>
-                      </div>
-                    ))}
+
+                  <div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                      {srv.features.slice(0, 3).map((feat, fidx) => (
+                        <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                          <CheckCircle2 size={12} color="var(--gemini-pink)" />
+                          <span>{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <button 
+                      onClick={() => handleBookService(srv.title)}
+                      className="btn btn-secondary btn-sm w-100"
+                    >
+                      Book Clinical Treatment
+                    </button>
                   </div>
                 </div>
               ))}
             </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Consultation Booking Section (Inline Multi-Step Wizard) */}
+      <section id="booking" className="py-24" style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Ambient background glow inside section */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '300px',
+          height: '300px',
+          background: 'rgba(212, 175, 55, 0.08)',
+          borderRadius: '50%',
+          filter: 'blur(80px)',
+          pointerEvents: 'none'
+        }}></div>
+
+        <div className="container flex justify-center" style={{ position: 'relative', zIndex: 2 }}>
+          <div className="glass-card p-8 flex flex-col gap-6 w-100" 
+               style={{ 
+                 width: '100%', 
+                 maxWidth: '850px', 
+                 border: '1.5px solid rgba(212, 175, 55, 0.35)', 
+                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 252, 249, 0.95) 100%)',
+                 boxShadow: 'var(--shadow-xl), 0 0 0 1px rgba(212, 175, 55, 0.1), 0 20px 50px rgba(11, 167, 89, 0.08)'
+               }}>
+            
+            {/* Header */}
+            <div className="text-center mb-4">
+              <div className="badge badge-gradient mb-3" style={{ background: 'rgba(212, 175, 55, 0.07)', borderColor: 'rgba(212, 175, 55, 0.25)', color: 'var(--gold-dark)', fontWeight: 800 }}>
+                ✨ VIP Private Diagnostics & Restoration
+              </div>
+              <h2 className="text-3xl font-decorative mb-1" style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.02em', fontWeight: 800 }}>
+                Secure Clinical Appointment
+              </h2>
+              <p className="text-sm text-secondary-color" style={{ maxWidth: '500px', margin: '0 auto', lineHeight: '1.5' }}>
+                Pre-book your diagnostic slot with our clinical care specialists. No waiting queues at Channi Himmat, Jammu.
+              </p>
+            </div>
+
+            {/* Stepper Wizard Indicator */}
+            {bookingStep < 4 && (
+              <div className="stepper-premium" style={{ marginBottom: '24px' }}>
+                <div className="stepper-line">
+                  <div 
+                    className="stepper-line-fill" 
+                    style={{ width: `${((bookingStep - 1) / 2) * 100}%` }}
+                  ></div>
+                </div>
+
+                {/* Step 1 */}
+                <div 
+                  className={`stepper-step ${bookingStep === 1 ? 'active' : ''} ${bookingStep > 1 ? 'completed' : ''}`}
+                  onClick={() => bookingStep > 1 && setBookingStep(1)}
+                  style={{ cursor: bookingStep > 1 ? 'pointer' : 'default' }}
+                >
+                  <div className="stepper-circle">
+                    {bookingStep > 1 ? '✓' : '1'}
+                  </div>
+                  <span className="stepper-label">Contact</span>
+                </div>
+
+                {/* Step 2 */}
+                <div 
+                  className={`stepper-step ${bookingStep === 2 ? 'active' : ''} ${bookingStep > 2 ? 'completed' : ''}`}
+                  onClick={() => bookingStep > 2 && setBookingStep(2)}
+                  style={{ cursor: bookingStep > 2 ? 'pointer' : 'default' }}
+                >
+                  <div className="stepper-circle">
+                    {bookingStep > 2 ? '✓' : '2'}
+                  </div>
+                  <span className="stepper-label">Treatment</span>
+                </div>
+
+                {/* Step 3 */}
+                <div 
+                  className={`stepper-step ${bookingStep === 3 ? 'active' : ''}`}
+                >
+                  <div className="stepper-circle">3</div>
+                  <span className="stepper-label">Schedule</span>
+                </div>
+              </div>
+            )}
+
+            {/* Step Content */}
+            {bookingStep === 1 && (
+              <div className="flex flex-col gap-6">
+                <div className="form-group-premium">
+                  <label className="form-label-premium">Patient Full Name</label>
+                  <input 
+                    type="text" 
+                    required
+                    placeholder="Enter your complete name" 
+                    className="form-input-premium" 
+                    value={bookingForm.fullName}
+                    onChange={(e) => setBookingForm({...bookingForm, fullName: e.target.value})}
+                  />
+                </div>
+
+                <div className="form-group-premium">
+                  <label className="form-label-premium">Contact Phone Number</label>
+                  <input 
+                    type="tel" 
+                    required
+                    placeholder="e.g. +91 88994 21483" 
+                    className="form-input-premium" 
+                    value={bookingForm.phone}
+                    onChange={(e) => setBookingForm({...bookingForm, phone: e.target.value})}
+                  />
+                </div>
+
+                <div className="form-group-premium">
+                  <label className="form-label-premium">Email Address (Optional)</label>
+                  <input 
+                    type="email" 
+                    placeholder="e.g. patient@example.com" 
+                    className="form-input-premium" 
+                    value={bookingForm.email}
+                    onChange={(e) => setBookingForm({...bookingForm, email: e.target.value})}
+                  />
+                </div>
+
+                <button 
+                  type="button" 
+                  className="btn btn-primary mt-4" 
+                  style={{ width: '100%' }}
+                  onClick={() => {
+                    if (bookingForm.fullName.trim() && bookingForm.phone.trim()) {
+                      setBookingStep(2);
+                    } else {
+                      alert("Please fill out your Name and Phone number before proceeding.");
+                    }
+                  }}
+                >
+                  Configure Specialty Treatment <ArrowRight size={16} style={{ marginLeft: '8px' }} />
+                </button>
+              </div>
+            )}
+
+            {bookingStep === 2 && (
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-3">
+                  <label className="form-label-premium">Select Treatment Specialty</label>
+                  <div className="flex flex-col gap-3" style={{ maxHeight: '280px', overflowY: 'auto', paddingRight: '4px' }}>
+                    {treatments.map((t) => (
+                      <div 
+                        key={t.value}
+                        onClick={() => setBookingForm({...bookingForm, service: t.value})}
+                        className={`treatment-card-premium ${bookingForm.service === t.value ? 'active' : ''}`}
+                      >
+                        <span style={{ fontSize: '1.6rem' }}>{t.icon}</span>
+                        <div style={{ flex: 1 }}>
+                          <div className="flex justify-between align-center" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)' }}>{t.label}</span>
+                            <span className="badge badge-gradient" style={{ fontSize: '0.65rem', padding: '3px 8px' }}>{t.category}</span>
+                          </div>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'block', marginTop: '4px', textAlign: 'left' }}>{t.desc}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <label className="form-label-premium">Have you had a hair transplant before?</label>
+                  <div className="flex gap-4">
+                    {['yes', 'no'].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => setBookingForm({...bookingForm, hadPriorConsultation: val})}
+                        style={{
+                          padding: '14px 20px',
+                          borderRadius: '12px',
+                          border: '2px solid',
+                          borderColor: bookingForm.hadPriorConsultation === val ? 'var(--green-primary)' : 'var(--border-light)',
+                          background: bookingForm.hadPriorConsultation === val ? 'rgba(11, 167, 89, 0.05)' : '#ffffff',
+                          color: bookingForm.hadPriorConsultation === val ? 'var(--green-deep)' : 'var(--text-secondary)',
+                          fontWeight: 700,
+                          fontSize: '0.88rem',
+                          cursor: 'pointer',
+                          flex: 1,
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        {val === 'yes' ? 'Yes, I Had Prior Transplant' : 'No, This is My First'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <label 
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '12px', 
+                      cursor: 'pointer', 
+                      fontSize: '0.88rem', 
+                      color: 'var(--text-secondary)',
+                      background: 'rgba(255, 255, 255, 0.5)',
+                      padding: '14px 18px',
+                      borderRadius: '16px',
+                      border: '1.5px solid var(--border-light)'
+                    }} 
+                  >
+                    <input 
+                      type="checkbox" 
+                      checked={bookingForm.bloodSugarCheck === 'yes'}
+                      onChange={(e) => setBookingForm({...bookingForm, bloodSugarCheck: e.target.checked ? 'yes' : 'no'})}
+                      style={{ accentColor: 'var(--green-primary)', width: '18px', height: '18px', cursor: 'pointer' }}
+                    />
+                    <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>Include on-site Blood Sugar test (Safety Screening)</span>
+                  </label>
+                </div>
+
+                <div className="flex gap-4 mt-2">
+                  <button type="button" className="btn btn-secondary flex-1" onClick={() => setBookingStep(1)}>
+                    Back
+                  </button>
+                  <button type="button" className="btn btn-primary flex-1" onClick={() => setBookingStep(3)}>
+                    Select Slot <ArrowRight size={16} style={{ marginLeft: '8px' }} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {bookingStep === 3 && (
+              <div className="flex flex-col gap-6">
+                <div className="form-group-premium">
+                  <label className="form-label-premium">Select Appointment Date</label>
+                  <input 
+                    type="date" 
+                    required
+                    className="form-input-premium" 
+                    value={bookingForm.date}
+                    onChange={(e) => setBookingForm({...bookingForm, date: e.target.value})}
+                    style={{ fontWeight: 700 }}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <label className="form-label-premium">Select Preferred Time Slot</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {timeSlots.map((ts) => (
+                      <div 
+                        key={ts.value}
+                        onClick={() => setBookingForm({...bookingForm, time: ts.value})}
+                        className={`time-slot-card-premium ${bookingForm.time === ts.value ? 'active' : ''}`}
+                      >
+                        <div style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)' }}>{ts.value}</div>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>{ts.period}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="form-group-premium">
+                  <label className="form-label-premium">Additional Scalp or Care Notes (Optional)</label>
+                  <textarea 
+                    rows={2} 
+                    placeholder="Mention any scalp concerns, skin allergies, medications, or surgical history..." 
+                    className="form-input-premium" 
+                    style={{ resize: 'none', borderRadius: '16px' }}
+                    value={bookingForm.notes}
+                    onChange={(e) => setBookingForm({...bookingForm, notes: e.target.value})}
+                  />
+                </div>
+
+                <div className="flex gap-4 mt-2">
+                  <button type="button" className="btn btn-secondary flex-1" onClick={() => setBookingStep(2)}>
+                    Back
+                  </button>
+                  <button 
+                    type="button" 
+                    className="btn btn-primary flex-1"
+                    disabled={!bookingForm.date || !bookingForm.time}
+                    style={{ opacity: (!bookingForm.date || !bookingForm.time) ? 0.65 : 1 }}
+                    onClick={handleBookingSubmit}
+                  >
+                    Confirm & Generate Pass
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Success Pass */}
+            {bookingStep === 4 && bookingTicket && (
+              <div className="flex flex-col gap-6 align-center">
+                <div style={{
+                  width: '60px',
+                  height: '60px',
+                  borderRadius: '50%',
+                  background: 'rgba(11, 167, 89, 0.1)',
+                  color: 'var(--green-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '4px'
+                }}>
+                  <CheckCircle2 size={32} />
+                </div>
+
+                <h3 className="text-2xl text-center font-decorative" style={{ color: 'var(--green-deep)', fontFamily: 'var(--font-display)', fontWeight: 800, marginTop: '-10px' }}>
+                  Diagnostics Scheduled!
+                </h3>
+                <p className="text-secondary-color text-center" style={{ fontSize: '0.85rem', marginTop: '-12px', lineHeight: '1.5' }}>
+                  Your exclusive care pass has been generated. Specialists <strong>Shazia Mam</strong>, <strong>Rimpy Mam</strong>, and support lead <strong>Rajesh</strong> have been alerted of your booking.
+                </p>
+
+                {/* Perforated VIP Clinical Pass */}
+                <div className="ticket-premium w-100 flex flex-col gap-4" style={{ width: '100%' }}>
+                  <div className="ticket-watermark">HAVEN</div>
+                  
+                  <div className="flex justify-between align-center" style={{ borderBottom: '1px dashed rgba(212, 175, 55, 0.25)', paddingBottom: '14px' }}>
+                    <div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Access ID</div>
+                      <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>{bookingTicket.id}</div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Clinic Unit</div>
+                      <div style={{ fontSize: '0.9rem', fontWeight: 750, color: 'var(--text-primary)' }}>Channi Himmat, Jammu</div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4" style={{ fontSize: '0.85rem', zIndex: 2, position: 'relative' }}>
+                    <div>
+                      <div style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Patient</div>
+                      <div style={{ fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{bookingTicket.fullName}</div>
+                    </div>
+                    <div>
+                      <div style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Diagnostics Map</div>
+                      <div style={{ fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{bookingTicket.service}</div>
+                    </div>
+                    <div>
+                      <div style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Preferred Date</div>
+                      <div style={{ fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{bookingTicket.date}</div>
+                    </div>
+                    <div>
+                      <div style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Time Slot</div>
+                      <div style={{ fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{bookingTicket.time}</div>
+                    </div>
+                  </div>
+
+                  <div className="ticket-divider-premium"></div>
+
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    fontSize: '0.85rem',
+                    zIndex: 2,
+                    position: 'relative'
+                  }}>
+                    <div>
+                      <div style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Estimated Pricing</div>
+                      <div style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--green-deep)', marginTop: '2px' }}>
+                        ₹{bookingTicket.priceEstimate.toLocaleString('en-IN')}
+                      </div>
+                    </div>
+                    <span className="badge badge-gradient" style={{ fontSize: '0.7rem', borderColor: 'rgba(212, 175, 55, 0.3)', color: 'var(--gold-dark)', background: 'rgba(212, 175, 55, 0.05)', fontWeight: 700 }}>
+                      Pay at Clinic
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3 w-100 mt-2" style={{ width: '100%' }}>
+                  <div className="flex gap-3 w-100">
+                    <button 
+                      type="button" 
+                      className="btn btn-secondary flex-1" 
+                      style={{ padding: '12px' }}
+                      onClick={() => {
+                        setBookingStep(1);
+                        setBookingForm({
+                          fullName: '',
+                          phone: '',
+                          email: '',
+                          service: 'FUE Hair Transplant',
+                          date: '',
+                          time: '',
+                          notes: '',
+                          hadPriorConsultation: 'no',
+                          bloodSugarCheck: 'no'
+                        });
+                        setBookingTicket(null);
+                      }}
+                    >
+                      Book Another Slot
+                    </button>
+                    <button 
+                      type="button" 
+                      className="btn btn-secondary flex-1"
+                      style={{ padding: '12px' }}
+                      onClick={() => window.print()}
+                    >
+                      Print Pass
+                    </button>
+                  </div>
+
+                  <button 
+                    type="button"
+                    className="btn btn-primary w-100 flex align-center justify-center gap-2 pulse-button"
+                    style={{
+                      background: '#25d366',
+                      color: '#ffffff',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      boxShadow: '0 8px 24px rgba(37, 211, 102, 0.3)',
+                      padding: '14px 20px',
+                      fontSize: '1rem',
+                      fontWeight: 800
+                    }}
+                    onClick={() => {
+                      const ownerPhone = '918899421483';
+                      const messageBody = `🌿 *HAIR HAVEN CLINIC - SECURE RESERVATION* 🌿
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏥 *NEW CLINICAL APPOINTMENT REGISTERED*
+
+👤 *PATIENT PROFILE*
+  • *Full Name:* ${bookingTicket.fullName}
+  • *Phone Number:* ${bookingTicket.phone}
+  • *Email Address:* ${bookingTicket.email || 'Not Provided'}
+  • *Prior Hair Transplant:* ${bookingTicket.hadPriorConsultation === 'yes' ? 'Yes (Requires Special Donor Analysis)' : 'No (First-time Restorative Treatment)'}
+
+💉 *TREATMENT DESIGN*
+  • *Selected Specialty:* ${bookingTicket.service}
+  • *Norwood Baldness Stage:* Stage ${selectedNorwood}
+  • *Estimated Graft Requirement:* ${norwoodStages[selectedNorwood - 1].grafts} Grafts
+  • *Donor Density Expectation:* ${norwoodStages[selectedNorwood - 1].density}
+
+📅 *SCHEDULING SUMMARY*
+  • *Preferred Date:* ${bookingTicket.date}
+  • *Preferred Time Slot:* ${bookingTicket.time}
+  • *Allocated Care Coordinator:* Rajesh (Patient Support Lead)
+
+📋 *CLINICAL CHECKLIST & RECOVERY*
+  • *Pre-Surgical Screening:* ${includeScreening ? 'Yes - Complete Diagnostic Package (₹999)' : 'No - Scalp-Only Evaluation'}
+  • *PRP Healing Sessions:* ${includePRPSessions > 0 ? `${includePRPSessions} Sessions Included (+₹${(includePRPSessions * 5000).toLocaleString('en-IN')})` : 'None Selected'}
+  • *On-site Blood Sugar Test:* ${bookingTicket.bloodSugarCheck === 'yes' ? 'Yes (Mandatory Safety Screening)' : 'No'}
+  • *Clinical Case Notes:* ${bookingTicket.notes || 'None provided by patient'}
+
+💳 *ESTIMATED FINANCIALS*
+  • *Base Treatment Cost:* ₹${norwoodStages[selectedNorwood - 1].basePrice.toLocaleString('en-IN')}
+  • *Total Estimate (incl. add-ons):* ₹${bookingTicket.priceEstimate.toLocaleString('en-IN')}
+  • *Payment Terms:* Pay at Clinic (Cash / UPI / Cards)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+✨ *System Alert: Please reach out to the patient within 2 hours to confirm their clinical slot.*`;
+                      const encodedText = encodeURIComponent(messageBody);
+                      const waUrl = `https://wa.me/${ownerPhone}?text=${encodedText}`;
+                      window.open(waUrl, '_blank');
+                    }}
+                  >
+                    <MessageSquare size={18} style={{ marginRight: '6px' }} />
+                    <span>Confirm & Alert Owner via WhatsApp</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
           </div>
         </div>
@@ -1020,7 +1533,7 @@ export default function App() {
 
               {currentNorwoodInfo.stage > 1 ? (
                 <button 
-                  onClick={() => setIsBookingModalOpen(true)}
+                  onClick={() => handleBookService('FUE Hair Transplant')}
                   className="btn btn-primary w-100 mt-6" 
                   style={{ width: '100%', marginTop: '24px' }}
                 >
@@ -1282,68 +1795,63 @@ export default function App() {
         </div>
       </section>
 
-      {/* Consultation Booking Section (High-End CTA Banner) */}
-      <section id="booking" className="py-24" style={{ position: 'relative', overflow: 'hidden' }}>
-        {/* Ambient background glow inside section */}
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '300px',
-          height: '300px',
-          background: 'rgba(212, 175, 55, 0.08)',
-          borderRadius: '50%',
-          filter: 'blur(80px)',
-          pointerEvents: 'none'
-        }}></div>
-
-        <div className="container flex justify-center" style={{ position: 'relative', zIndex: 2 }}>
-          <div className="glass-card p-12 text-center flex flex-col align-center gap-6" 
-               style={{ 
-                 width: '100%', 
-                 maxWidth: '800px', 
-                 border: '1px solid rgba(212, 175, 55, 0.25)', 
-                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 252, 249, 0.85) 100%)',
-                 boxShadow: 'var(--shadow-xl), 0 0 0 1px rgba(212, 175, 55, 0.1), 0 20px 50px rgba(11, 167, 89, 0.08)'
-               }}>
-            <div className="badge badge-gradient" style={{ background: 'rgba(212, 175, 55, 0.07)', borderColor: 'rgba(212, 175, 55, 0.25)', color: 'var(--gold-dark)', fontWeight: 800 }}>
-              ✨ Private Scalp Diagnostics & Restoration
-            </div>
-            
-            <h2 className="text-4xl" style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.02em', fontWeight: 800 }}>
-              Begin Your Hair Restoration Journey
-            </h2>
-            
-            <p className="text-lg text-secondary-color" style={{ maxWidth: '600px', margin: '0 auto', lineHeight: '1.7' }}>
-              Skip the waiting lists. Secure an exclusive, 1-on-1 diagnostics consultation at Channi Himmat, Jammu. 
-              Our specialists will map your hair loss stage, outline graft requirements, and plan your customized healing path.
+      {/* Interactive Google Map & Direct Navigation Section */}
+      <section id="map" className="py-24 map-section">
+        <div className="container">
+          <div className="text-center mb-16">
+            <div className="badge badge-gradient mb-3">📍 Visit Our Clinic</div>
+            <h2 className="text-4xl mb-4">Location & Direct Navigation</h2>
+            <p className="text-lg text-secondary-color" style={{ maxWidth: '640px', margin: '0 auto' }}>
+              We are located in the heart of Jammu at Channi Himmat. Click on the map to start GPS navigation directly on your device.
             </p>
+          </div>
 
-            <button 
-              onClick={() => setIsBookingModalOpen(true)}
-              className="btn btn-primary pulse-button mt-4"
-              style={{
-                padding: '18px 48px',
-                fontSize: '1.05rem',
-                background: 'linear-gradient(135deg, var(--green-deep) 0%, var(--green-primary) 100%)',
-                border: '1px solid rgba(212, 175, 55, 0.3)',
-                boxShadow: '0 10px 30px rgba(11, 167, 89, 0.3)'
-              }}
-            >
-              Launch Appointment Portal
-            </button>
-            
-            <div className="flex gap-6 justify-center flex-wrap mt-2" style={{ borderTop: '1px solid var(--border-light)', paddingTop: '20px', width: '100%' }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                ✅ <strong>100% Free & Unlimited Alerting</strong>
-              </span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                ✅ <strong>Direct Owner Pathway</strong>
-              </span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                ✅ <strong>Personalized Care Pass</strong>
-              </span>
+          <div className="map-wrapper">
+            {/* Embedded Google Map centered at Channi Himmat, Jammu */}
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3356.5684347712395!2d74.8765251!3d32.7059000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391e84eb00000001%3A0x6b8eb6a7c36a8e8b!2sChanni%20Himmat%2C%20Jammu!5e0!3m2!1sen!2sin!4v1716000000000!5m2!1sen!2sin"
+              className="map-iframe"
+              allowFullScreen={true}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Hair Haven Location Map"
+            ></iframe>
+
+            {/* GPS Directions Overlay Card */}
+            <div className="map-directions-card">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                <MapPin size={18} color="var(--gold-dark)" />
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.05em' }}>Clinic Landmark</span>
+              </div>
+              <h3 className="text-xl mb-4" style={{ fontWeight: 800 }}>Hair Haven Clinic</h3>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px' }}>
+                606/B, Sector 3, Channi Himmat, Jammu.<br />
+                <span style={{ fontStyle: 'italic', fontSize: '0.85rem' }}>Opposite Kashmir Flavours Restaurant</span>
+              </p>
+              
+              <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '16px', marginBottom: '24px' }}>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>
+                  <strong>Hours:</strong> 10:00 AM - 06:00 PM (Daily)
+                </div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                  <strong>Parking:</strong> Free On-Site Parking Available
+                </div>
+              </div>
+
+              <button 
+                onClick={() => window.open('https://www.google.com/maps/dir/?api=1&destination=Channi+Himmat+Jammu', '_blank')}
+                className="btn btn-primary w-100 flex align-center justify-center gap-2 pulse-button"
+                style={{
+                  background: 'linear-gradient(135deg, var(--green-deep) 0%, var(--green-primary) 100%)',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  boxShadow: '0 8px 24px rgba(11, 167, 89, 0.25)',
+                  padding: '14px 20px',
+                  fontWeight: 800
+                }}
+              >
+                <Compass size={18} />
+                <span>Start GPS Navigation</span>
+              </button>
             </div>
           </div>
         </div>
@@ -1431,456 +1939,7 @@ export default function App() {
 
 
 
-      {/* Ultra-Premium Booking Modal Dialog Box */}
-      {isBookingModalOpen && (
-        <div className="booking-modal-overlay">
-          <div className="booking-modal-container">
-            {/* Close Button */}
-            <button 
-              onClick={() => {
-                setIsBookingModalOpen(false);
-              }}
-              className="modal-close-btn"
-              title="Close Portal"
-            >
-              <X size={20} />
-            </button>
 
-            {/* Modal Header */}
-            <div className="text-center mb-6">
-              <div className="flex justify-center mb-3">
-                <HairHavenLogo size={54} />
-              </div>
-              <h2 className="text-3xl font-decorative mb-1" style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.02em', fontWeight: 800 }}>
-                Secure Clinical Appointment
-              </h2>
-              <p className="text-sm text-secondary-color" style={{ maxWidth: '400px', margin: '0 auto' }}>
-                Pre-book your diagnostic slot with our clinical care specialists. No waiting queues at Channi Himmat, Jammu.
-              </p>
-            </div>
-
-            {/* Premium Stepper Wizard */}
-            {bookingStep < 4 && (
-              <div className="stepper-premium">
-                <div className="stepper-line">
-                  <div 
-                    className="stepper-line-fill" 
-                    style={{ width: `${((bookingStep - 1) / 2) * 100}%` }}
-                  ></div>
-                </div>
-
-                {/* Step 1 */}
-                <div 
-                  className={`stepper-step ${bookingStep === 1 ? 'active' : ''} ${bookingStep > 1 ? 'completed' : ''}`}
-                  onClick={() => bookingStep > 1 && setBookingStep(1)}
-                >
-                  <div className="stepper-circle">
-                    {bookingStep > 1 ? '✓' : '1'}
-                  </div>
-                  <span className="stepper-label">Contact</span>
-                </div>
-
-                {/* Step 2 */}
-                <div 
-                  className={`stepper-step ${bookingStep === 2 ? 'active' : ''} ${bookingStep > 2 ? 'completed' : ''}`}
-                  onClick={() => bookingStep > 2 && setBookingStep(2)}
-                >
-                  <div className="stepper-circle">
-                    {bookingStep > 2 ? '✓' : '2'}
-                  </div>
-                  <span className="stepper-label">Treatment</span>
-                </div>
-
-                {/* Step 3 */}
-                <div 
-                  className={`stepper-step ${bookingStep === 3 ? 'active' : ''}`}
-                >
-                  <div className="stepper-circle">3</div>
-                  <span className="stepper-label">Schedule</span>
-                </div>
-              </div>
-            )}
-
-            {/* Step Content */}
-            {bookingStep === 1 && (
-              <div className="flex flex-col gap-6">
-                <div className="form-group-premium">
-                  <label className="form-label-premium">Patient Full Name</label>
-                  <input 
-                    type="text" 
-                    required
-                    placeholder="Enter your complete name" 
-                    className="form-input-premium" 
-                    value={bookingForm.fullName}
-                    onChange={(e) => setBookingForm({...bookingForm, fullName: e.target.value})}
-                  />
-                </div>
-
-                <div className="form-group-premium">
-                  <label className="form-label-premium">Contact Phone Number</label>
-                  <input 
-                    type="tel" 
-                    required
-                    placeholder="e.g. +91 98765 43210" 
-                    className="form-input-premium" 
-                    value={bookingForm.phone}
-                    onChange={(e) => setBookingForm({...bookingForm, phone: e.target.value})}
-                  />
-                </div>
-
-                <div className="form-group-premium">
-                  <label className="form-label-premium">Email Address (Optional)</label>
-                  <input 
-                    type="email" 
-                    placeholder="e.g. patient@example.com" 
-                    className="form-input-premium" 
-                    value={bookingForm.email}
-                    onChange={(e) => setBookingForm({...bookingForm, email: e.target.value})}
-                  />
-                </div>
-
-                <button 
-                  type="button" 
-                  className="btn btn-primary mt-4" 
-                  style={{ width: '100%' }}
-                  onClick={() => {
-                    if (bookingForm.fullName.trim() && bookingForm.phone.trim()) {
-                      setBookingStep(2);
-                    } else {
-                      alert("Please fill out your Name and Phone number before proceeding.");
-                    }
-                  }}
-                >
-                  Configure Specialty Treatment <ArrowRight size={16} style={{ marginLeft: '8px' }} />
-                </button>
-              </div>
-            )}
-
-            {bookingStep === 2 && (
-              <div className="flex flex-col gap-6">
-                <div className="flex flex-col gap-3">
-                  <label className="form-label-premium">Select Treatment Specialty</label>
-                  <div className="flex flex-col gap-3" style={{ maxHeight: '280px', overflowY: 'auto', paddingRight: '4px' }}>
-                    {treatments.map((t) => (
-                      <div 
-                        key={t.value}
-                        onClick={() => setBookingForm({...bookingForm, service: t.value})}
-                        className={`treatment-card-premium ${bookingForm.service === t.value ? 'active' : ''}`}
-                      >
-                        <span style={{ fontSize: '1.6rem' }}>{t.icon}</span>
-                        <div style={{ flex: 1 }}>
-                          <div className="flex justify-between align-center" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)' }}>{t.label}</span>
-                            <span className="badge badge-gradient" style={{ fontSize: '0.65rem', padding: '3px 8px' }}>{t.category}</span>
-                          </div>
-                          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'block', marginTop: '4px', textAlign: 'left' }}>{t.desc}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <label className="form-label-premium">Have you had a hair transplant before?</label>
-                  <div className="flex gap-4">
-                    {['yes', 'no'].map((val) => (
-                      <button
-                        key={val}
-                        type="button"
-                        onClick={() => setBookingForm({...bookingForm, hadPriorConsultation: val})}
-                        style={{
-                          padding: '14px 20px',
-                          borderRadius: '12px',
-                          border: '2px solid',
-                          borderColor: bookingForm.hadPriorConsultation === val ? 'var(--green-primary)' : 'var(--border-light)',
-                          background: bookingForm.hadPriorConsultation === val ? 'rgba(11, 167, 89, 0.05)' : '#ffffff',
-                          color: bookingForm.hadPriorConsultation === val ? 'var(--green-deep)' : 'var(--text-secondary)',
-                          fontWeight: 700,
-                          fontSize: '0.88rem',
-                          cursor: 'pointer',
-                          flex: 1,
-                          transition: 'all 0.3s ease'
-                        }}
-                      >
-                        {val === 'yes' ? 'Yes, I Had Prior Transplant' : 'No, This is My First'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <label 
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '12px', 
-                      cursor: 'pointer', 
-                      fontSize: '0.88rem', 
-                      color: 'var(--text-secondary)',
-                      background: 'rgba(255, 255, 255, 0.5)',
-                      padding: '14px 18px',
-                      borderRadius: '16px',
-                      border: '1.5px solid var(--border-light)'
-                    }} 
-                  >
-                    <input 
-                      type="checkbox" 
-                      checked={bookingForm.bloodSugarCheck === 'yes'}
-                      onChange={(e) => setBookingForm({...bookingForm, bloodSugarCheck: e.target.checked ? 'yes' : 'no'})}
-                      style={{ accentColor: 'var(--green-primary)', width: '18px', height: '18px', cursor: 'pointer' }}
-                    />
-                    <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>Include on-site Blood Sugar test (Safety Screening)</span>
-                  </label>
-                </div>
-
-                <div className="flex gap-4 mt-2">
-                  <button type="button" className="btn btn-secondary flex-1" onClick={() => setBookingStep(1)}>
-                    Back
-                  </button>
-                  <button type="button" className="btn btn-primary flex-1" onClick={() => setBookingStep(3)}>
-                    Select Slot <ArrowRight size={16} style={{ marginLeft: '8px' }} />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {bookingStep === 3 && (
-              <div className="flex flex-col gap-6">
-                <div className="form-group-premium">
-                  <label className="form-label-premium">Select Appointment Date</label>
-                  <input 
-                    type="date" 
-                    required
-                    className="form-input-premium" 
-                    value={bookingForm.date}
-                    onChange={(e) => setBookingForm({...bookingForm, date: e.target.value})}
-                    style={{ fontWeight: 700 }}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <label className="form-label-premium">Select Preferred Time Slot</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {timeSlots.map((ts) => (
-                      <div 
-                        key={ts.value}
-                        onClick={() => setBookingForm({...bookingForm, time: ts.value})}
-                        className={`time-slot-card-premium ${bookingForm.time === ts.value ? 'active' : ''}`}
-                      >
-                        <div style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)' }}>{ts.value}</div>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>{ts.period}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="form-group-premium">
-                  <label className="form-label-premium">Additional Scalp or Care Notes (Optional)</label>
-                  <textarea 
-                    rows={2} 
-                    placeholder="Mention any scalp concerns, skin allergies, medications, or surgical history..." 
-                    className="form-input-premium" 
-                    style={{ resize: 'none', borderRadius: '16px' }}
-                    value={bookingForm.notes}
-                    onChange={(e) => setBookingForm({...bookingForm, notes: e.target.value})}
-                  />
-                </div>
-
-                <div className="flex gap-4 mt-2">
-                  <button type="button" className="btn btn-secondary flex-1" onClick={() => setBookingStep(2)}>
-                    Back
-                  </button>
-                  <button 
-                    type="button" 
-                    className="btn btn-primary flex-1"
-                    disabled={!bookingForm.date || !bookingForm.time}
-                    style={{ opacity: (!bookingForm.date || !bookingForm.time) ? 0.65 : 1 }}
-                    onClick={handleBookingSubmit}
-                  >
-                    Confirm & Generate Pass
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Step 4: Booking Success Ticket / Clinical Pass */}
-            {bookingStep === 4 && bookingTicket && (
-              <div className="flex flex-col gap-6 align-center">
-                <div style={{
-                  width: '60px',
-                  height: '60px',
-                  borderRadius: '50%',
-                  background: 'rgba(11, 167, 89, 0.1)',
-                  color: 'var(--green-primary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '4px'
-                }}>
-                  <CheckCircle2 size={32} />
-                </div>
-
-                <h3 className="text-2xl text-center font-decorative" style={{ color: 'var(--green-deep)', fontFamily: 'var(--font-display)', fontWeight: 800, marginTop: '-10px' }}>
-                  Diagnostics Scheduled!
-                </h3>
-                <p className="text-secondary-color text-center" style={{ fontSize: '0.85rem', marginTop: '-12px', lineHeight: '1.5' }}>
-                  Your exclusive care pass has been generated. Specialists <strong>Shazia Mam</strong>, <strong>Rimpy Mam</strong>, and support lead <strong>Rajesh</strong> have been alerted of your booking.
-                </p>
-
-                {/* Perforated VIP Clinical Pass */}
-                <div className="ticket-premium w-100 flex flex-col gap-4" style={{ width: '100%' }}>
-                  <div className="ticket-watermark">HAVEN</div>
-                  
-                  <div className="flex justify-between align-center" style={{ borderBottom: '1px dashed rgba(212, 175, 55, 0.25)', paddingBottom: '14px' }}>
-                    <div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Access ID</div>
-                      <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>{bookingTicket.id}</div>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Clinic Unit</div>
-                      <div style={{ fontSize: '0.9rem', fontWeight: 750, color: 'var(--text-primary)' }}>Channi Himmat, Jammu</div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4" style={{ fontSize: '0.85rem', zIndex: 2, position: 'relative' }}>
-                    <div>
-                      <div style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Patient</div>
-                      <div style={{ fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{bookingTicket.fullName}</div>
-                    </div>
-                    <div>
-                      <div style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Diagnostics Map</div>
-                      <div style={{ fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{bookingTicket.service}</div>
-                    </div>
-                    <div>
-                      <div style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Preferred Date</div>
-                      <div style={{ fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{bookingTicket.date}</div>
-                    </div>
-                    <div>
-                      <div style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Time Slot</div>
-                      <div style={{ fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>{bookingTicket.time}</div>
-                    </div>
-                  </div>
-
-                  <div className="ticket-divider-premium"></div>
-
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    fontSize: '0.85rem',
-                    zIndex: 2,
-                    position: 'relative'
-                  }}>
-                    <div>
-                      <div style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Estimated Pricing</div>
-                      <div style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--green-deep)', marginTop: '2px' }}>
-                        ₹{bookingTicket.priceEstimate.toLocaleString('en-IN')}
-                      </div>
-                    </div>
-                    <span className="badge badge-gradient" style={{ fontSize: '0.7rem', borderColor: 'rgba(212, 175, 55, 0.3)', color: 'var(--gold-dark)', background: 'rgba(212, 175, 55, 0.05)', fontWeight: 700 }}>
-                      Pay at Clinic
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-3 w-100 mt-2" style={{ width: '100%' }}>
-                  <div className="flex gap-3 w-100">
-                    <button 
-                      type="button" 
-                      className="btn btn-secondary flex-1" 
-                      style={{ padding: '12px' }}
-                      onClick={() => {
-                        setBookingStep(1);
-                        setBookingForm({
-                          fullName: '',
-                          phone: '',
-                          email: '',
-                          service: 'FUE Hair Transplant',
-                          date: '',
-                          time: '',
-                          notes: '',
-                          hadPriorConsultation: 'no',
-                          bloodSugarCheck: 'no'
-                        });
-                        setBookingTicket(null);
-                      }}
-                    >
-                      Book Another Slot
-                    </button>
-                    <button 
-                      type="button" 
-                      className="btn btn-secondary flex-1"
-                      style={{ padding: '12px' }}
-                      onClick={() => window.print()}
-                    >
-                      Print Pass
-                    </button>
-                  </div>
-
-                  {/* 100% Free WhatsApp Alerting Button */}
-                  <button 
-                    type="button"
-                    className="btn btn-primary w-100 flex align-center justify-center gap-2 pulse-button"
-                    style={{
-                      background: '#25d366',
-                      color: '#ffffff',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      boxShadow: '0 8px 24px rgba(37, 211, 102, 0.3)',
-                      padding: '14px 20px',
-                      fontSize: '1rem',
-                      fontWeight: 800
-                    }}
-                    onClick={() => {
-                      const ownerPhone = '918899421483';
-                      const messageBody = `🌿 *HAIR HAVEN CLINIC - SECURE RESERVATION* 🌿
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-🏥 *NEW CLINICAL APPOINTMENT REGISTERED*
-
-👤 *PATIENT PROFILE*
-  • *Full Name:* ${bookingTicket.fullName}
-  • *Phone Number:* ${bookingTicket.phone}
-  • *Email Address:* ${bookingTicket.email || 'Not Provided'}
-  • *Prior Hair Transplant:* ${bookingTicket.hadPriorConsultation === 'yes' ? 'Yes (Requires Special Donor Analysis)' : 'No (First-time Restorative Treatment)'}
-
-💉 *TREATMENT DESIGN*
-  • *Selected Specialty:* ${bookingTicket.service}
-  • *Norwood Baldness Stage:* Stage ${selectedNorwood}
-  • *Estimated Graft Requirement:* ${norwoodStages[selectedNorwood - 1].grafts} Grafts
-  • *Donor Density Expectation:* ${norwoodStages[selectedNorwood - 1].density}
-
-📅 *SCHEDULING SUMMARY*
-  • *Preferred Date:* ${bookingTicket.date}
-  • *Preferred Time Slot:* ${bookingTicket.time}
-  • *Allocated Care Coordinator:* Rajesh (Patient Support Lead)
-
-📋 *CLINICAL CHECKLIST & RECOVERY*
-  • *Pre-Surgical Screening:* ${includeScreening ? 'Yes - Complete Diagnostic Package (₹999)' : 'No - Scalp-Only Evaluation'}
-  • *PRP Healing Sessions:* ${includePRPSessions > 0 ? `${includePRPSessions} Sessions Included (+₹${(includePRPSessions * 5000).toLocaleString('en-IN')})` : 'None Selected'}
-  • *On-site Blood Sugar Test:* ${bookingTicket.bloodSugarCheck === 'yes' ? 'Yes (Mandatory Safety Screening)' : 'No'}
-  • *Clinical Case Notes:* ${bookingTicket.notes || 'None provided by patient'}
-
-💳 *ESTIMATED FINANCIALS*
-  • *Base Treatment Cost:* ₹${norwoodStages[selectedNorwood - 1].basePrice.toLocaleString('en-IN')}
-  • *Total Estimate (incl. add-ons):* ₹${bookingTicket.priceEstimate.toLocaleString('en-IN')}
-  • *Payment Terms:* Pay at Clinic (Cash / UPI / Cards)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-✨ *System Alert: Please reach out to the patient within 2 hours to confirm their clinical slot.*`;
-                      const encodedText = encodeURIComponent(messageBody);
-                      const waUrl = `https://wa.me/${ownerPhone}?text=${encodedText}`;
-                      window.open(waUrl, '_blank');
-                    }}
-                  >
-                    <MessageSquare size={18} style={{ marginRight: '6px' }} />
-                    <span>Confirm & Alert Owner via WhatsApp</span>
-                  </button>
-                </div>
-              </div>
-            )}
-
-          </div>
-        </div>
-      )}
 
       {/* Simulated SMS Status Toast */}
       {showToast && toastMessage && (
