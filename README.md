@@ -1,73 +1,45 @@
-# React + TypeScript + Vite
+# 💇 Hair Haven — Premium Hair Restoration Clinic, Jammu
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Hair Haven** is a premium hair restoration clinic based in Jammu, offering world-class FUE Hair Transplant, PRP Therapy, and Dermatology services.
 
-Currently, two official plugins are available:
+## 🌐 Live Website
+[hair-haven-ecru.vercel.app](https://hair-haven-ecru.vercel.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🏥 About the Clinic
+- **Location:** Jammu, India
+- **Specialty:** FUE Hair Transplant | PRP Therapy | Scalp Dermatology
+- **Consultation:** Free | Book via WhatsApp
 
-## React Compiler
+## 👨‍⚕️ Our Clinical Team
+- **Dr. Suby Kakkar** — MBBS, E. Dermatology Germany | Ex Consultant Max Hospital Delhi
+- **Maxon Epston** — Hair Transplant & PRP Procedure Specialist
+- **Kashish Gupta** — Implanter, Precise Graft Implantation & Natural Hairline
+- **Ronika Bhardwaj** — Follow-Ups & Leads
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Features
+- Interactive Norwood Scale Analyzer with SVG stage visuals
+- AI-powered Graft Calculator
+- Instagram Gallery (Before & After)
+- WhatsApp Booking Integration
+- Google Maps Navigation to Clinic
+- Fully Responsive Mobile Design
+- Glassmorphism Premium UI
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
+- **React** + **TypeScript** + **Vite**
+- Vanilla CSS with Glassmorphism Design
+- Deployed on **Vercel**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🚀 Run Locally
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 📦 Build
+```bash
+npm run build
 ```
+
+---
+*© 2025 Hair Haven Jammu. All rights reserved.*
