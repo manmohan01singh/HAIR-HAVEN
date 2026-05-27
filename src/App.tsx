@@ -45,119 +45,15 @@ function HairHavenLogo({ className = "", size = 40 }: { className?: string; size
 
 // Interactive Scalp Vector SVG Visuals for Norwood Stages 1-7
 function NorwoodStageVisual({ stage }: { stage: number }) {
-  // Base head shape outlines
-  const renderBaseHead = () => (
-    <>
-      {/* Head Outer Oval */}
-      <ellipse cx="50" cy="50" rx="36" ry="38" fill="#f8fafc" stroke="var(--border-light)" strokeWidth="1.5" />
-      
-      {/* Ears */}
-      <path d="M12,46 C9,46 9,54 12,54" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M88,46 C91,46 91,54 88,54" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.2" strokeLinecap="round" />
-      
-      {/* Nose pointing UP (Front is at the top) */}
-      <path d="M47,12 L50,6 L53,12" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </>
+  return (
+    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: '12px' }}>
+      <img 
+        src={`/norwood${stage}.png`} 
+        alt={`Norwood Stage ${stage}`} 
+        style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} 
+      />
+    </div>
   );
-
-  switch (stage) {
-    case 1:
-      return (
-        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
-          {renderBaseHead()}
-          {/* Full Hair Cover */}
-          <path d="M15,50 C15,26 28,26 50,26 C72,26 85,26 85,50 C85,76 72,86 50,86 C28,86 15,76 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
-          {/* Foreline curve */}
-          <path d="M15,50 C25,32 75,32 85,50" fill="none" stroke="#ffffff" strokeWidth="2" />
-          {/* Optimal badge indicator */}
-          <circle cx="50" cy="56" r="6" fill="rgba(34, 197, 94, 0.15)" stroke="var(--green-mid)" strokeWidth="1" />
-          <path d="M48,56 L49.5,57.5 L52,54.5" fill="none" stroke="var(--green-deep)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      );
-    case 2:
-      return (
-        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
-          {renderBaseHead()}
-          {/* Sides and Back hair */}
-          <path d="M15,50 C15,76 28,86 50,86 C72,86 85,76 85,50 C85,35 78,35 78,50 C78,60 22,60 22,50 C22,35 15,35 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
-          {/* Hair on top with minor recession */}
-          <path d="M22,50 C22,36 30,34 34,34 C38,34 42,32 50,32 C58,32 62,34 66,34 C70,34 78,36 78,50 Z" fill="var(--green-deep)" opacity="0.9" />
-          {/* Dotted templates */}
-          <circle cx="26" cy="32" r="3" fill="rgba(34, 197, 94, 0.25)" stroke="var(--green-mid)" strokeWidth="1" strokeDasharray="1,1" />
-          <circle cx="74" cy="32" r="3" fill="rgba(34, 197, 94, 0.25)" stroke="var(--green-mid)" strokeWidth="1" strokeDasharray="1,1" />
-        </svg>
-      );
-    case 3:
-      return (
-        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
-          {renderBaseHead()}
-          {/* Stable donor area (sides and back) */}
-          <path d="M15,50 C15,76 28,86 50,86 C72,86 85,76 85,50 C85,58 74,68 50,68 C26,68 15,58 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
-          {/* Top hair with M-shaped deep recession */}
-          <path d="M22,50 C22,42 34,44 38,44 C42,44 44,32 50,32 C56,32 58,44 62,44 C66,44 78,42 78,50 Z" fill="var(--green-deep)" opacity="0.9" />
-          {/* Grafts zone highlight (M-temples) */}
-          <path d="M18,34 C26,38 34,42 34,46" fill="none" stroke="var(--green-mid)" strokeWidth="2.5" strokeDasharray="2,2" />
-          <path d="M82,34 C74,38 66,42 66,46" fill="none" stroke="var(--green-mid)" strokeWidth="2.5" strokeDasharray="2,2" />
-          {/* Target highlight */}
-          <path d="M22,38 C28,42 34,44 38,44" fill="none" stroke="rgba(34, 197, 94, 0.4)" strokeWidth="4" />
-          <path d="M78,38 C72,42 66,44 62,44" fill="none" stroke="rgba(34, 197, 94, 0.4)" strokeWidth="4" />
-        </svg>
-      );
-    case 4:
-      return (
-        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
-          {renderBaseHead()}
-          {/* Donor area */}
-          <path d="M15,50 C15,76 28,86 50,86 C72,86 85,76 85,50 C85,58 74,68 50,68 C26,68 15,58 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
-          {/* Front lock of hair (receding) */}
-          <path d="M30,50 C30,44 38,44 42,44 C44,44 46,34 50,34 C54,34 56,44 58,44 C62,44 70,44 70,50 Z" fill="var(--green-deep)" opacity="0.9" />
-          {/* Crown bald spot */}
-          <circle cx="50" cy="66" r="7" fill="#ffffff" stroke="var(--green-mid)" strokeWidth="2" strokeDasharray="2,2" />
-          <circle cx="50" cy="66" r="3.5" fill="rgba(34, 197, 94, 0.2)" />
-          {/* Dotted templates */}
-          <path d="M22,38 C32,44 40,44 44,44" fill="none" stroke="var(--green-mid)" strokeWidth="2" strokeDasharray="2,2" />
-          <path d="M78,38 C68,44 60,44 56,44" fill="none" stroke="var(--green-mid)" strokeWidth="2.5" strokeDasharray="2,2" />
-        </svg>
-      );
-    case 5:
-      return (
-        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
-          {renderBaseHead()}
-          {/* Donor hair around sides and back */}
-          <path d="M15,50 C15,76 28,86 50,86 C72,86 85,76 85,50 C85,62 76,70 50,70 C24,70 15,62 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
-          {/* Very thin bridge separating front and back */}
-          <line x1="32" y1="53" x2="68" y2="53" stroke="var(--green-deep)" strokeWidth="2.5" strokeDasharray="2,1" opacity="0.85" />
-          {/* Frontal island */}
-          <path d="M38,48 C38,44 42,40 50,40 C58,40 62,44 62,48 Z" fill="var(--green-deep)" opacity="0.9" />
-          {/* Graft targets front & crown */}
-          <circle cx="50" cy="66" r="9" fill="rgba(34, 197, 94, 0.12)" stroke="var(--green-mid)" strokeWidth="2" strokeDasharray="2,2" />
-          <path d="M26,40 C34,44 42,44 50,44 C58,44 66,44 74,40" fill="none" stroke="var(--green-mid)" strokeWidth="2.5" strokeDasharray="2,2" />
-        </svg>
-      );
-    case 6:
-      return (
-        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
-          {renderBaseHead()}
-          {/* Only sides and back horseshoe remain (merged balding) */}
-          <path d="M15,50 C15,76 28,86 50,86 C72,86 85,76 85,50 C85,64 78,74 50,74 C22,74 15,64 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
-          {/* Massive balding zone outlined with graft target grid */}
-          <ellipse cx="50" cy="50" rx="20" ry="18" fill="rgba(34, 197, 94, 0.08)" stroke="var(--green-mid)" strokeWidth="2.5" strokeDasharray="3,3" />
-        </svg>
-      );
-    case 7:
-      return (
-        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
-          {renderBaseHead()}
-          {/* Narrow band of sides/back hair (severe horseshoe) */}
-          <path d="M15,52 C15,76 28,86 50,86 C72,86 85,76 85,52 C85,68 76,78 50,78 C24,78 15,68 15,52 Z" fill="var(--green-deep)" opacity="0.95" />
-          {/* Extreme balding cover highlight */}
-          <ellipse cx="50" cy="45" rx="26" ry="24" fill="rgba(239, 68, 68, 0.04)" stroke="rgba(239, 68, 68, 0.25)" strokeWidth="1.5" strokeDasharray="2,2" />
-          <ellipse cx="50" cy="45" rx="18" ry="16" fill="rgba(34, 197, 94, 0.08)" stroke="var(--green-mid)" strokeWidth="2" strokeDasharray="3,3" />
-        </svg>
-      );
-    default:
-      return null;
-  }
 }
 
 // Types & Interfaces
@@ -201,8 +97,8 @@ const norwoodStages: NorwoodStage[] = [
     name: "Minor Receding Temples (Stage 2)",
     description: "Slight recession at the temples. Perfect stage for preventive care or growth PRP sessions to stop further thinning.",
     grafts: "500 - 1,000",
-    priceRange: "₹15,000 - ₹20,000",
-    basePrice: 15000,
+    priceRange: "₹21,000 - ₹25,000",
+    basePrice: 21000,
     density: "High",
     duration: "2 - 3 Hours",
     recovery: "3 - 5 Days"
@@ -268,61 +164,43 @@ const services = {
   surgical: [
     {
       title: "FUE Hair Transplant",
-      desc: "Follicular Unit Extraction involving extracting individual hair follicles from a donor zone and transplanting them into balding areas under local anesthesia.",
-      price: "From ₹30,000",
-      features: ["No Linear Scarring", "Local Anesthesia", "Natural Hairline Design", "High Graft Survival Rate"]
+      desc: "In this modern technique, healthy hair grafts are carefully taken from the donor area and implanted into bald areas. It is minimally invasive, leaves no major scars, provides natural-looking density, and has a faster recovery time.",
+      price: "From ₹21,000",
+      features: ["Minimally Invasive", "No Major Scars", "Natural Density", "Fast Recovery Time"]
     },
     {
-      title: "PRP Therapy (Platelet-Rich Plasma)",
-      desc: "A non-surgical therapeutic option where a patient's own blood is drawn, spun down to isolate growth-factor-rich platelets, and micro-injected into the scalp to stimulate thinning hair follicles.",
-      price: "₹5,000 / session",
-      features: ["Non-Surgical", "Autologous Growth Factors", "Minimal Downtime", "Strengthens Thinning Follicles"]
-    },
-    {
-      title: "General Hair Loss Consultations",
-      desc: "Complete hair and scalp evaluations to chart out pattern baldness stages and configure customized treatment maps.",
-      price: "Free Promotional Offer",
-      features: ["Scalp Analysis", "Graft Requirement Mapping", "Medical History Review", "Alopecia Stage Diagnostics"]
+      title: "BioSapphire Technique",
+      desc: "An advanced sapphire blade technology used during the transplant procedure for creating precise and tiny channels. This helps in better graft placement, improved hair density, less damage to the scalp, quicker healing, and more natural results.",
+      price: "From ₹31,000",
+      features: ["Advanced Sapphire Blades", "Precise Tiny Channels", "Improved Hair Density", "Less Scalp Damage"]
     }
   ],
   lasers: [
     {
-      title: "Laser Scar Removal",
-      desc: "Corrective laser resurfacing to minimize or eliminate deep scars, returning standard dermal texture.",
-      price: "Custom Pricing",
-      features: ["Precision Laser Tech", "Stimulates Collagen", "Safe & Effective", "Multiple Sessions Available"]
+      title: "PRP Therapy (Platelet Rich Plasma)",
+      desc: "A non-surgical hair treatment in which the patient’s own plasma is injected into the scalp to strengthen hair roots, reduce hair fall, improve blood circulation, and stimulate natural hair growth.",
+      price: "₹2,000 / session",
+      features: ["Non-Surgical Option", "Strengthens Hair Roots", "Reduces Hair Fall", "Stimulates Hair Growth"]
     },
     {
-      title: "Laser Mole Removal",
-      desc: "Precision aesthetic removal of unwanted dermal moles with advanced cautery and high-frequency lasers.",
-      price: "Custom Pricing",
-      features: ["Scarless Extraction", "Quick Procedure", "Sterile Equipment", "Minimal Recovery"]
-    },
-    {
-      title: "General Cosmetic Surgery",
-      desc: "Minor skin-surface corrections, contouring, and aesthetic micro-procedures.",
-      price: "Custom Pricing",
-      features: ["Aesthetic Enhancements", "Minimally Invasive", "Daycare Procedures", "Local Anesthesia"]
+      title: "GFC Therapy (Growth Factor Concentrate)",
+      desc: "An advanced regenerative treatment that uses concentrated growth factors from the patient’s blood to nourish hair follicles, improve hair thickness, control hair fall, and promote healthier hair growth.",
+      price: "₹4,500 / session",
+      features: ["Advanced Regenerative", "Nourishes Follicles", "Improves Thickness", "Promotes Healthier Growth"]
     }
   ],
   dermatology: [
     {
-      title: "Skin Rejuvenation & Facials",
-      desc: "Medical-grade therapies targeted at reversing skin dullness, pigment correction, and deep pore cleansing.",
-      price: "From ₹2,500",
-      features: ["Volumetric Glow", "Deep Cleansing", "Anti-Aging Effect", "Dermatologist Supervised"]
+      title: "Beard Transplant",
+      desc: "A specialized procedure for men who want a fuller and well-shaped beard. Hair grafts are implanted carefully to give a dense, natural, and permanent beard look.",
+      price: "Custom Pricing",
+      features: ["Fuller Beard Look", "Careful Implanting", "Dense & Natural", "Permanent Growth"]
     },
     {
-      title: "Skin Allergy Treatments",
-      desc: "Diagnostic tracking and alleviation of chronic contact or systemic skin allergies.",
-      price: "From ₹1,200",
-      features: ["Allergen Identification", "Symptom Alleviation", "Targeted Prescription", "Preventative Counsel"]
-    },
-    {
-      title: "Pre-Surgical Screening",
-      desc: "Basic on-site diagnostic metrics such as Blood Sugar Tests to evaluate a patient's immediate safety profile before surgical extractions.",
-      price: "Included in Package",
-      features: ["Blood Sugar Level Test", "Vital Monitoring", "Medical Safety Approval", "Co-morbidity Assessment"]
+      title: "Eyebrow Transplant",
+      desc: "A cosmetic procedure designed to restore thin or uneven eyebrows by implanting natural hair grafts for a fuller, properly shaped, and natural appearance.",
+      price: "Custom Pricing",
+      features: ["Restores Thin Brows", "Properly Shaped", "Fuller & Natural", "Directional Placement"]
     }
   ]
 };
@@ -432,6 +310,7 @@ export default function App() {
   const [selectedNorwood, setSelectedNorwood] = useState(3);
   const [includePRPSessions, setIncludePRPSessions] = useState(0); // 0, 1, 3, 5
   const [includeScreening, setIncludeScreening] = useState(true);
+  const [useBioSapphire, setUseBioSapphire] = useState(false);
 
   // Reviews States
   const [selectedReviewTag, setSelectedReviewTag] = useState('All');
@@ -446,6 +325,27 @@ export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return document.body.classList.contains('dark-mode');
   });
+
+  // Swiper States
+  const [currentSwiperIndex, setCurrentSwiperIndex] = useState(0);
+
+  const swiperImages = useMemo(() => [
+    '/image.png',
+    '/image copy.png',
+    '/image copy 2.png',
+    '/image copy 3.png',
+    '/image copy 4.png',
+    '/image copy 5.png',
+    '/image copy 6.png',
+    '/image copy 7.png'
+  ], []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSwiperIndex((prev) => (prev + 1) % swiperImages.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [swiperImages.length]);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -504,15 +404,12 @@ export default function App() {
   }, [displayText, isDeleting, phraseIdx, typingSpeed, phrases]);
 
   // Booking Form States
-
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [bookingStep, setBookingStep] = useState(1);
 
   const handleBookScroll = (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
-    const el = document.getElementById('booking');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    setIsBookingModalOpen(true);
   };
 
   const handleBookService = (serviceValue: string) => {
@@ -521,10 +418,7 @@ export default function App() {
       setBookingStep(1);
       setBookingTicket(null);
     }
-    const el = document.getElementById('booking');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    setIsBookingModalOpen(true);
   };
   const [bookingForm, setBookingForm] = useState({
     fullName: '',
@@ -665,20 +559,30 @@ export default function App() {
     // Find matching base service price
     let base = 0;
     if (bookingForm.service === 'FUE Hair Transplant') {
-      base = norwoodStages[selectedNorwood - 1].basePrice || 30000;
+      base = norwoodStages[selectedNorwood - 1].basePrice || 21000;
+    } else if (bookingForm.service === 'BioSapphire Technique') {
+      base = 31000;
     } else if (bookingForm.service.includes('PRP')) {
-      base = 5000;
-    } else if (bookingForm.service.includes('Skin Rejuvenation')) {
-      base = 2500;
-    } else if (bookingForm.service.includes('Allergy')) {
-      base = 1200;
+      base = 2000;
+    } else if (bookingForm.service.includes('GFC')) {
+      base = 4500;
+    } else if (bookingForm.service.includes('Beard') || bookingForm.service.includes('Eyebrow')) {
+      base = 25000;
     }
     
     let extra = 0;
-    if (bookingForm.service === 'FUE Hair Transplant') {
-      extra += includePRPSessions * 5000;
+    if (bookingForm.service === 'FUE Hair Transplant' || bookingForm.service === 'BioSapphire Technique') {
+      extra += includePRPSessions * 2000;
       if (includeScreening) extra += 999;
     }
+    return base + extra;
+  };
+
+  const calculateCalculatorPrice = () => {
+    let base = norwoodStages[selectedNorwood - 1].basePrice;
+    let extra = includePRPSessions * 2000;
+    if (includeScreening) extra += 999;
+    if (useBioSapphire) extra += 10000;
     return base + extra;
   };
 
@@ -994,7 +898,7 @@ export default function App() {
                 }}>
                   <Award size={20} />
                 </div>
-                <h3 className="text-xl">Hair Restoration</h3>
+                <h3 className="text-xl">Hair Transplants</h3>
               </div>
 
               {services.surgical.map((srv, idx) => (
@@ -1022,10 +926,10 @@ export default function App() {
                     </div>
                     
                     <button 
-                      onClick={() => handleBookService(srv.title === 'PRP Therapy (Platelet-Rich Plasma)' ? 'PRP Therapy (Platelet-Rich Plasma)' : srv.title)}
-                      className={`btn w-100 ${srv.title === 'FUE Hair Transplant' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                      onClick={() => handleBookService(srv.title)}
+                      className={`btn w-100 ${srv.title.includes('Transplant') ? 'btn-primary' : 'btn-secondary'} btn-sm`}
                     >
-                      {srv.title === 'FUE Hair Transplant' ? 'Reserve Transplant Slot' : srv.title.includes('PRP') ? 'Book PRP Session' : 'Book Free Evaluation'}
+                      {srv.title.includes('Transplant') ? 'Reserve Transplant Slot' : 'Book Session'}
                     </button>
                   </div>
                 </div>
@@ -1047,7 +951,7 @@ export default function App() {
                 }}>
                   <Sparkles size={20} />
                 </div>
-                <h3 className="text-xl">Aesthetic Lasers</h3>
+                <h3 className="text-xl">Non-Surgical Therapies</h3>
               </div>
 
               {services.lasers.map((srv, idx) => (
@@ -1078,7 +982,7 @@ export default function App() {
                       onClick={() => handleBookService(srv.title)}
                       className="btn btn-secondary btn-sm w-100"
                     >
-                      Book Laser Service
+                      Book Growth Session
                     </button>
                   </div>
                 </div>
@@ -1100,7 +1004,7 @@ export default function App() {
                 }}>
                   <Heart size={20} />
                 </div>
-                <h3 className="text-xl">Dermatology</h3>
+                <h3 className="text-xl">Specialized Transplants</h3>
               </div>
 
               {services.dermatology.map((srv, idx) => (
@@ -1310,8 +1214,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* Consultation Booking Section (Inline Multi-Step Wizard) */}
-      <section id="booking" className="py-24" style={{ position: 'relative', overflow: 'hidden' }}>
+      {/* Consultation Booking Section (Inline CTA Banner that launches the Modal) */}
+      <section id="booking" className="py-20" style={{ position: 'relative', overflow: 'hidden' }}>
         {/* Ambient background glow inside section */}
         <div style={{
           position: 'absolute',
@@ -1320,28 +1224,117 @@ export default function App() {
           transform: 'translate(-50%, -50%)',
           width: '300px',
           height: '300px',
-          background: 'rgba(11, 167, 89, 0.06)',
+          background: 'rgba(11, 167, 89, 0.05)',
           borderRadius: '50%',
           filter: 'blur(80px)',
           pointerEvents: 'none'
         }}></div>
 
         <div className="container flex justify-center" style={{ position: 'relative', zIndex: 2 }}>
-          <div className="glass-card p-8 flex flex-col gap-6 w-100" 
+          <div className="glass-card p-12 flex flex-col align-center gap-6 text-center" 
                style={{ 
                  width: '100%', 
                  maxWidth: '850px', 
                  border: '1.5px solid rgba(11, 167, 89, 0.22)', 
-                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 252, 249, 0.95) 100%)',
+                 background: 'var(--surface-glass)',
                  boxShadow: 'var(--shadow-xl), 0 20px 50px rgba(11, 167, 89, 0.06)'
                }}>
-            
+            <div className="badge badge-gradient mb-2" style={{ background: 'rgba(11, 167, 89, 0.07)', borderColor: 'rgba(11, 167, 89, 0.25)', color: 'var(--green-deep)', fontWeight: 800 }}>
+              ✨ Private Diagnostics & Restorative Care
+            </div>
+            <h2 className="text-4xl font-decorative mb-1" style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.02em', fontWeight: 800 }}>
+              Schedule a Clinical Consultation
+            </h2>
+            <p className="text-lg text-secondary-color" style={{ maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
+              Book an exclusive scalp analysis and FUE/PRP treatment roadmap with our leading dermatologists. 
+              No queue waiting at Channi Himmat, Jammu.
+            </p>
+            <button 
+              type="button" 
+              className="btn btn-primary pulse-button mt-4"
+              style={{ padding: '16px 40px', fontSize: '1.05rem', fontWeight: 800 }}
+              onClick={() => setIsBookingModalOpen(true)}
+            >
+              Book Free Consultation Now <ArrowRight size={18} style={{ marginLeft: '8px' }} />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Premium Booking Modal Overlay */}
+      {isBookingModalOpen && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          animation: 'fadeIn 0.25s ease-out'
+        }}>
+          {/* Blur Backdrop */}
+          <div 
+            onClick={() => setIsBookingModalOpen(false)}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.7)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)'
+            }}
+          />
+
+          {/* Modal Container */}
+          <div 
+            className="glass-card"
+            style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: '750px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              border: '1.5px solid var(--border-green)',
+              background: 'var(--surface-frost)',
+              boxShadow: 'var(--shadow-xl), 0 20px 50px rgba(11, 167, 89, 0.15)',
+              padding: '40px',
+              animation: 'scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+              zIndex: 1001,
+              borderRadius: '28px',
+              textAlign: 'left'
+            }}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setIsBookingModalOpen(false)}
+              style={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                background: 'rgba(0,0,0,0.05)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '36px',
+                height: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: 'var(--text-primary)',
+                transition: 'all 0.2s ease',
+                zIndex: 10
+              }}
+              title="Close Modal"
+            >
+              <X size={20} />
+            </button>
+
             {/* Header */}
-            <div className="text-center mb-4">
+            <div className="text-center mb-6">
               <div className="badge badge-gradient mb-3" style={{ background: 'rgba(11, 167, 89, 0.07)', borderColor: 'rgba(11, 167, 89, 0.25)', color: 'var(--green-deep)', fontWeight: 800 }}>
                 ✨ Clinical Private Diagnostics & Restoration
               </div>
-              <h2 className="text-3xl font-decorative mb-1" style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.02em', fontWeight: 800 }}>
+              <h2 className="text-3xl font-decorative mb-1" style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.02em', fontWeight: 800, color: 'var(--text-primary)' }}>
                 Secure Clinical Appointment
               </h2>
               <p className="text-sm text-secondary-color" style={{ maxWidth: '500px', margin: '0 auto', lineHeight: '1.5' }}>
@@ -1485,8 +1478,8 @@ export default function App() {
                           borderRadius: '12px',
                           border: '2px solid',
                           borderColor: bookingForm.hadPriorConsultation === val ? 'var(--green-primary)' : 'var(--border-light)',
-                          background: bookingForm.hadPriorConsultation === val ? 'rgba(11, 167, 89, 0.05)' : '#ffffff',
-                          color: bookingForm.hadPriorConsultation === val ? 'var(--green-deep)' : 'var(--text-secondary)',
+                          background: bookingForm.hadPriorConsultation === val ? 'rgba(11, 167, 89, 0.08)' : 'var(--surface-card)',
+                          color: bookingForm.hadPriorConsultation === val ? 'var(--green-primary)' : 'var(--text-secondary)',
                           fontWeight: 700,
                           fontSize: '0.88rem',
                           cursor: 'pointer',
@@ -1509,7 +1502,7 @@ export default function App() {
                       cursor: 'pointer', 
                       fontSize: '0.88rem', 
                       color: 'var(--text-secondary)',
-                      background: 'rgba(255, 255, 255, 0.5)',
+                      background: 'var(--surface-glass)',
                       padding: '14px 18px',
                       borderRadius: '16px',
                       border: '1.5px solid var(--border-light)'
@@ -1607,12 +1600,13 @@ export default function App() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: '4px'
+                  marginBottom: '4px',
+                  alignSelf: 'center'
                 }}>
                   <CheckCircle2 size={32} />
                 </div>
 
-                <h3 className="text-2xl text-center font-decorative" style={{ color: 'var(--green-deep)', fontFamily: 'var(--font-display)', fontWeight: 800, marginTop: '-10px' }}>
+                <h3 className="text-2xl text-center font-decorative" style={{ color: 'var(--green-primary)', fontFamily: 'var(--font-display)', fontWeight: 800, marginTop: '-10px' }}>
                   Diagnostics Scheduled!
                 </h3>
                 <p className="text-secondary-color text-center" style={{ fontSize: '0.85rem', marginTop: '-12px', lineHeight: '1.5' }}>
@@ -1665,11 +1659,11 @@ export default function App() {
                   }}>
                     <div>
                       <div style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Estimated Pricing</div>
-                      <div style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--green-deep)', marginTop: '2px' }}>
+                      <div style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--green-primary)', marginTop: '2px' }}>
                         ₹{bookingTicket.priceEstimate.toLocaleString('en-IN')}
                       </div>
                     </div>
-                    <span className="badge badge-gradient" style={{ fontSize: '0.7rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-deep)', background: 'rgba(11, 167, 89, 0.04)', fontWeight: 700 }}>
+                    <span className="badge badge-gradient" style={{ fontSize: '0.7rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-primary)', background: 'rgba(11, 167, 89, 0.04)', fontWeight: 700 }}>
                       Pay at Clinic
                     </span>
                   </div>
@@ -1746,7 +1740,7 @@ export default function App() {
 
 📋 *CLINICAL CHECKLIST & RECOVERY*
   • *Pre-Surgical Screening:* ${includeScreening ? 'Yes - Complete Diagnostic Package (₹999)' : 'No - Scalp-Only Evaluation'}
-  • *PRP Healing Sessions:* ${includePRPSessions > 0 ? `${includePRPSessions} Sessions Included (+₹${(includePRPSessions * 5000).toLocaleString('en-IN')})` : 'None Selected'}
+  • *PRP Healing Sessions:* ${includePRPSessions > 0 ? `${includePRPSessions} Sessions Included (+₹${(includePRPSessions * 2000).toLocaleString('en-IN')})` : 'None Selected'}
   • *On-site Blood Sugar Test:* ${bookingTicket.bloodSugarCheck === 'yes' ? 'Yes (Mandatory Safety Screening)' : 'No'}
   • *Clinical Case Notes:* ${bookingTicket.notes || 'None provided by patient'}
 
@@ -1771,10 +1765,10 @@ export default function App() {
 
           </div>
         </div>
-      </section>
+      )}
 
       {/* Norwood scale Interactive Graft & Cost Calculator */}
-      <section id="calculator" className="py-24 bg-secondary-color" style={{ background: 'rgba(248, 250, 252, 0.4)', borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)' }}>
+      <section id="calculator" className="py-24" style={{ background: 'transparent', borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)' }}>
         <div className="container">
           <div className="text-center mb-16">
             <div className="badge badge-gradient mb-3">Surgical Planning Tool</div>
@@ -1921,7 +1915,7 @@ export default function App() {
                 }}>
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600 }}>Estimated Cost</span>
                   <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', margin: '8px 0' }}>
-                    {currentNorwoodInfo.stage === 1 ? '₹0' : `₹${calculateBookingPrice().toLocaleString('en-IN')}`}
+                    {currentNorwoodInfo.stage === 1 ? '₹0' : `₹${calculateCalculatorPrice().toLocaleString('en-IN')}`}
                   </div>
                   <span className="badge badge-gradient" style={{ fontSize: '0.75rem' }}>
                     {currentNorwoodInfo.stage === 1 ? 'No Treatment Needed' : 'Estimated Base Price'}
@@ -1946,7 +1940,7 @@ export default function App() {
                               borderRadius: '10px',
                               border: '1px solid',
                               borderColor: includePRPSessions === sessionCount ? 'var(--gemini-purple)' : 'var(--border-light)',
-                              background: includePRPSessions === sessionCount ? 'rgba(155, 81, 224, 0.05)' : '#ffffff',
+                              background: includePRPSessions === sessionCount ? 'rgba(155, 81, 224, 0.05)' : 'var(--surface-card)',
                               color: includePRPSessions === sessionCount ? 'var(--gemini-purple)' : 'var(--text-secondary)',
                               fontWeight: 600,
                               fontSize: '0.8rem',
@@ -1957,8 +1951,22 @@ export default function App() {
                           </button>
                         ))}
                       </div>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>PRP accelerates healing and strengthens donor follicle retention (+₹5,000/session)</span>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>PRP accelerates healing and strengthens donor follicle retention (+₹2,000/session)</span>
                     </div>
+
+                    {/* BioSapphire Technique Upgrade */}
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-secondary)' }} className="mt-2">
+                      <input 
+                        type="checkbox" 
+                        checked={useBioSapphire}
+                        onChange={(e) => setUseBioSapphire(e.target.checked)}
+                        style={{ accentColor: 'var(--green-primary)', width: '16px', height: '16px' }}
+                      />
+                      <span>Upgrade to BioSapphire Technique (+₹10,000)</span>
+                    </label>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', marginLeft: '26px', marginTop: '-8px' }}>
+                      Advanced sapphire blade technology for precise incisions, better density, faster healing, and more natural results.
+                    </span>
 
                     {/* Pre-surgical screening checklist */}
                     <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-secondary)' }} className="mt-2">
@@ -1966,7 +1974,7 @@ export default function App() {
                         type="checkbox" 
                         checked={includeScreening}
                         onChange={(e) => setIncludeScreening(e.target.checked)}
-                        style={{ accentColor: 'var(--gemini-purple)', width: '16px', height: '16px' }}
+                        style={{ accentColor: 'var(--green-primary)', width: '16px', height: '16px' }}
                       />
                       <span>Include Pre-Surgical Screening Package (₹999)</span>
                     </label>
@@ -2187,7 +2195,7 @@ export default function App() {
       </section>
 
       {/* Patient Reviews & Ratings Explorer */}
-      <section id="reviews" className="py-24 bg-secondary-color" style={{ background: 'rgba(248, 250, 252, 0.3)', borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)' }}>
+      <section id="reviews" className="py-24" style={{ background: 'transparent', borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)' }}>
         <div className="container">
           
           <div className="grid grid-cols-12 gap-8 flex-col-mobile mb-12 align-center">
@@ -2201,8 +2209,10 @@ export default function App() {
               </p>
             </div>
 
-            {/* Google Ratings Summary Card — 4.9 header on top, stats below */}
-            <div className="col-span-7 flex justify-center">
+            {/* Right Column: Google Ratings Card & Auto-Swiping Photo Card */}
+            <div className="col-span-7 flex flex-col items-center gap-6" style={{ width: '100%' }}>
+              
+              {/* Google Ratings Summary Card — 4.9 header on top, stats below */}
               <div className="glass-card" style={{ width: '100%', maxWidth: '480px', padding: '28px 32px' }}>
                 {/* Top: Google branding + 4.9 rating */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
@@ -2265,12 +2275,91 @@ export default function App() {
                   ))}
                 </div>
               </div>
+
+              {/* Premium Auto-Swiping Photocard Gallery */}
+              <div 
+                className="glass-card" 
+                style={{ 
+                  width: '100%', 
+                  maxWidth: '480px', 
+                  padding: '20px', 
+                  overflow: 'hidden',
+                  position: 'relative',
+                  border: '1.5px solid var(--border-green)',
+                  background: 'var(--surface-glass)'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                  <div className="badge badge-gradient" style={{ fontSize: '0.7rem', padding: '4px 10px' }}>
+                    📸 Clinical Transformations
+                  </div>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 700 }}>Auto-Swiping Results</span>
+                </div>
+                
+                {/* Images Container */}
+                <div style={{ position: 'relative', width: '100%', aspectRatio: '4/3', borderRadius: '16px', overflow: 'hidden', background: '#000' }}>
+                  {swiperImages.map((src, idx) => (
+                    <img
+                      key={src}
+                      src={src}
+                      alt={`Patient Transformation ${idx + 1}`}
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        opacity: currentSwiperIndex === idx ? 1 : 0,
+                        transform: currentSwiperIndex === idx ? 'scale(1)' : 'scale(1.05)',
+                        transition: 'opacity 0.8s ease, transform 0.8s ease'
+                      }}
+                    />
+                  ))}
+                  
+                  {/* Subtle Gradient Overlay */}
+                  <div style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)',
+                    pointerEvents: 'none'
+                  }} />
+
+                  {/* Caption on Card */}
+                  <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px', color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 800 }}>Before & After Case {currentSwiperIndex + 1}</div>
+                    <div style={{ fontSize: '0.72rem', opacity: 0.88, marginTop: '2px' }}>FUE Transplant / PRP Restoration Result</div>
+                  </div>
+                </div>
+
+                {/* Slider dots indicator */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginTop: '14px' }}>
+                  {swiperImages.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentSwiperIndex(idx)}
+                      style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        background: currentSwiperIndex === idx ? 'var(--green-primary)' : 'var(--text-tertiary)',
+                        opacity: currentSwiperIndex === idx ? 1 : 0.4,
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: 0,
+                        transition: 'all 0.3s ease'
+                      }}
+                      title={`Go to slide ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+
             </div>
           </div>
 
           {/* Interactive Search & Sort Bar */}
           <div style={{
-            background: 'rgba(255, 255, 255, 0.45)',
+            background: 'var(--surface-glass)',
             border: '1.5px solid var(--border-light)',
             borderRadius: '20px',
             padding: '16px 24px',

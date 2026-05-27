@@ -1272,7 +1272,7 @@ h1, h2, h3, h4, h5, h6 {
 .map-section {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #ffffff 0%, #fcfdfe 100%);
+  background: transparent;
   border-top: 1px solid var(--border-light);
 }
 
@@ -1438,7 +1438,65 @@ body.dark-mode .ticket-premium::after {
 }
 
 body.dark-mode .map-section {
-  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background: transparent;
+}
+
+/* Additional Dark Mode Adaptability */
+body.dark-mode .glass-card {
+  background: rgba(13, 18, 15, 0.70);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-md), 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .form-input-premium {
+  background: rgba(18, 24, 21, 0.65);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+body.dark-mode .time-slot-card-premium {
+  background: rgba(18, 24, 21, 0.65);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+body.dark-mode .time-slot-card-premium:hover {
+  background: var(--surface-card);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+body.dark-mode .time-slot-card-premium.active {
+  background: rgba(11, 167, 89, 0.08);
+  border-color: var(--green-primary);
+}
+
+body.dark-mode .ticket-premium {
+  background: linear-gradient(135deg, rgba(13, 18, 15, 0.98), rgba(18, 24, 21, 0.98));
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+body.dark-mode .filter-pill {
+  background: rgba(18, 24, 21, 0.60);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+body.dark-mode .filter-pill:hover {
+  background: var(--surface-card);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+}
+body.dark-mode .filter-pill.active {
+  background: var(--green-primary);
+  color: #ffffff;
+  border-color: var(--green-primary);
+  box-shadow: 0 4px 16px rgba(11, 167, 89, 0.35);
+}
+
+/* Modal Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 /* Blinking cursor for typewriter tagline */
