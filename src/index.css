@@ -505,27 +505,30 @@ body.dark-mode .orb {
   .mobile-only-block { display: flex !important; }
 }
 
-/* Mobile drawer */
+/* Mobile drawer (Popup Card) */
 .mobile-nav-drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 16px;
+  right: 16px;
   background: #ffffff;
-  border: none;
-  box-shadow: none;
-  padding: 100px 28px 40px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl), 0 24px 48px -12px rgba(0, 0, 0, 0.15);
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   animation: slide-down 0.3s var(--ease-spring) both;
   z-index: 999;
+  max-height: calc(100vh - 120px);
   overflow-y: auto;
 }
 
 body.dark-mode .mobile-nav-drawer {
-  background: #070a08;
+  background: #121815;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
 }
 
 @keyframes slide-down {
