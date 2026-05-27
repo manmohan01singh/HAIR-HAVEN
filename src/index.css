@@ -262,6 +262,8 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--shadow-md), 0 0 0 0.5px rgba(0,0,0,0.03);
   border-radius: var(--radius-lg);
   transition: transform 0.5s var(--ease-spring), box-shadow 0.5s var(--ease-spring), border-color 0.4s ease, background 0.4s ease;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .glass-card:hover {

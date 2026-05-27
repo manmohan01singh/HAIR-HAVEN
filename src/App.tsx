@@ -42,6 +42,123 @@ function HairHavenLogo({ className = "", size = 40 }: { className?: string; size
   );
 }
 
+// Interactive Scalp Vector SVG Visuals for Norwood Stages 1-7
+function NorwoodStageVisual({ stage }: { stage: number }) {
+  // Base head shape outlines
+  const renderBaseHead = () => (
+    <>
+      {/* Head Outer Oval */}
+      <ellipse cx="50" cy="50" rx="36" ry="38" fill="#f8fafc" stroke="var(--border-light)" strokeWidth="1.5" />
+      
+      {/* Ears */}
+      <path d="M12,46 C9,46 9,54 12,54" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M88,46 C91,46 91,54 88,54" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.2" strokeLinecap="round" />
+      
+      {/* Nose pointing UP (Front is at the top) */}
+      <path d="M47,12 L50,6 L53,12" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </>
+  );
+
+  switch (stage) {
+    case 1:
+      return (
+        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
+          {renderBaseHead()}
+          {/* Full Hair Cover */}
+          <path d="M15,50 C15,26 28,26 50,26 C72,26 85,26 85,50 C85,76 72,86 50,86 C28,86 15,76 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
+          {/* Foreline curve */}
+          <path d="M15,50 C25,32 75,32 85,50" fill="none" stroke="#ffffff" strokeWidth="2" />
+          {/* Optimal badge indicator */}
+          <circle cx="50" cy="56" r="6" fill="rgba(34, 197, 94, 0.15)" stroke="var(--green-mid)" strokeWidth="1" />
+          <path d="M48,56 L49.5,57.5 L52,54.5" fill="none" stroke="var(--green-deep)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    case 2:
+      return (
+        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
+          {renderBaseHead()}
+          {/* Sides and Back hair */}
+          <path d="M15,50 C15,76 28,86 50,86 C72,86 85,76 85,50 C85,35 78,35 78,50 C78,60 22,60 22,50 C22,35 15,35 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
+          {/* Hair on top with minor recession */}
+          <path d="M22,50 C22,36 30,34 34,34 C38,34 42,32 50,32 C58,32 62,34 66,34 C70,34 78,36 78,50 Z" fill="var(--green-deep)" opacity="0.9" />
+          {/* Dotted templates */}
+          <circle cx="26" cy="32" r="3" fill="rgba(34, 197, 94, 0.25)" stroke="var(--green-mid)" strokeWidth="1" strokeDasharray="1,1" />
+          <circle cx="74" cy="32" r="3" fill="rgba(34, 197, 94, 0.25)" stroke="var(--green-mid)" strokeWidth="1" strokeDasharray="1,1" />
+        </svg>
+      );
+    case 3:
+      return (
+        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
+          {renderBaseHead()}
+          {/* Stable donor area (sides and back) */}
+          <path d="M15,50 C15,76 28,86 50,86 C72,86 85,76 85,50 C85,58 74,68 50,68 C26,68 15,58 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
+          {/* Top hair with M-shaped deep recession */}
+          <path d="M22,50 C22,42 34,44 38,44 C42,44 44,32 50,32 C56,32 58,44 62,44 C66,44 78,42 78,50 Z" fill="var(--green-deep)" opacity="0.9" />
+          {/* Grafts zone highlight (M-temples) */}
+          <path d="M18,34 C26,38 34,42 34,46" fill="none" stroke="var(--green-mid)" strokeWidth="2.5" strokeDasharray="2,2" />
+          <path d="M82,34 C74,38 66,42 66,46" fill="none" stroke="var(--green-mid)" strokeWidth="2.5" strokeDasharray="2,2" />
+          {/* Target highlight */}
+          <path d="M22,38 C28,42 34,44 38,44" fill="none" stroke="rgba(34, 197, 94, 0.4)" strokeWidth="4" />
+          <path d="M78,38 C72,42 66,44 62,44" fill="none" stroke="rgba(34, 197, 94, 0.4)" strokeWidth="4" />
+        </svg>
+      );
+    case 4:
+      return (
+        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
+          {renderBaseHead()}
+          {/* Donor area */}
+          <path d="M15,50 C15,76 28,86 50,86 C72,86 85,76 85,50 C85,58 74,68 50,68 C26,68 15,58 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
+          {/* Front lock of hair (receding) */}
+          <path d="M30,50 C30,44 38,44 42,44 C44,44 46,34 50,34 C54,34 56,44 58,44 C62,44 70,44 70,50 Z" fill="var(--green-deep)" opacity="0.9" />
+          {/* Crown bald spot */}
+          <circle cx="50" cy="66" r="7" fill="#ffffff" stroke="var(--green-mid)" strokeWidth="2" strokeDasharray="2,2" />
+          <circle cx="50" cy="66" r="3.5" fill="rgba(34, 197, 94, 0.2)" />
+          {/* Dotted templates */}
+          <path d="M22,38 C32,44 40,44 44,44" fill="none" stroke="var(--green-mid)" strokeWidth="2" strokeDasharray="2,2" />
+          <path d="M78,38 C68,44 60,44 56,44" fill="none" stroke="var(--green-mid)" strokeWidth="2.5" strokeDasharray="2,2" />
+        </svg>
+      );
+    case 5:
+      return (
+        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
+          {renderBaseHead()}
+          {/* Donor hair around sides and back */}
+          <path d="M15,50 C15,76 28,86 50,86 C72,86 85,76 85,50 C85,62 76,70 50,70 C24,70 15,62 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
+          {/* Very thin bridge separating front and back */}
+          <line x1="32" y1="53" x2="68" y2="53" stroke="var(--green-deep)" strokeWidth="2.5" strokeDasharray="2,1" opacity="0.85" />
+          {/* Frontal island */}
+          <path d="M38,48 C38,44 42,40 50,40 C58,40 62,44 62,48 Z" fill="var(--green-deep)" opacity="0.9" />
+          {/* Graft targets front & crown */}
+          <circle cx="50" cy="66" r="9" fill="rgba(34, 197, 94, 0.12)" stroke="var(--green-mid)" strokeWidth="2" strokeDasharray="2,2" />
+          <path d="M26,40 C34,44 42,44 50,44 C58,44 66,44 74,40" fill="none" stroke="var(--green-mid)" strokeWidth="2.5" strokeDasharray="2,2" />
+        </svg>
+      );
+    case 6:
+      return (
+        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
+          {renderBaseHead()}
+          {/* Only sides and back horseshoe remain (merged balding) */}
+          <path d="M15,50 C15,76 28,86 50,86 C72,86 85,76 85,50 C85,64 78,74 50,74 C22,74 15,64 15,50 Z" fill="var(--green-deep)" opacity="0.9" />
+          {/* Massive balding zone outlined with graft target grid */}
+          <ellipse cx="50" cy="50" rx="20" ry="18" fill="rgba(34, 197, 94, 0.08)" stroke="var(--green-mid)" strokeWidth="2.5" strokeDasharray="3,3" />
+        </svg>
+      );
+    case 7:
+      return (
+        <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', display: 'block' }}>
+          {renderBaseHead()}
+          {/* Narrow band of sides/back hair (severe horseshoe) */}
+          <path d="M15,52 C15,76 28,86 50,86 C72,86 85,76 85,52 C85,68 76,78 50,78 C24,78 15,68 15,52 Z" fill="var(--green-deep)" opacity="0.95" />
+          {/* Extreme balding cover highlight */}
+          <ellipse cx="50" cy="45" rx="26" ry="24" fill="rgba(239, 68, 68, 0.04)" stroke="rgba(239, 68, 68, 0.25)" strokeWidth="1.5" strokeDasharray="2,2" />
+          <ellipse cx="50" cy="45" rx="18" ry="16" fill="rgba(34, 197, 94, 0.08)" stroke="var(--green-mid)" strokeWidth="2" strokeDasharray="3,3" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
 // Types & Interfaces
 interface NorwoodStage {
   stage: number;
@@ -67,8 +184,8 @@ interface Testimonial {
 const norwoodStages: NorwoodStage[] = [
   {
     stage: 1,
-    name: "Minimal Hair Loss",
-    description: "No significant hair loss. Healthy hairline. No surgical intervention is recommended at this stage.",
+    name: "Minimal Hair Loss (Stage 1)",
+    description: "Optimal hair density. Full, healthy hairline with no active recession. No surgical restoration needed.",
     grafts: "0 Grafts",
     priceRange: "₹0",
     basePrice: 0,
@@ -78,8 +195,8 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 2,
-    name: "Minor Receding Temples",
-    description: "Slight recession at the temples. Best managed early with growth-factor PRP therapies or preventive care.",
+    name: "Minor Receding Temples (Stage 2)",
+    description: "Slight recession at the temples. Perfect stage for preventive care or growth PRP sessions to stop further thinning.",
     grafts: "500 - 1,000",
     priceRange: "₹15,000 - ₹20,000",
     basePrice: 15000,
@@ -89,8 +206,8 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 3,
-    name: "Moderate Temple Recession (V-Shape)",
-    description: "Distinct V or M-shaped temple recession. This is the baseline stage for starting a surgical FUE restoration.",
+    name: "M-Shaped Receding hairline (Stage 3)",
+    description: "Clear M or V-shaped temple recession. This is the baseline stage for starting a successful FUE hairline restoration.",
     grafts: "1,200 - 1,800",
     priceRange: "₹30,000 (Base)",
     basePrice: 30000,
@@ -100,8 +217,8 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 4,
-    name: "Recessed Hairline & Crown Thinning",
-    description: "Deep frontal recession plus a distinct thinning spot at the crown (vertex). Requires targeted FUE packing.",
+    name: "Receding Front & Crown Thinning (Stage 4)",
+    description: "Deep frontal recession combined with a distinct thinning spot at the crown (vertex). Requires targeted FUE packing.",
     grafts: "2,000 - 2,800",
     priceRange: "₹35,000 - ₹40,000",
     basePrice: 35000,
@@ -111,8 +228,8 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 5,
-    name: "Advanced Pattern Hair Loss",
-    description: "Recession merges, leaving only a thin bridge separating the hairline and crown. Highly dense graft packing required.",
+    name: "Advanced Hair Loss (Stage 5)",
+    description: "Frontal balding and crown bald zones are separated by only a very narrow bridge of hair. Dense graft packing required.",
     grafts: "2,800 - 3,500",
     priceRange: "₹40,000 - ₹45,000",
     basePrice: 40000,
@@ -122,8 +239,8 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 6,
-    name: "Severe Hair Loss (Merged Zones)",
-    description: "The separating bridge is gone. Front and back bald zones merge into a single area. Requires full-head reconstruction.",
+    name: "Severe Hair Loss / Merged Zones (Stage 6)",
+    description: "The dividing bridge of hair is completely gone. Front and back bald areas merge. Requires extensive full-head reconstruction.",
     grafts: "3,500 - 4,500",
     priceRange: "₹45,000 (Base)",
     basePrice: 45000,
@@ -133,8 +250,8 @@ const norwoodStages: NorwoodStage[] = [
   },
   {
     stage: 7,
-    name: "Extreme Horseshoe Hair Loss",
-    description: "Most severe stage. Only a narrow donor band remains at the back and sides. Requires precise, scientific mapping.",
+    name: "Extreme Balding / Horseshoe (Stage 7)",
+    description: "Most severe hair loss. Only a narrow strip of hair remains around the sides and back. Requires precise scientific mapping.",
     grafts: "4,500+",
     priceRange: "₹45,000+ (Custom)",
     basePrice: 45000,
@@ -512,6 +629,7 @@ export default function App() {
           <div className="desktop-only-flex">
             <a href="#home" onClick={() => setActiveSection('home')} className={`nav-link ${activeSection === 'home' ? 'active' : ''}`}>Home</a>
             <a href="#services" onClick={() => setActiveSection('services')} className={`nav-link ${activeSection === 'services' ? 'active' : ''}`}>Treatments</a>
+            <a href="#team" onClick={() => setActiveSection('team')} className={`nav-link ${activeSection === 'team' ? 'active' : ''}`}>Expert Team</a>
             <a href="#calculator" onClick={() => setActiveSection('calculator')} className={`nav-link ${activeSection === 'calculator' ? 'active' : ''}`}>Graft Calculator</a>
             <a href="#reviews" onClick={() => setActiveSection('reviews')} className={`nav-link ${activeSection === 'reviews' ? 'active' : ''}`}>Reviews</a>
             <button onClick={handleBookScroll} className="btn btn-primary btn-sm pulse-button">Book Consultation</button>
@@ -537,6 +655,7 @@ export default function App() {
           <div className="mobile-nav-drawer">
             <a href="#home" onClick={() => { setActiveSection('home'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'home' ? 'active' : ''}`}>Home</a>
             <a href="#services" onClick={() => { setActiveSection('services'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'services' ? 'active' : ''}`}>Treatments</a>
+            <a href="#team" onClick={() => { setActiveSection('team'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'team' ? 'active' : ''}`}>Expert Team</a>
             <a href="#calculator" onClick={() => { setActiveSection('calculator'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'calculator' ? 'active' : ''}`}>Graft Calculator</a>
             <a href="#reviews" onClick={() => { setActiveSection('reviews'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'reviews' ? 'active' : ''}`}>Reviews</a>
             <div className="mobile-nav-divider"></div>
@@ -732,7 +851,7 @@ export default function App() {
                   style={{ gap: '16px' }}
                 >
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div className="flex justify-between align-center">
+                    <div className="flex justify-between align-center flex-wrap gap-2">
                       <h4 className="font-semibold text-lg" style={{ lineHeight: '1.3' }}>{srv.title}</h4>
                       <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-deep)', fontWeight: 700, whiteSpace: 'nowrap' }}>{srv.price}</span>
                     </div>
@@ -785,7 +904,7 @@ export default function App() {
                   style={{ gap: '16px' }}
                 >
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div className="flex justify-between align-center">
+                    <div className="flex justify-between align-center flex-wrap gap-2">
                       <h4 className="font-semibold text-lg" style={{ lineHeight: '1.3' }}>{srv.title}</h4>
                       <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-primary)', fontWeight: 700, whiteSpace: 'nowrap' }}>{srv.price}</span>
                     </div>
@@ -838,7 +957,7 @@ export default function App() {
                   style={{ gap: '16px' }}
                 >
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div className="flex justify-between align-center">
+                    <div className="flex justify-between align-center flex-wrap gap-2">
                       <h4 className="font-semibold text-lg" style={{ lineHeight: '1.3' }}>{srv.title}</h4>
                       <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-mid)', fontWeight: 700, whiteSpace: 'nowrap' }}>{srv.price}</span>
                     </div>
@@ -866,6 +985,174 @@ export default function App() {
               ))}
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* Clinic Supportive Team Section */}
+      <section id="team" className="py-24" style={{ position: 'relative', overflow: 'hidden' }}>
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          right: '5%',
+          width: '200px',
+          height: '200px',
+          background: 'rgba(11, 167, 89, 0.03)',
+          borderRadius: '50%',
+          filter: 'blur(60px)',
+          pointerEvents: 'none'
+        }}></div>
+
+        <div className="container">
+          <div className="text-center mb-16">
+            <div className="badge badge-gradient mb-3">Expert Care Specialists</div>
+            <h2 className="text-4xl mb-4">Meet Our Supportive Team</h2>
+            <p className="text-lg text-secondary-color" style={{ maxWidth: '640px', margin: '0 auto' }}>
+              Your hair restoration journey is supported by certified medical professionals, 
+              precision implanters, and dedicated recovery support leads.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-4 gap-6 flex-col-mobile">
+            {/* Dr. Suby Kakkar */}
+            <div className="glass-card p-6 flex flex-col align-center text-center" style={{ gap: '12px' }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.1) 0%, rgba(34, 197, 94, 0.02) 100%)',
+                border: '2px solid rgba(11, 167, 89, 0.25)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.6rem',
+                fontWeight: 800,
+                color: 'var(--green-deep)',
+                fontFamily: 'var(--font-display)',
+                boxShadow: '0 8px 24px rgba(11, 167, 89, 0.06)',
+                marginBottom: '6px',
+                flexShrink: 0
+              }}>
+                SK
+              </div>
+              <span className="badge badge-gradient" style={{ fontSize: '0.7rem', padding: '3px 10px', width: 'fit-content' }}>
+                Clinical Director
+              </span>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '2px', fontFamily: 'var(--font-display)' }}>
+                Dr. Suby Kakkar
+              </h4>
+              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', lineHeight: '1.4' }}>
+                MBBS, E. Dermatology, Germany
+              </p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', lineHeight: '1.4' }}>
+                Ex Consultant: Max Hospital Delhi. Highly experienced in advanced dermatological therapies.
+              </p>
+            </div>
+
+            {/* Maxon Epston */}
+            <div className="glass-card p-6 flex flex-col align-center text-center" style={{ gap: '12px' }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.1) 0%, rgba(34, 197, 94, 0.02) 100%)',
+                border: '2px solid rgba(11, 167, 89, 0.25)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.6rem',
+                fontWeight: 800,
+                color: 'var(--green-deep)',
+                fontFamily: 'var(--font-display)',
+                boxShadow: '0 8px 24px rgba(11, 167, 89, 0.06)',
+                marginBottom: '6px',
+                flexShrink: 0
+              }}>
+                ME
+              </div>
+              <span className="badge badge-gradient" style={{ fontSize: '0.7rem', padding: '3px 10px', width: 'fit-content' }}>
+                Master Technician
+              </span>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '2px', fontFamily: 'var(--font-display)' }}>
+                Maxon Epston
+              </h4>
+              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', lineHeight: '1.4' }}>
+                Hair Transplant & PRP Specialist
+              </p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', lineHeight: '1.4' }}>
+                Expert in hair extraction, PRP growth therapies, and advanced surgical support procedures.
+              </p>
+            </div>
+
+            {/* Kashish Gupta */}
+            <div className="glass-card p-6 flex flex-col align-center text-center" style={{ gap: '12px' }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.1) 0%, rgba(34, 197, 94, 0.02) 100%)',
+                border: '2px solid rgba(11, 167, 89, 0.25)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.6rem',
+                fontWeight: 800,
+                color: 'var(--green-deep)',
+                fontFamily: 'var(--font-display)',
+                boxShadow: '0 8px 24px rgba(11, 167, 89, 0.06)',
+                marginBottom: '6px',
+                flexShrink: 0
+              }}>
+                KG
+              </div>
+              <span className="badge badge-gradient" style={{ fontSize: '0.7rem', padding: '3px 10px', width: 'fit-content' }}>
+                Senior Implanter
+              </span>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '2px', fontFamily: 'var(--font-display)' }}>
+                Kashish Gupta
+              </h4>
+              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', lineHeight: '1.4' }}>
+                Experienced Implanter
+              </p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', lineHeight: '1.4' }}>
+                Experienced implanter skilled in precise graft implantation and natural hairline work.
+              </p>
+            </div>
+
+            {/* Ronika Bhardwaj */}
+            <div className="glass-card p-6 flex flex-col align-center text-center" style={{ gap: '12px' }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.1) 0%, rgba(34, 197, 94, 0.02) 100%)',
+                border: '2px solid rgba(11, 167, 89, 0.25)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.6rem',
+                fontWeight: 800,
+                color: 'var(--green-deep)',
+                fontFamily: 'var(--font-display)',
+                boxShadow: '0 8px 24px rgba(11, 167, 89, 0.06)',
+                marginBottom: '6px',
+                flexShrink: 0
+              }}>
+                RB
+              </div>
+              <span className="badge badge-gradient" style={{ fontSize: '0.7rem', padding: '3px 10px', width: 'fit-content' }}>
+                Follow-Ups & Leads
+              </span>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '2px', fontFamily: 'var(--font-display)' }}>
+                Ronika Bhardwaj
+              </h4>
+              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', lineHeight: '1.4' }}>
+                Patient Care Coordinator
+              </p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', lineHeight: '1.4' }}>
+                Manages post-transplant recovery logs, patient check-ups, and guides incoming clinical leads.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -1021,7 +1308,7 @@ export default function App() {
                       >
                         <span style={{ fontSize: '1.6rem' }}>{t.icon}</span>
                         <div style={{ flex: 1 }}>
-                          <div className="flex justify-between align-center" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div className="flex justify-between align-center flex-wrap gap-2" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)' }}>{t.label}</span>
                             <span className="badge badge-gradient" style={{ fontSize: '0.65rem', padding: '3px 8px' }}>{t.category}</span>
                           </div>
@@ -1389,15 +1676,48 @@ export default function App() {
                 />
               </div>
 
-              {/* Details of Stage */}
+              {/* Details of Stage - Split Visual Dashboard */}
               <div style={{
-                background: 'rgba(15, 23, 42, 0.02)',
-                borderRadius: '16px',
-                padding: '20px',
-                border: '1px solid var(--border-light)'
-              }}>
-                <h4 className="font-semibold text-lg mb-2" style={{ color: 'var(--text-primary)' }}>{currentNorwoodInfo.name}</h4>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>{currentNorwoodInfo.description}</p>
+                background: 'rgba(15, 23, 42, 0.01)',
+                borderRadius: '24px',
+                padding: '24px',
+                border: '1.5px solid var(--border-light)',
+                display: 'grid',
+                gridTemplateColumns: '140px 1fr',
+                gap: '24px',
+                alignItems: 'center'
+              }} className="flex-col-mobile">
+                
+                {/* Left: Beautiful Diagnostic SVG */}
+                <div style={{
+                  background: '#ffffff',
+                  borderRadius: '16px',
+                  border: '1.5px solid var(--border-light)',
+                  padding: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: 'var(--shadow-sm)',
+                  height: '140px',
+                  width: '140px',
+                  flexShrink: 0,
+                  margin: '0 auto'
+                }}>
+                  <NorwoodStageVisual stage={selectedNorwood} />
+                </div>
+
+                {/* Right: Description & Simple English */}
+                <div style={{ textAlign: 'left' }}>
+                  <div className="badge badge-gradient mb-2" style={{ fontSize: '0.7rem' }}>
+                    Stage {selectedNorwood} Scalp Pattern
+                  </div>
+                  <h4 className="font-semibold text-lg mb-2" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                    {currentNorwoodInfo.name}
+                  </h4>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                    {currentNorwoodInfo.description}
+                  </p>
+                </div>
               </div>
 
               {/* Grid of stats */}
@@ -1521,7 +1841,297 @@ export default function App() {
         </div>
       </section>
 
+      {/* Instagram Curated Results Gallery */}
+      <section id="gallery" className="py-24" style={{ position: 'relative', overflow: 'hidden', background: '#ffffff' }}>
+        <div style={{
+          position: 'absolute',
+          bottom: '10%',
+          left: '5%',
+          width: '240px',
+          height: '240px',
+          background: 'rgba(11, 167, 89, 0.03)',
+          borderRadius: '50%',
+          filter: 'blur(70px)',
+          pointerEvents: 'none'
+        }}></div>
 
+        <div className="container">
+          <div className="text-center mb-16">
+            <div className="badge badge-gradient mb-3">📸 Real Patient Showcases</div>
+            <h2 className="text-4xl mb-4">Curated Results From Instagram</h2>
+            <p className="text-lg text-secondary-color" style={{ maxWidth: '640px', margin: '0 auto' }}>
+              Handpicked transformations shared directly from our official Instagram feed. 
+              Real outcomes from FUE surgical restoration and advanced dermatology treatments.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-3 gap-8 flex-col-mobile mb-12">
+            
+            {/* Post 1: FUE Hairline */}
+            <div className="glass-card flex flex-col" style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px' }}>
+              {/* Image Visual Representation */}
+              <div style={{
+                height: '220px',
+                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderBottom: '1px solid var(--border-light)',
+                flexDirection: 'column',
+                gap: '12px'
+              }}>
+                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
+                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>BEFORE</div>
+                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>AFTER (9 Months)</div>
+                </div>
+                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>🧔</div>
+                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
+                  FUE Hair Transplant
+                </span>
+              </div>
+              {/* Content */}
+              <div style={{ padding: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>2,800 Grafts FUE</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 192 Likes</span>
+                </div>
+                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
+                  M-Shape hairline Restructuring
+                </h4>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                  Complete closure of receding temple zones. Restored an optimal natural hairline contour using micro-graft placement.
+                </p>
+              </div>
+            </div>
+
+            {/* Post 2: PRP Growth */}
+            <div className="glass-card flex flex-col" style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px' }}>
+              {/* Image Visual Representation */}
+              <div style={{
+                height: '220px',
+                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderBottom: '1px solid var(--border-light)',
+                flexDirection: 'column',
+                gap: '12px'
+              }}>
+                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
+                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>BEFORE</div>
+                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>AFTER (PRP x3)</div>
+                </div>
+                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>💉</div>
+                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
+                  PRP Therapy
+                </span>
+              </div>
+              {/* Content */}
+              <div style={{ padding: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>3 PRP Sessions</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 154 Likes</span>
+                </div>
+                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
+                  Crown Area Follicle Density Boost
+                </h4>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                  Strengthened miniaturized, thinning hairs on the vertex crown using concentrated, autologous growth-factor micro-injects.
+                </p>
+              </div>
+            </div>
+
+            {/* Post 3: Crown Area FUE */}
+            <div className="glass-card flex flex-col" style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px' }}>
+              {/* Image Visual Representation */}
+              <div style={{
+                height: '220px',
+                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderBottom: '1px solid var(--border-light)',
+                flexDirection: 'column',
+                gap: '12px'
+              }}>
+                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
+                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>BEFORE</div>
+                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>AFTER (12 Months)</div>
+                </div>
+                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>👑</div>
+                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
+                  FUE Hair Transplant
+                </span>
+              </div>
+              {/* Content */}
+              <div style={{ padding: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>3,500 Grafts FUE</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 227 Likes</span>
+                </div>
+                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
+                  Merged Crown & Vertex Restoration
+                </h4>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                  Full-head reconstruction targeting extensive crown balding (Norwood Stage 5). Complete coverage with high survival rate.
+                </p>
+              </div>
+            </div>
+
+            {/* Post 4: Laser Scar Removal */}
+            <div className="glass-card flex flex-col" style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px' }}>
+              {/* Image Visual Representation */}
+              <div style={{
+                height: '220px',
+                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderBottom: '1px solid var(--border-light)',
+                flexDirection: 'column',
+                gap: '12px'
+              }}>
+                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
+                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>BEFORE</div>
+                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>AFTER (Laser x2)</div>
+                </div>
+                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>✨</div>
+                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
+                  Aesthetic Lasers
+                </span>
+              </div>
+              {/* Content */}
+              <div style={{ padding: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Laser Scar Correction</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 118 Likes</span>
+                </div>
+                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
+                  Aesthetic Dermal Scar Correction
+                </h4>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                  Restoring smooth dermal texture and minimizing deep surgical or injury marks via fractional precision laser therapy.
+                </p>
+              </div>
+            </div>
+
+            {/* Post 5: Hairline Precision */}
+            <div className="glass-card flex flex-col" style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px' }}>
+              {/* Image Visual Representation */}
+              <div style={{
+                height: '220px',
+                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderBottom: '1px solid var(--border-light)',
+                flexDirection: 'column',
+                gap: '12px'
+              }}>
+                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
+                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>ACTIVE</div>
+                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>STERILE OT</div>
+                </div>
+                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>🔬</div>
+                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
+                  Clinical Precision
+                </span>
+              </div>
+              {/* Content */}
+              <div style={{ padding: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Graft Implantation</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 241 Likes</span>
+                </div>
+                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
+                  Micro-Graft Hairline Sculpting
+                </h4>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                  Close-up look at Kashish Gupta’s precise hairline packing. Ensuring natural direction, correct angles, and micro-spacing.
+                </p>
+              </div>
+            </div>
+
+            {/* Post 6: Custom Scalp Mapping */}
+            <div className="glass-card flex flex-col" style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px' }}>
+              {/* Image Visual Representation */}
+              <div style={{
+                height: '220px',
+                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderBottom: '1px solid var(--border-light)',
+                flexDirection: 'column',
+                gap: '12px'
+              }}>
+                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
+                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>DIAGNOSTICS</div>
+                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>PLANNING</div>
+                </div>
+                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>🔍</div>
+                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
+                  Pre-Op Diagnostics
+                </span>
+              </div>
+              {/* Content */}
+              <div style={{ padding: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Norwood Mapping</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 137 Likes</span>
+                </div>
+                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
+                  Norwood Stage 4 Graft Mapping
+                </h4>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                  Diagnostic mapping of temple recession and crown thinning. Visualizing structural restoration before transplant.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Follow CTA Banner */}
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.04) 0%, rgba(34, 197, 94, 0.01) 100%)',
+            border: '1.5px solid rgba(11, 167, 89, 0.18)',
+            borderRadius: '24px',
+            padding: '32px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            boxShadow: 'var(--shadow-sm)'
+          }} className="flex-col-mobile gap-6 text-center">
+            <div style={{ textAlign: 'left' }} className="text-center-mobile">
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '6px', color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                Follow Our Restorative Journey
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                Get daily tips, transparent clinical cases, and live Before-After transformations on Instagram.
+              </p>
+            </div>
+            
+            <button 
+              onClick={() => window.open('https://instagram.com', '_blank')}
+              className="btn btn-primary pulse-button"
+              style={{
+                background: 'linear-gradient(135deg, var(--green-deep) 0%, var(--green-primary) 100%)',
+                padding: '14px 28px',
+                fontWeight: 800
+              }}
+            >
+              Follow us @HairHaven
+            </button>
+          </div>
+
+        </div>
+      </section>
 
       {/* Patient Reviews & Ratings Explorer */}
       <section id="reviews" className="py-24 bg-secondary-color" style={{ background: 'rgba(248, 250, 252, 0.3)', borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)' }}>
@@ -1626,7 +2236,9 @@ export default function App() {
                     color: 'var(--text-secondary)',
                     lineHeight: '1.6',
                     fontStyle: 'italic',
-                    marginBottom: '20px'
+                    marginBottom: '20px',
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word'
                   }}>
                     "{review.quote}"
                   </p>
