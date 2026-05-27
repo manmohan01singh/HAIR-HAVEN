@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { 
   MapPin, Clock, Shield, Star, CheckCircle2, 
   Sparkles, Menu, X, ArrowRight, 
-  ChevronLeft, ChevronRight, Heart, Info, Award, Compass,
+  Heart, Info, Award, Compass,
   MessageSquare
 } from 'lucide-react';
 // @ts-ignore
 import confetti from 'canvas-confetti';
 
-// Hair Haven Official Logo Component (Circular cropped PNG with premium luxury gold border)
+// Hair Haven Official Logo Component (Circular cropped PNG with premium clinic brand green border)
 function HairHavenLogo({ className = "", size = 40 }: { className?: string; size?: number }) {
   return (
     <div 
@@ -18,12 +18,12 @@ function HairHavenLogo({ className = "", size = 40 }: { className?: string; size
         height: `${size}px`, 
         borderRadius: '50%', 
         overflow: 'hidden', 
-        border: '1.8px solid var(--gold-light)', 
+        border: '1.8px solid var(--green-primary)', 
         display: 'inline-flex', 
         alignItems: 'center', 
         justifyContent: 'center', 
         background: '#ffffff', 
-        boxShadow: 'var(--shadow-sm), 0 0 10px rgba(212, 175, 55, 0.1)',
+        boxShadow: 'var(--shadow-sm)',
         boxSizing: 'border-box',
         flexShrink: 0
       }}
@@ -207,29 +207,7 @@ const services = {
   ]
 };
 
-const staffMembers = [
-  {
-    name: "Shazia Mam",
-    role: "Clinical Care Specialist",
-    specialties: ["FUE Assistance", "OT Preparation", "Patient Prep", "Surgical Support"],
-    bio: "Explicitly highlighted across patient logs for providing exemplary clinical care, behavioral warmth, and direct execution/support during hair procedures.",
-    avatarPath: "/shazia_avatar.png"
-  },
-  {
-    name: "Rimpy Mam",
-    role: "Post-Transplant Care Specialist",
-    specialties: ["Graft Checkups", "Wound Dressings", "Patient Recovery Support", "Post-op Counseling"],
-    bio: "Frequently named alongside Shazia for her highly professional behavior, gentle handling during recovery check-ups, and post-transplant care.",
-    avatarPath: "/rimpy_avatar.png"
-  },
-  {
-    name: "Rajesh",
-    role: "Patient Support Lead",
-    specialties: ["Consultation Booking", "Logistics Coordination", "Patient Comfort", "Follow-ups"],
-    bio: "Noted in medical summaries for exceptional patient-side support and guiding patients comfortably through their hair transplant journeys.",
-    avatarPath: "/rajesh_avatar.png"
-  }
-];
+
 
 const testimonials: Testimonial[] = [
   {
@@ -314,7 +292,6 @@ export default function App() {
 
   // Reviews States
   const [selectedReviewTag, setSelectedReviewTag] = useState('All');
-  const [testimonialIndex, setTestimonialIndex] = useState(0);
   
   // Parallax Scroll State
   const [scrollY, setScrollY] = useState(0);
@@ -502,18 +479,7 @@ export default function App() {
     ? testimonials
     : testimonials.filter(t => t.tag === selectedReviewTag);
 
-  const handleNextReview = () => {
-    setTestimonialIndex((prev) => (prev + 1) % filteredTestimonials.length);
-  };
 
-  const handlePrevReview = () => {
-    setTestimonialIndex((prev) => (prev - 1 + filteredTestimonials.length) % filteredTestimonials.length);
-  };
-
-  // Reset review index when filter changes
-  useEffect(() => {
-    setTestimonialIndex(0);
-  }, [selectedReviewTag]);
 
   return (
     <>
@@ -547,7 +513,6 @@ export default function App() {
             <a href="#home" onClick={() => setActiveSection('home')} className={`nav-link ${activeSection === 'home' ? 'active' : ''}`}>Home</a>
             <a href="#services" onClick={() => setActiveSection('services')} className={`nav-link ${activeSection === 'services' ? 'active' : ''}`}>Treatments</a>
             <a href="#calculator" onClick={() => setActiveSection('calculator')} className={`nav-link ${activeSection === 'calculator' ? 'active' : ''}`}>Graft Calculator</a>
-            <a href="#team" onClick={() => setActiveSection('team')} className={`nav-link ${activeSection === 'team' ? 'active' : ''}`}>Our Team</a>
             <a href="#reviews" onClick={() => setActiveSection('reviews')} className={`nav-link ${activeSection === 'reviews' ? 'active' : ''}`}>Reviews</a>
             <button onClick={handleBookScroll} className="btn btn-primary btn-sm pulse-button">Book Consultation</button>
           </div>
@@ -573,7 +538,6 @@ export default function App() {
             <a href="#home" onClick={() => { setActiveSection('home'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'home' ? 'active' : ''}`}>Home</a>
             <a href="#services" onClick={() => { setActiveSection('services'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'services' ? 'active' : ''}`}>Treatments</a>
             <a href="#calculator" onClick={() => { setActiveSection('calculator'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'calculator' ? 'active' : ''}`}>Graft Calculator</a>
-            <a href="#team" onClick={() => { setActiveSection('team'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'team' ? 'active' : ''}`}>Our Team</a>
             <a href="#reviews" onClick={() => { setActiveSection('reviews'); setMobileMenuOpen(false); }} className={`mobile-nav-link ${activeSection === 'reviews' ? 'active' : ''}`}>Reviews</a>
             <div className="mobile-nav-divider"></div>
             <button onClick={(e) => { handleBookScroll(e); setMobileMenuOpen(false); }} className="btn btn-primary btn-sm text-center w-100">Book Consultation</button>
@@ -764,19 +728,19 @@ export default function App() {
               {services.surgical.map((srv, idx) => (
                 <div 
                   key={idx} 
-                  className="glass-card p-6 flex flex-col justify-between" 
-                  style={{ minHeight: '310px' }}
+                  className="glass-card p-6 flex flex-col" 
+                  style={{ gap: '16px' }}
                 >
-                  <div>
-                    <div className="flex justify-between align-center mb-3">
-                      <h4 className="font-semibold text-lg" style={{ lineHeight: '1.4' }}>{srv.title}</h4>
-                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-deep)', fontWeight: 700 }}>{srv.price}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className="flex justify-between align-center">
+                      <h4 className="font-semibold text-lg" style={{ lineHeight: '1.3' }}>{srv.title}</h4>
+                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-deep)', fontWeight: 700, whiteSpace: 'nowrap' }}>{srv.price}</span>
                     </div>
-                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>{srv.desc}</p>
                   </div>
                   
-                  <div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: 'auto', paddingTop: '8px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       {srv.features.slice(0, 3).map((feat, fidx) => (
                         <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                           <CheckCircle2 size={12} color="var(--green-primary)" />
@@ -788,7 +752,6 @@ export default function App() {
                     <button 
                       onClick={() => handleBookService(srv.title === 'PRP Therapy (Platelet-Rich Plasma)' ? 'PRP Therapy (Platelet-Rich Plasma)' : srv.title)}
                       className={`btn w-100 ${srv.title === 'FUE Hair Transplant' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-                      style={{ marginTop: 'auto' }}
                     >
                       {srv.title === 'FUE Hair Transplant' ? 'Reserve Transplant Slot' : srv.title.includes('PRP') ? 'Book PRP Session' : 'Book Free Evaluation'}
                     </button>
@@ -816,17 +779,21 @@ export default function App() {
               </div>
 
               {services.lasers.map((srv, idx) => (
-                <div key={idx} className="glass-card p-6 flex flex-col justify-between" style={{ minHeight: '310px' }}>
-                  <div>
-                    <div className="flex justify-between align-center mb-3">
-                      <h4 className="font-semibold text-lg" style={{ lineHeight: '1.4' }}>{srv.title}</h4>
-                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-primary)', fontWeight: 700 }}>{srv.price}</span>
+                <div 
+                  key={idx} 
+                  className="glass-card p-6 flex flex-col" 
+                  style={{ gap: '16px' }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className="flex justify-between align-center">
+                      <h4 className="font-semibold text-lg" style={{ lineHeight: '1.3' }}>{srv.title}</h4>
+                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-primary)', fontWeight: 700, whiteSpace: 'nowrap' }}>{srv.price}</span>
                     </div>
-                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>{srv.desc}</p>
                   </div>
 
-                  <div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: 'auto', paddingTop: '8px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       {srv.features.slice(0, 3).map((feat, fidx) => (
                         <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                           <CheckCircle2 size={12} color="var(--green-primary)" />
@@ -865,17 +832,21 @@ export default function App() {
               </div>
 
               {services.dermatology.map((srv, idx) => (
-                <div key={idx} className="glass-card p-6 flex flex-col justify-between" style={{ minHeight: '310px' }}>
-                  <div>
-                    <div className="flex justify-between align-center mb-3">
-                      <h4 className="font-semibold text-lg" style={{ lineHeight: '1.4' }}>{srv.title}</h4>
-                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-mid)', fontWeight: 700 }}>{srv.price}</span>
+                <div 
+                  key={idx} 
+                  className="glass-card p-6 flex flex-col" 
+                  style={{ gap: '16px' }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className="flex justify-between align-center">
+                      <h4 className="font-semibold text-lg" style={{ lineHeight: '1.3' }}>{srv.title}</h4>
+                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-mid)', fontWeight: 700, whiteSpace: 'nowrap' }}>{srv.price}</span>
                     </div>
-                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>{srv.desc}</p>
                   </div>
 
-                  <div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: 'auto', paddingTop: '8px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       {srv.features.slice(0, 3).map((feat, fidx) => (
                         <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                           <CheckCircle2 size={12} color="var(--green-primary)" />
@@ -909,7 +880,7 @@ export default function App() {
           transform: 'translate(-50%, -50%)',
           width: '300px',
           height: '300px',
-          background: 'rgba(212, 175, 55, 0.08)',
+          background: 'rgba(11, 167, 89, 0.06)',
           borderRadius: '50%',
           filter: 'blur(80px)',
           pointerEvents: 'none'
@@ -920,15 +891,15 @@ export default function App() {
                style={{ 
                  width: '100%', 
                  maxWidth: '850px', 
-                 border: '1.5px solid rgba(212, 175, 55, 0.35)', 
+                 border: '1.5px solid rgba(11, 167, 89, 0.22)', 
                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 252, 249, 0.95) 100%)',
-                 boxShadow: 'var(--shadow-xl), 0 0 0 1px rgba(212, 175, 55, 0.1), 0 20px 50px rgba(11, 167, 89, 0.08)'
+                 boxShadow: 'var(--shadow-xl), 0 20px 50px rgba(11, 167, 89, 0.06)'
                }}>
             
             {/* Header */}
             <div className="text-center mb-4">
-              <div className="badge badge-gradient mb-3" style={{ background: 'rgba(212, 175, 55, 0.07)', borderColor: 'rgba(212, 175, 55, 0.25)', color: 'var(--gold-dark)', fontWeight: 800 }}>
-                ✨ VIP Private Diagnostics & Restoration
+              <div className="badge badge-gradient mb-3" style={{ background: 'rgba(11, 167, 89, 0.07)', borderColor: 'rgba(11, 167, 89, 0.25)', color: 'var(--green-deep)', fontWeight: 800 }}>
+                ✨ Clinical Private Diagnostics & Restoration
               </div>
               <h2 className="text-3xl font-decorative mb-1" style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.02em', fontWeight: 800 }}>
                 Secure Clinical Appointment
@@ -1212,7 +1183,7 @@ export default function App() {
                 <div className="ticket-premium w-100 flex flex-col gap-4" style={{ width: '100%' }}>
                   <div className="ticket-watermark">HAVEN</div>
                   
-                  <div className="flex justify-between align-center" style={{ borderBottom: '1px dashed rgba(212, 175, 55, 0.25)', paddingBottom: '14px' }}>
+                  <div className="flex justify-between align-center" style={{ borderBottom: '1px dashed rgba(11, 167, 89, 0.2)', paddingBottom: '14px' }}>
                     <div>
                       <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Access ID</div>
                       <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>{bookingTicket.id}</div>
@@ -1258,7 +1229,7 @@ export default function App() {
                         ₹{bookingTicket.priceEstimate.toLocaleString('en-IN')}
                       </div>
                     </div>
-                    <span className="badge badge-gradient" style={{ fontSize: '0.7rem', borderColor: 'rgba(212, 175, 55, 0.3)', color: 'var(--gold-dark)', background: 'rgba(212, 175, 55, 0.05)', fontWeight: 700 }}>
+                    <span className="badge badge-gradient" style={{ fontSize: '0.7rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-deep)', background: 'rgba(11, 167, 89, 0.04)', fontWeight: 700 }}>
                       Pay at Clinic
                     </span>
                   </div>
@@ -1550,93 +1521,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Clinical Team / Staff Highlight */}
-      <section id="team" className="py-24" style={{ position: 'relative' }}>
-        <div className="container">
-          <div className="text-center mb-16">
-            <div className="badge badge-gradient mb-3">Our Dedicated Staff</div>
-            <h2 className="text-4xl mb-4">Meet Our Clinical Support Team</h2>
-            <p className="text-lg text-secondary-color" style={{ maxWidth: '640px', margin: '0 auto' }}>
-              Surgical outcomes require exceptional post-operative support. Meet our key clinical and support 
-              specialists, highly praised by our patients for detailed care and warm handling.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-3 gap-8 flex-col-mobile">
-            {staffMembers.map((member, idx) => (
-              <div key={idx} className="glass-card p-6 flex flex-col align-center text-center">
-                
-                {/* Premium iOS-level Circular Image Frame */}
-                <div className="profile-image-container">
-                  <img 
-                    src={member.avatarPath} 
-                    alt={member.name} 
-                    className="profile-image" 
-                  />
-                </div>
-
-                <h3 className="text-xl mb-1">{member.name}</h3>
-                <span className="badge mb-4" style={{ borderColor: 'rgba(155, 81, 224, 0.15)', color: 'var(--gemini-purple)', fontSize: '0.75rem' }}>
-                  {member.role}
-                </span>
-
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px', minHeight: '80px' }}>
-                  "{member.bio}"
-                </p>
-
-                {/* Specialties tags */}
-                <div className="flex gap-2 justify-center flex-wrap">
-                  {member.specialties.map((spec, sidx) => (
-                    <span key={sidx} style={{
-                      padding: '4px 10px',
-                      borderRadius: '8px',
-                      background: 'rgba(15, 23, 42, 0.03)',
-                      fontSize: '0.75rem',
-                      color: 'var(--text-secondary)',
-                      border: '1px solid var(--border-light)'
-                    }}>
-                      {spec}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Quality Standards & Transparency Section (Address comments on junior assistants and pricing in a professional manner) */}
-          <div className="glass-card p-8 mt-12 grid grid-cols-12 gap-8 flex-col-mobile align-center" style={{ marginTop: '48px' }}>
-            <div className="col-span-4" style={{ textAlign: 'center' }}>
-              <div style={{
-                width: '60px',
-                height: '60px',
-                borderRadius: '16px',
-                background: 'rgba(66, 133, 244, 0.1)',
-                color: 'var(--gemini-blue)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '16px'
-              }}>
-                <Shield size={28} />
-              </div>
-              <h3 className="text-xl">Safety & Integrity</h3>
-            </div>
-            
-            <div className="col-span-8 no-border-left-mobile" style={{ borderLeft: '1px solid var(--border-light)', paddingLeft: '32px' }}>
-              <h4 className="font-semibold text-lg mb-2">Our Clinical Standards & Oversight</h4>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6' }} className="mb-4">
-                At Hair Haven, all surgical designs, graft counts, and donor incisions are mapped and executed 
-                under the direct, on-site supervision of certified hair restoration surgeons and medical consultants. 
-                Our support technicians are rigorously trained in highly sterilized FUE extraction methods and post-transplant care.
-              </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--gemini-purple)', fontWeight: 600 }}>
-                <CheckCircle2 size={14} />
-                <span>Routine pre-surgical screenings, including blood glucose checking, are standard protocol.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Patient Reviews & Ratings Explorer */}
       <section id="reviews" className="py-24 bg-secondary-color" style={{ background: 'rgba(248, 250, 252, 0.3)', borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)' }}>
@@ -1700,20 +1585,29 @@ export default function App() {
             ))}
           </div>
 
-          {/* Testimonial Slider */}
-          <div className="flex justify-center">
-            {filteredTestimonials.length > 0 ? (
-              <div className="glass-card p-8 flex flex-col justify-between" style={{ width: '100%', maxWidth: '640px', minHeight: '260px', position: 'relative' }}>
-                
+          {/* Testimonial Cards Grid */}
+          <div className="grid grid-cols-3 gap-6 flex-col-mobile">
+            {filteredTestimonials.slice(0, 6).map((review) => (
+              <div 
+                key={review.id} 
+                className="glass-card p-6 flex flex-col justify-between" 
+                style={{ 
+                  position: 'relative', 
+                  minHeight: '220px',
+                  border: '1px solid var(--border-light)',
+                  boxShadow: 'var(--shadow-sm)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
                 {/* Quotation mark decoration */}
                 <div style={{
                   position: 'absolute',
-                  top: '20px',
-                  right: '30px',
-                  fontSize: '5rem',
+                  top: '12px',
+                  right: '20px',
+                  fontSize: '4rem',
                   fontFamily: 'var(--font-display)',
                   fontWeight: 900,
-                  color: 'rgba(155, 81, 224, 0.05)',
+                  color: 'rgba(11, 167, 89, 0.04)',
                   lineHeight: '1',
                   pointerEvents: 'none'
                 }}>
@@ -1721,75 +1615,46 @@ export default function App() {
                 </div>
 
                 <div>
-                  <div className="flex justify-between align-center mb-4">
-                    <span className="font-semibold" style={{ fontSize: '1.1rem' }}>{filteredTestimonials[testimonialIndex].name}</span>
-                    <div style={{ display: 'flex', color: '#ffb627' }}>
-                      {[...Array(filteredTestimonials[testimonialIndex].rating)].map((_, i) => (
-                        <Star key={i} size={14} fill="#ffb627" color="#ffb627" />
-                      ))}
-                    </div>
+                  <div style={{ display: 'flex', color: '#ffb627', marginBottom: '12px' }}>
+                    {[...Array(review.rating)].map((_, i) => (
+                      <Star key={i} size={12} fill="#ffb627" color="#ffb627" />
+                    ))}
                   </div>
 
                   <p style={{
-                    fontSize: '1.05rem',
+                    fontSize: '0.875rem',
                     color: 'var(--text-secondary)',
-                    lineHeight: '1.7',
+                    lineHeight: '1.6',
                     fontStyle: 'italic',
-                    marginBottom: '24px'
+                    marginBottom: '20px'
                   }}>
-                    "{filteredTestimonials[testimonialIndex].quote}"
+                    "{review.quote}"
                   </p>
                 </div>
 
-                <div className="flex justify-between align-center" style={{ borderTop: '1px solid var(--border-light)', paddingTop: '16px' }}>
-                  <span className="badge badge-gradient" style={{ fontSize: '0.75rem' }}>
-                    Category: {filteredTestimonials[testimonialIndex].tag}
-                  </span>
-
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={handlePrevReview}
-                      style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '50%',
-                        border: '1px solid var(--border-light)',
-                        background: '#ffffff',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'var(--text-secondary)'
-                      }}
-                    >
-                      <ChevronLeft size={16} />
-                    </button>
-                    <button 
-                      onClick={handleNextReview}
-                      style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '50%',
-                        border: '1px solid var(--border-light)',
-                        background: '#ffffff',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'var(--text-secondary)'
-                      }}
-                    >
-                      <ChevronRight size={16} />
-                    </button>
+                <div className="flex align-center gap-3" style={{ borderTop: '1px solid var(--border-light)', paddingTop: '14px', marginTop: 'auto' }}>
+                  <div style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    background: 'rgba(11, 167, 89, 0.08)',
+                    color: 'var(--green-deep)',
+                    fontWeight: 700,
+                    fontSize: '0.8rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}>
+                    {review.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="font-semibold" style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>{review.name}</span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--green-primary)', fontWeight: 600 }}>{review.tag}</span>
                   </div>
                 </div>
-
               </div>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-tertiary)' }}>
-                No reviews found under the selected category. Please choose another tag.
-              </div>
-            )}
+            ))}
           </div>
 
         </div>
@@ -1820,7 +1685,7 @@ export default function App() {
             {/* GPS Directions Overlay Card */}
             <div className="map-directions-card">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                <MapPin size={18} color="var(--gold-dark)" />
+                <MapPin size={18} color="var(--green-primary)" />
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.05em' }}>Clinic Landmark</span>
               </div>
               <h3 className="text-xl mb-4" style={{ fontWeight: 800 }}>Hair Haven Clinic</h3>
@@ -1843,7 +1708,7 @@ export default function App() {
                 className="btn btn-primary w-100 flex align-center justify-center gap-2 pulse-button"
                 style={{
                   background: 'linear-gradient(135deg, var(--green-deep) 0%, var(--green-primary) 100%)',
-                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  border: '1px solid rgba(11, 167, 89, 0.18)',
                   boxShadow: '0 8px 24px rgba(11, 167, 89, 0.25)',
                   padding: '14px 20px',
                   fontWeight: 800
