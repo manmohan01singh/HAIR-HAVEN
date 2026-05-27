@@ -9,6 +9,7 @@
   --text-primary: #0a0a0a;
   --text-secondary: #525252;
   --text-tertiary: #a3a3a3;
+  --surface-card: #ffffff;
 
   /* Clinic Brand Green */
   --green-deep:    #077a41;
@@ -63,6 +64,28 @@
   --ease-out:    cubic-bezier(0.0, 0.0, 0.2, 1);
 }
 
+body.dark-mode {
+  --bg-primary: #070a08;
+  --bg-secondary: #0d120f;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --surface-card: #0d120f;
+
+  /* Surfaces */
+  --surface-glass: rgba(13, 18, 15, 0.70);
+  --surface-frost: rgba(13, 18, 15, 0.90);
+  --border-glass:  rgba(13, 18, 15, 0.80);
+  --border-light:  rgba(255, 255, 255, 0.08);
+  --border-green:  rgba(11, 167, 89, 0.35);
+  
+  --shadow-xs:  0 1px 4px rgba(0,0,0,0.2);
+  --shadow-sm:  0 4px 16px rgba(0,0,0,0.25);
+  --shadow-md:  0 12px 32px rgba(0,0,0,0.35);
+  --shadow-lg:  0 24px 56px rgba(0,0,0,0.45);
+  --shadow-xl:  0 40px 80px rgba(0,0,0,0.55);
+}
+
 /* ============================================
    RESET & BASE
    ============================================ */
@@ -111,7 +134,8 @@ h1, h2, h3, h4, h5, h6 {
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  background: #ffffff;
+  background: var(--bg-primary);
+  transition: background 0.4s ease;
 }
 
 .orb {
@@ -125,7 +149,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 80vw;
   max-width: 900px;
   max-height: 900px;
-  background: radial-gradient(circle, rgba(11,167,89,0.035) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(11,167,89,0.30) 0%, transparent 70%);
   top: -20%;
   left: -15%;
   filter: blur(160px);
@@ -137,7 +161,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 70vw;
   max-width: 800px;
   max-height: 800px;
-  background: radial-gradient(circle, rgba(212,175,55,0.03) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(11,167,89,0.30) 0%, transparent 70%);
   bottom: -25%;
   right: -10%;
   filter: blur(180px);
@@ -451,7 +475,7 @@ h1, h2, h3, h4, h5, h6 {
   display: none !important;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1024px) {
   .desktop-only-flex { display: none !important; }
   .mobile-only-block { display: flex !important; }
 }
@@ -1310,6 +1334,127 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: var(--shadow-md);
     border-color: var(--border-light);
   }
+}
+
+/* ============================================
+   DARK MODE OVERRIDES & COMPONENT STYLES
+   ============================================ */
+body.dark-mode .glass-header {
+  background: rgba(7, 10, 8, 0.88);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.02), 0 4px 20px rgba(0,0,0,0.4);
+}
+
+body.dark-mode .glass-header.scrolled {
+  background: rgba(7, 10, 8, 0.94);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 8px 24px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .mobile-nav-drawer {
+  background: rgba(7, 10, 8, 0.96);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .mobile-nav-link:hover,
+body.dark-mode .mobile-nav-link.active {
+  background: rgba(11, 167, 89, 0.15);
+}
+
+body.dark-mode .btn-secondary {
+  background: rgba(18, 24, 21, 0.75);
+  color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
+body.dark-mode .btn-secondary:hover {
+  background: rgba(18, 24, 21, 0.95);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .norwood-card {
+  background: rgba(18, 24, 21, 0.6);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+body.dark-mode .norwood-card:hover {
+  background: rgba(18, 24, 21, 0.85);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.dark-mode .norwood-card.active {
+  background: var(--surface-card);
+  border-color: var(--green-primary);
+}
+
+body.dark-mode .form-input {
+  background: rgba(18, 24, 21, 0.60);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .form-input:focus {
+  background: var(--bg-primary);
+  border-color: var(--green-primary);
+}
+
+body.dark-mode .stat-chip {
+  background: rgba(18, 24, 21, 0.60);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .stat-chip:hover {
+  background: var(--surface-card);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.dark-mode .stepper-step.completed .stepper-circle {
+  background: var(--surface-card);
+  border-color: var(--green-primary);
+  color: var(--green-primary);
+}
+
+body.dark-mode .treatment-card-premium {
+  background: rgba(18, 24, 21, 0.65);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .treatment-card-premium:hover {
+  background: var(--surface-card);
+  border-color: rgba(11, 167, 89, 0.35);
+}
+
+body.dark-mode .treatment-card-premium.active {
+  background: rgba(11, 167, 89, 0.08);
+  border-color: var(--green-primary);
+}
+
+body.dark-mode .form-input-premium:focus {
+  background: var(--bg-primary);
+}
+
+body.dark-mode .ticket-premium::before,
+body.dark-mode .ticket-premium::after {
+  background: var(--bg-primary);
+}
+
+body.dark-mode .map-section {
+  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+}
+
+/* Blinking cursor for typewriter tagline */
+.typewriter-cursor {
+  display: inline-block;
+  width: 2.5px;
+  height: 1.1em;
+  background-color: var(--green-primary);
+  margin-left: 5px;
+  vertical-align: middle;
+  animation: blink-cursor 0.75s step-end infinite;
+}
+
+@keyframes blink-cursor {
+  from, to { background-color: transparent }
+  50% { background-color: var(--green-primary); }
 }
 
 

@@ -3,7 +3,8 @@ import {
   MapPin, Clock, Shield, Star, CheckCircle2, 
   Sparkles, Menu, X, ArrowRight, 
   Heart, Info, Award, Compass,
-  MessageSquare, Search, SlidersHorizontal
+  MessageSquare, Search, SlidersHorizontal,
+  Sun, Moon
 } from 'lucide-react';
 // @ts-ignore
 import confetti from 'canvas-confetti';
@@ -22,7 +23,7 @@ function HairHavenLogo({ className = "", size = 40 }: { className?: string; size
         display: 'inline-flex', 
         alignItems: 'center', 
         justifyContent: 'center', 
-        background: '#ffffff', 
+        background: 'var(--surface-card)', 
         boxShadow: 'var(--shadow-sm)',
         boxSizing: 'border-box',
         flexShrink: 0
@@ -441,6 +442,67 @@ export default function App() {
   const [scrollY, setScrollY] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
 
+  // Dark Mode State
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return document.body.classList.contains('dark-mode');
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [isDarkMode]);
+
+  // Typewriter Tagline Phrases & State
+  const phrases = useMemo(() => [
+    "Natural Hair Restoration",
+    "Precision FUE Transplants",
+    "Artistic Hairline Design",
+    "Premium Graft Implantation",
+    "Vibrant & Dense Results",
+    "Science-Backed Hair Growth"
+  ], []);
+
+  const [phraseIdx, setPhraseIdx] = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [typingSpeed, setTypingSpeed] = useState(100);
+
+  useEffect(() => {
+    let timer: number;
+    
+    const handleType = () => {
+      const fullText = phrases[phraseIdx];
+      if (!isDeleting) {
+        const nextText = fullText.slice(0, displayText.length + 1);
+        setDisplayText(nextText);
+        
+        if (nextText === fullText) {
+          setIsDeleting(true);
+          setTypingSpeed(2000);
+        } else {
+          setTypingSpeed(80);
+        }
+      } else {
+        const nextText = fullText.slice(0, displayText.length - 1);
+        setDisplayText(nextText);
+        
+        if (nextText === '') {
+          setIsDeleting(false);
+          setPhraseIdx((prev) => (prev + 1) % phrases.length);
+          setTypingSpeed(500);
+        } else {
+          setTypingSpeed(45);
+        }
+      }
+    };
+    
+    timer = window.setTimeout(handleType, typingSpeed);
+    return () => clearTimeout(timer);
+  }, [displayText, isDeleting, phraseIdx, typingSpeed, phrases]);
+
   // Booking Form States
 
   const [bookingStep, setBookingStep] = useState(1);
@@ -666,46 +728,79 @@ export default function App() {
 
       {/* Header / Navbar */}
       <nav className={`glass-header ${scrolled ? 'scrolled' : ''}`}>
-        <div className="container py-4 flex justify-between align-center">
-          <a href="#home" className="flex align-center gap-3" style={{ textDecoration: 'none' }}>
-            <HairHavenLogo size={42} />
-            <div className="flex flex-col">
-              <span style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-display)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
-                Hair Haven
-              </span>
-              <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--gemini-purple)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                Transplant Clinic
-              </span>
+        <div className="container py-4 flex justify-between align-center" style={{ position: 'relative', minHeight: '74px' }}>
+          
+          {/* Left Side: Theme Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', zIndex: 10 }}>
+            <button 
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--text-primary)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '8px',
+                borderRadius: '50%',
+                transition: 'background-color 0.2s ease',
+              }}
+              title="Toggle Dark Mode"
+            >
+              {isDarkMode ? <Sun size={22} color="var(--green-primary)" /> : <Moon size={22} color="var(--green-deep)" />}
+            </button>
+          </div>
+
+          {/* Center: Logo and Name */}
+          <div style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 5
+          }}>
+            <a href="#home" className="flex align-center gap-3" style={{ textDecoration: 'none' }}>
+              <HairHavenLogo size={42} />
+              <div className="flex flex-col">
+                <span style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-display)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+                  Hair Haven
+                </span>
+                <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--gemini-purple)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                  Transplant Clinic
+                </span>
+              </div>
+            </a>
+          </div>
+
+          {/* Right Side: Navigation & Mobile Menu */}
+          <div className="flex align-center gap-4" style={{ zIndex: 10 }}>
+            <div className="desktop-only-flex">
+              <a href="#home" onClick={() => setActiveSection('home')} className={`nav-link ${activeSection === 'home' ? 'active' : ''}`}>Home</a>
+              <a href="#services" onClick={() => setActiveSection('services')} className={`nav-link ${activeSection === 'services' ? 'active' : ''}`}>Treatments</a>
+              <a href="#team" onClick={() => setActiveSection('team')} className={`nav-link ${activeSection === 'team' ? 'active' : ''}`}>Expert Team</a>
+              <a href="#calculator" onClick={() => setActiveSection('calculator')} className={`nav-link ${activeSection === 'calculator' ? 'active' : ''}`}>Graft Calculator</a>
+              <a href="#reviews" onClick={() => setActiveSection('reviews')} className={`nav-link ${activeSection === 'reviews' ? 'active' : ''}`}>Reviews</a>
+              <button onClick={handleBookScroll} className="btn btn-primary btn-sm pulse-button">Book Consultation</button>
             </div>
-          </a>
 
-          {/* Desktop Navigation */}
-          <div className="flex align-center gap-8" style={{ display: 'none', WebkitBoxAlign: 'center' }}>
-            {/* Standard responsive check handled below in inline style */}
+            {/* Mobile Menu Icon */}
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--text-primary)'
+              }}
+              className="mobile-only-block"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
-
-          <div className="desktop-only-flex">
-            <a href="#home" onClick={() => setActiveSection('home')} className={`nav-link ${activeSection === 'home' ? 'active' : ''}`}>Home</a>
-            <a href="#services" onClick={() => setActiveSection('services')} className={`nav-link ${activeSection === 'services' ? 'active' : ''}`}>Treatments</a>
-            <a href="#team" onClick={() => setActiveSection('team')} className={`nav-link ${activeSection === 'team' ? 'active' : ''}`}>Expert Team</a>
-            <a href="#calculator" onClick={() => setActiveSection('calculator')} className={`nav-link ${activeSection === 'calculator' ? 'active' : ''}`}>Graft Calculator</a>
-            <a href="#reviews" onClick={() => setActiveSection('reviews')} className={`nav-link ${activeSection === 'reviews' ? 'active' : ''}`}>Reviews</a>
-            <button onClick={handleBookScroll} className="btn btn-primary btn-sm pulse-button">Book Consultation</button>
-          </div>
-
-          {/* Mobile Menu Icon */}
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--text-primary)'
-            }}
-            className="mobile-only-block"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </div>
 
         {/* Mobile Navigation Drawer */}
@@ -731,8 +826,8 @@ export default function App() {
               Premium Hair Restoration in Jammu
             </div>
             
-            <h1 className="hero-title mb-6">
-              The Art & Science of <span className="text-gemini-gradient">Natural Hair</span> Restoration
+            <h1 className="hero-title mb-6" style={{ minHeight: '2.4em' }}>
+              The Art & Science of <br className="mobile-only-block" /><span className="text-gemini-gradient">{displayText}</span><span className="typewriter-cursor"></span>
             </h1>
             
             <p className="text-lg text-secondary-color mb-8" style={{ lineHeight: '1.7', maxWidth: '540px' }}>
@@ -1749,7 +1844,7 @@ export default function App() {
                 
                 {/* Top: Beautiful Diagnostic SVG */}
                 <div style={{
-                  background: '#ffffff',
+                  background: 'var(--surface-card)',
                   borderRadius: '16px',
                   border: '1.5px solid var(--border-light)',
                   padding: '12px',
@@ -1780,28 +1875,28 @@ export default function App() {
 
               {/* Grid of stats */}
               <div className="grid grid-cols-2 gap-4">
-                <div style={{ background: '#ffffff', padding: '16px', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
+                <div style={{ background: 'var(--surface-card)', padding: '16px', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600 }}>Estimated Grafts Needed</div>
                   <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--gemini-blue)', marginTop: '4px' }}>
                     {currentNorwoodInfo.grafts}
                   </div>
                 </div>
 
-                <div style={{ background: '#ffffff', padding: '16px', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
+                <div style={{ background: 'var(--surface-card)', padding: '16px', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600 }}>Donor Density Expectation</div>
                   <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--gemini-purple)', marginTop: '4px' }}>
                     {currentNorwoodInfo.density}
                   </div>
                 </div>
 
-                <div style={{ background: '#ffffff', padding: '16px', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
+                <div style={{ background: 'var(--surface-card)', padding: '16px', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600 }}>Procedure Duration</div>
                   <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
                     {currentNorwoodInfo.duration}
                   </div>
                 </div>
 
-                <div style={{ background: '#ffffff', padding: '16px', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
+                <div style={{ background: 'var(--surface-card)', padding: '16px', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600 }}>Typical Recovery Timeline</div>
                   <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
                     {currentNorwoodInfo.recovery}
@@ -1900,7 +1995,7 @@ export default function App() {
       </section>
 
       {/* Instagram Curated Results Gallery */}
-      <section id="gallery" className="py-24" style={{ position: 'relative', overflow: 'hidden', background: '#ffffff' }}>
+      <section id="gallery" className="py-24" style={{ position: 'relative', overflow: 'hidden' }}>
         <div style={{
           position: 'absolute',
           bottom: '10%',
@@ -1931,8 +2026,8 @@ export default function App() {
               style={{
                 width: '100%',
                 maxWidth: '580px',
-                background: '#ffffff',
-                border: '1.5px solid rgba(255, 255, 255, 0.85)',
+                background: 'var(--surface-card)',
+                border: '1.5px solid var(--border-light)',
                 borderRadius: '32px',
                 padding: '32px',
                 boxShadow: 'var(--shadow-lg), 0 20px 40px -15px rgba(0,0,0,0.05)',
@@ -1954,15 +2049,15 @@ export default function App() {
                   flexShrink: 0
                 }}>
                   <div style={{
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: '50%',
-                    background: '#ffffff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    overflow: 'hidden',
-                    border: '2px solid #ffffff'
+                     width: '100%',
+                     height: '100%',
+                     borderRadius: '50%',
+                     background: 'var(--surface-card)',
+                     display: 'flex',
+                     alignItems: 'center',
+                     justifyContent: 'center',
+                     overflow: 'hidden',
+                     border: '2px solid var(--surface-card)'
                   }}>
                     <HairHavenLogo size={70} />
                   </div>
@@ -2137,7 +2232,7 @@ export default function App() {
                     <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)', marginBottom: '2px' }}>Hair Haven</div>
                     <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>Hair transplantation clinic in Jammu, J&K · <span style={{ color: 'var(--green-deep)', fontWeight: 700 }}>Open</span></div>
                     <button
-                      onClick={() => window.open('https://search.google.com/local/writereview?placeid=ChIJs6M6SlqF_TgRu-9aVMqEn18', '_blank')}
+                      onClick={() => window.open('https://g.page/r/91xZaADhSuWDBvWCC/review', '_blank')}
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '6px',
                         padding: '8px 14px', borderRadius: '20px',
@@ -2198,7 +2293,8 @@ export default function App() {
                   padding: '12px 16px 12px 42px',
                   borderRadius: '12px',
                   border: '1px solid var(--border-light)',
-                  background: '#ffffff',
+                  background: 'var(--surface-card)',
+                  color: 'var(--text-primary)',
                   fontSize: '0.875rem',
                   fontFamily: 'var(--font-ui)',
                   outline: 'none',
@@ -2219,7 +2315,7 @@ export default function App() {
                   padding: '10px 16px',
                   borderRadius: '12px',
                   border: '1px solid var(--border-light)',
-                  background: '#ffffff',
+                  background: 'var(--surface-card)',
                   fontSize: '0.85rem',
                   fontWeight: 600,
                   color: 'var(--text-primary)',
@@ -2255,7 +2351,7 @@ export default function App() {
               right: 0,
               bottom: 16,
               width: '40px',
-              background: 'linear-gradient(to left, rgba(248,250,252,0.95), transparent)',
+              background: 'linear-gradient(to left, var(--bg-primary), transparent)',
               pointerEvents: 'none'
             }}></div>
           </div>
@@ -2270,10 +2366,10 @@ export default function App() {
                   style={{ 
                     position: 'relative', 
                     minHeight: '260px',
-                    border: '1.5px solid rgba(255, 255, 255, 0.85)',
+                    border: '1.5px solid var(--border-light)',
                     boxShadow: 'var(--shadow-md)',
                     transition: 'all 0.3s ease',
-                    background: '#ffffff'
+                    background: 'var(--surface-card)'
                   }}
                 >
                   {/* Google G logo branding in bottom right */}
@@ -2359,7 +2455,7 @@ export default function App() {
               padding: '48px',
               borderRadius: '24px',
               border: '1.5px solid var(--border-light)',
-              background: '#ffffff',
+              background: 'var(--surface-card)',
               textAlign: 'center',
               color: 'var(--text-secondary)'
             }}>
@@ -2368,21 +2464,32 @@ export default function App() {
           )}
 
           {/* Action Trigger */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '48px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', marginTop: '48px' }}>
             <button 
               onClick={() => {
-                window.open('https://search.google.com/local/writereview?placeid=ChIJs6M6SlqF_TgRu-9aVMqEn18', '_blank');
+                window.open('https://g.page/r/91xZaADhSuWDBvWCC/review', '_blank');
+              }}
+              className="btn btn-primary flex align-center gap-2"
+              style={{ padding: '14px 28px', fontWeight: 700 }}
+            >
+              <svg viewBox="0 0 24 24" width="16" height="16" style={{ display: 'block' }}>
+                <path fill="#ffffff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#ffffff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#ffffff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                <path fill="#ffffff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+              </svg>
+              Write a Google Review
+            </button>
+            
+            <button 
+              onClick={() => {
+                window.open('https://maps.app.goo.gl/QFGD7kxLjtaQFP739', '_blank');
               }}
               className="btn btn-secondary flex align-center gap-2"
               style={{ padding: '14px 28px', fontWeight: 700 }}
             >
-              <svg viewBox="0 0 24 24" width="16" height="16" style={{ display: 'block' }}>
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-              </svg>
-              Write a Google Review
+              <MapPin size={16} color="var(--green-primary)" />
+              View Clinic on Maps
             </button>
           </div>
 
@@ -2451,9 +2558,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* Footer & Contact Details / Maps & Logistics */}
       <footer style={{
-        background: '#ffffff',
+        background: 'var(--surface-card)',
         borderTop: '1px solid var(--border-light)',
         position: 'relative',
         zIndex: 5
@@ -2616,7 +2722,7 @@ export default function App() {
               width: '44px',
               height: '44px',
               borderRadius: '50%',
-              background: '#ffffff',
+              background: 'var(--surface-card)',
               border: '1.5px solid var(--border-light)',
               boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
               cursor: 'pointer',
