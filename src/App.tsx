@@ -62,8 +62,8 @@ const norwoodStages: NorwoodStage[] = [
 
 const services = {
   surgical: [
-    { title:"FUE Hair Transplant", desc:"In this modern technique, healthy hair grafts are carefully taken from the donor area and implanted into bald areas. It is minimally invasive, leaves no major scars, provides natural-looking density, and has a faster recovery time.", price:"From ₹21,000", features:["Minimally Invasive","No Major Scars","Natural Density","Fast Recovery Time"] },
-    { title:"BioSapphire FUE Technique", desc:"An advanced FUE hair transplant variant utilizing precise sapphire blades instead of steel to create micro-channels. This ensures superior graft placement, higher density, accelerated healing, and extremely natural results.", price:"From ₹31,000", features:["Advanced FUE Variant","Precise Sapphire Micro-Channels","Superior Graft Density","Rapid Scalp Healing"] }
+    { title:"FUE Hair Transplant", desc:"In this modern technique, healthy hair grafts are carefully taken from the donor area and implanted into bald areas. It is minimally invasive, leaves no major scars, provides natural-looking density, and has a faster recovery time.", price:"Starting from ₹21,000", features:["Minimally Invasive","No Major Scars","Natural Density","Fast Recovery Time"] },
+    { title:"BioSapphire FUE Technique", desc:"An advanced FUE hair transplant variant utilizing precise sapphire blades instead of steel to create micro-channels. This ensures superior graft placement, higher density, accelerated healing, and extremely natural results.", price:"Starting from ₹31,000", features:["Advanced FUE Variant","Precise Sapphire Micro-Channels","Superior Graft Density","Rapid Scalp Healing"] }
   ],
   lasers: [
     { title:"PRP Therapy (Platelet Rich Plasma)", desc:"A non-surgical hair treatment in which the patient's own plasma is injected into the scalp to strengthen hair roots, reduce hair fall, improve blood circulation, and stimulate natural hair growth.", price:"₹2,000 / session", features:["Non-Surgical Option","Strengthens Hair Roots","Reduces Hair Fall","Stimulates Hair Growth"] },
@@ -265,11 +265,11 @@ function ConsultationPage({
                 <div className="consult-treatment-grid">
                   {treatments.map(t => {
                     let priceText = "";
-                    if (t.value === 'FUE Hair Transplant') priceText = "Starting at ₹21,000";
-                    else if (t.value === 'BioSapphire FUE Technique') priceText = "Starting at ₹31,000";
+                    if (t.value === 'FUE Hair Transplant') priceText = "Starting from ₹21,000";
+                    else if (t.value === 'BioSapphire FUE Technique') priceText = "Starting from ₹31,000";
                     else if (t.value.includes('PRP')) priceText = "₹2,000 / session";
                     else if (t.value.includes('GFC')) priceText = "₹4,500 / session";
-                    else if (t.value.includes('Beard') || t.value.includes('Eyebrow')) priceText = "Starting at ₹25,000";
+                    else if (t.value.includes('Beard') || t.value.includes('Eyebrow')) priceText = "Starting from ₹25,000";
                     else priceText = "Free Evaluation";
 
                     return (
@@ -816,6 +816,36 @@ export default function App() {
           </div>
         </div>
       </section>
+      {/* ── TREATMENT PROCESS ── */}
+      <section id="process" className="py-24" style={{ position:'relative', borderTop:'1px solid var(--border-light)', background: 'linear-gradient(to bottom, var(--surface-bg), rgba(11,167,89,0.02))' }}>
+        <div className="container">
+          <div className="text-center mb-16">
+            <div className="badge badge-gradient mb-3">The Procedure</div>
+            <h2 className="text-4xl mb-4">Our Treatment Process</h2>
+            <p className="text-lg text-secondary-color" style={{ maxWidth:'640px', margin:'0 auto' }}>
+              We follow a rigorous, step-by-step scientific approach to ensure maximum graft survival, natural aesthetics, and a smooth recovery.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-4 gap-6 flex-col-mobile">
+            {[
+              { step: '01', title: 'Local Anesthesia', desc: 'Painless administration of local anesthesia for a comfortable procedure.', icon: <Shield size={28}/> },
+              { step: '02', title: 'Harvest from Donor Area', desc: 'Precise and careful extraction of healthy hair follicles from the donor zone.', icon: <Compass size={28}/> },
+              { step: '03', title: 'Implantation of The Grafts', desc: 'Strategic placement of grafts at the correct angle to match natural hair growth.', icon: <Search size={28}/> },
+              { step: '04', title: 'Result', desc: 'Natural-looking, dense hair growth and complete restoration of your confidence.', icon: <CheckCircle2 size={28}/> }
+            ].map((p, i) => (
+              <div key={i} className="glass-card p-6 flex flex-col align-center text-center" style={{ position: 'relative', overflow: 'hidden', borderTop: '4px solid var(--green-primary)' }}>
+                <div style={{ position: 'absolute', top: '-5px', right: '-10px', fontSize: '6rem', fontWeight: 900, color: 'var(--green-primary)', opacity: 0.05, fontFamily: 'var(--font-display)', lineHeight: 1 }}>{p.step}</div>
+                <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(11,167,89,0.1)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', zIndex: 1 }}>
+                  {p.icon}
+                </div>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', zIndex: 1 }}>{p.title}</h4>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.5, zIndex: 1 }}>{p.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── SERVICES ── */}
       <section id="services" className="py-24" style={{ position:'relative' }}>
@@ -918,6 +948,23 @@ export default function App() {
       {/* ── TEAM ── */}
       <section id="team" className="py-24" style={{ position:'relative' }}>
         <div className="container">
+          
+          {/* ── FOUNDER PROFILE ── */}
+          <div className="mb-20 text-center flex flex-col align-center" style={{ maxWidth: '700px', margin: '0 auto 80px' }}>
+            <div style={{ width: '180px', height: '180px', borderRadius: '50%', overflow: 'hidden', border: '4px solid var(--green-primary)', margin: '0 auto 24px', boxShadow: '0 12px 32px rgba(11,167,89,0.15)' }}>
+              <img src="/founder.png" alt="Mr. Harish Kalsotra" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px', fontFamily: 'var(--font-display)' }}>Mr. Harish Kalsotra</h3>
+            <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--green-primary)', marginBottom: '24px' }}>(Founder & Client Relations Executive)</p>
+            <div style={{ position: 'relative', padding: '0 24px' }}>
+              <span style={{ fontSize: '3rem', color: 'var(--border-light)', position: 'absolute', top: '-15px', left: '-10px', fontFamily: 'Georgia, serif', lineHeight: 1 }}>"</span>
+              <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', fontStyle: 'italic', lineHeight: '1.7', position: 'relative', zIndex: 1 }}>
+                Dedicated to helping clients regain confidence through advanced hair restoration solutions and personalized care.
+              </p>
+              <span style={{ fontSize: '3rem', color: 'var(--border-light)', position: 'absolute', bottom: '-35px', right: '-10px', fontFamily: 'Georgia, serif', lineHeight: 1 }}>"</span>
+            </div>
+          </div>
+
           <div className="text-center mb-16">
             <div className="badge badge-gradient mb-3">Expert Care Specialists</div>
             <h2 className="text-4xl mb-4">Meet Our Supportive Team</h2>
