@@ -216,6 +216,13 @@ h1, h2, h3, h4, h5, h6 {
 .px-6  { padding-left: 24px; padding-right: 24px;   }
 .px-8  { padding-left: 32px; padding-right: 32px;   }
 .pt-20 { padding-top: 80px; }
+.p-2   { padding: 8px !important; }
+.p-3   { padding: 12px !important; }
+.p-4   { padding: 16px !important; }
+.p-6   { padding: 24px !important; }
+.p-8   { padding: 32px !important; }
+.p-10  { padding: 40px !important; }
+.p-12  { padding: 48px !important; }
 .mb-2  { margin-bottom:  8px; }
 .mb-4  { margin-bottom: 16px; }
 .mb-6  { margin-bottom: 24px; }
@@ -255,15 +262,16 @@ h1, h2, h3, h4, h5, h6 {
    GLASS CARDS
    ============================================ */
 .glass-card {
-  background: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.60);
   backdrop-filter: blur(40px) saturate(160%);
   -webkit-backdrop-filter: blur(40px) saturate(160%);
-  border: 1px solid rgba(255,255,255,0.80);
-  box-shadow: var(--shadow-md), 0 0 0 0.5px rgba(0,0,0,0.03);
-  border-radius: var(--radius-lg);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: var(--shadow-md), 0 10px 30px -10px rgba(0,0,0,0.04);
+  border-radius: 24px;
   transition: transform 0.5s var(--ease-spring), box-shadow 0.5s var(--ease-spring), border-color 0.4s ease, background 0.4s ease;
   word-break: break-word;
   overflow-wrap: break-word;
+  padding: 32px; /* Force minimum 32px padding so text never touches card edges */
 }
 
 .glass-card:hover {
