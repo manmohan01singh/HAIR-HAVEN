@@ -169,10 +169,10 @@ const services = {
       features: ["Minimally Invasive", "No Major Scars", "Natural Density", "Fast Recovery Time"]
     },
     {
-      title: "BioSapphire Technique",
-      desc: "An advanced sapphire blade technology used during the transplant procedure for creating precise and tiny channels. This helps in better graft placement, improved hair density, less damage to the scalp, quicker healing, and more natural results.",
+      title: "BioSapphire FUE Technique",
+      desc: "An advanced FUE hair transplant variant utilizing precise sapphire blades instead of steel to create micro-channels. This ensures superior graft placement, higher density, accelerated healing, and extremely natural results.",
       price: "From ₹31,000",
-      features: ["Advanced Sapphire Blades", "Precise Tiny Channels", "Improved Hair Density", "Less Scalp Damage"]
+      features: ["Advanced FUE Variant", "Precise Sapphire Micro-Channels", "Superior Graft Density", "Rapid Scalp Healing"]
     }
   ],
   lasers: [
@@ -286,6 +286,7 @@ const reviewTags = ["All", "Clean & Hygienic", "Reasonably Priced", "Speedy Reco
 
 const treatments = [
   { value: "FUE Hair Transplant", label: "FUE Hair Transplant", category: "Surgical", desc: "Premium hair restoration with micro-graft extraction", icon: "🏥" },
+  { value: "BioSapphire FUE Technique", label: "BioSapphire FUE Technique", category: "Surgical", desc: "Advanced sapphire blade FUE restoration for higher density", icon: "💎" },
   { value: "PRP Therapy (Platelet-Rich Plasma)", label: "PRP Therapy", category: "Non-Surgical", desc: "Platelet-rich autologous growth factor treatment", icon: "💉" },
   { value: "Skin Rejuvenation & Facials", label: "Skin Rejuvenation Facials", category: "Dermal Care", desc: "Medical facials and pore cleansing", icon: "✨" },
   { value: "Skin Allergy Consultation", label: "Skin Allergy Consultation", category: "Diagnostics", desc: "Diagnostic testing and allergy relief programs", icon: "🔬" },
@@ -347,6 +348,20 @@ export default function App() {
     return () => clearInterval(interval);
   }, [swiperImages.length]);
 
+  // Preload Images for instant rendering
+  useEffect(() => {
+    // Preload Norwood images
+    for (let i = 1; i <= 7; i++) {
+      const img = new Image();
+      img.src = `/norwood${i}.png`;
+    }
+    // Preload patient swiper images
+    swiperImages.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, [swiperImages]);
+
   useEffect(() => {
     if (isDarkMode) {
       document.body.classList.add('dark-mode');
@@ -354,6 +369,7 @@ export default function App() {
       document.body.classList.remove('dark-mode');
     }
   }, [isDarkMode]);
+
 
   // Typewriter Tagline Phrases & State
   const phrases = useMemo(() => [
@@ -404,12 +420,14 @@ export default function App() {
   }, [displayText, isDeleting, phraseIdx, typingSpeed, phrases]);
 
   // Booking Form States
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [bookingStep, setBookingStep] = useState(1);
 
   const handleBookScroll = (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
-    setIsBookingModalOpen(true);
+    const el = document.getElementById('booking');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const handleBookService = (serviceValue: string) => {
@@ -418,7 +436,10 @@ export default function App() {
       setBookingStep(1);
       setBookingTicket(null);
     }
-    setIsBookingModalOpen(true);
+    const el = document.getElementById('booking');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
   };
   const [bookingForm, setBookingForm] = useState({
     fullName: '',
@@ -560,7 +581,7 @@ export default function App() {
     let base = 0;
     if (bookingForm.service === 'FUE Hair Transplant') {
       base = norwoodStages[selectedNorwood - 1].basePrice || 21000;
-    } else if (bookingForm.service === 'BioSapphire Technique') {
+    } else if (bookingForm.service === 'BioSapphire FUE Technique') {
       base = 31000;
     } else if (bookingForm.service.includes('PRP')) {
       base = 2000;
@@ -571,7 +592,7 @@ export default function App() {
     }
     
     let extra = 0;
-    if (bookingForm.service === 'FUE Hair Transplant' || bookingForm.service === 'BioSapphire Technique') {
+    if (bookingForm.service === 'FUE Hair Transplant' || bookingForm.service === 'BioSapphire FUE Technique') {
       extra += includePRPSessions * 2000;
       if (includeScreening) extra += 999;
     }
@@ -619,17 +640,8 @@ export default function App() {
 
     return result;
   }, [selectedReviewTag, reviewSearchQuery, reviewSortOrder]);
-
-
-
   return (
     <>
-      {/* Premium Soft Green Orbs with Parallax */}
-      <div className="orb-container" style={{ transform: `translateY(${scrollY * 0.1}px)` }}>
-        <div className="orb orb-green-1"></div>
-        <div className="orb orb-green-2"></div>
-      </div>
-
       {/* Header / Navbar */}
       <nav className={`glass-header ${scrolled ? 'scrolled' : ''}`}>
         <div className="container py-4 flex justify-between align-center" style={{ position: 'relative', minHeight: '74px' }}>
@@ -1214,8 +1226,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* Consultation Booking Section (Inline CTA Banner that launches the Modal) */}
-      <section id="booking" className="py-20" style={{ position: 'relative', overflow: 'hidden' }}>
+      {/* Consultation Booking Section (Inline Wizard Page) */}
+      <section id="booking" className="py-24" style={{ position: 'relative', overflow: 'hidden' }}>
         {/* Ambient background glow inside section */}
         <div style={{
           position: 'absolute',
@@ -1231,104 +1243,21 @@ export default function App() {
         }}></div>
 
         <div className="container flex justify-center" style={{ position: 'relative', zIndex: 2 }}>
-          <div className="glass-card p-12 flex flex-col align-center gap-6 text-center" 
-               style={{ 
-                 width: '100%', 
-                 maxWidth: '850px', 
-                 border: '1.5px solid rgba(11, 167, 89, 0.22)', 
-                 background: 'var(--surface-glass)',
-                 boxShadow: 'var(--shadow-xl), 0 20px 50px rgba(11, 167, 89, 0.06)'
-               }}>
-            <div className="badge badge-gradient mb-2" style={{ background: 'rgba(11, 167, 89, 0.07)', borderColor: 'rgba(11, 167, 89, 0.25)', color: 'var(--green-deep)', fontWeight: 800 }}>
-              ✨ Private Diagnostics & Restorative Care
-            </div>
-            <h2 className="text-4xl font-decorative mb-1" style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.02em', fontWeight: 800 }}>
-              Schedule a Clinical Consultation
-            </h2>
-            <p className="text-lg text-secondary-color" style={{ maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
-              Book an exclusive scalp analysis and FUE/PRP treatment roadmap with our leading dermatologists. 
-              No queue waiting at Channi Himmat, Jammu.
-            </p>
-            <button 
-              type="button" 
-              className="btn btn-primary pulse-button mt-4"
-              style={{ padding: '16px 40px', fontSize: '1.05rem', fontWeight: 800 }}
-              onClick={() => setIsBookingModalOpen(true)}
-            >
-              Book Free Consultation Now <ArrowRight size={18} style={{ marginLeft: '8px' }} />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Premium Booking Modal Overlay */}
-      {isBookingModalOpen && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 1000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '20px',
-          animation: 'fadeIn 0.25s ease-out'
-        }}>
-          {/* Blur Backdrop */}
-          <div 
-            onClick={() => setIsBookingModalOpen(false)}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'rgba(0, 0, 0, 0.7)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)'
-            }}
-          />
-
-          {/* Modal Container */}
+          {/* Form Container (Fully visible card inline) */}
           <div 
             className="glass-card"
             style={{
               position: 'relative',
               width: '100%',
-              maxWidth: '750px',
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              maxWidth: '850px',
               border: '1.5px solid var(--border-green)',
               background: 'var(--surface-frost)',
-              boxShadow: 'var(--shadow-xl), 0 20px 50px rgba(11, 167, 89, 0.15)',
+              boxShadow: 'var(--shadow-xl), 0 20px 50px rgba(11, 167, 89, 0.06)',
               padding: '40px',
-              animation: 'scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-              zIndex: 1001,
               borderRadius: '28px',
               textAlign: 'left'
             }}
           >
-            {/* Close Button */}
-            <button
-              onClick={() => setIsBookingModalOpen(false)}
-              style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                background: 'rgba(0,0,0,0.05)',
-                border: 'none',
-                borderRadius: '50%',
-                width: '36px',
-                height: '36px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: 'var(--text-primary)',
-                transition: 'all 0.2s ease',
-                zIndex: 10
-              }}
-              title="Close Modal"
-            >
-              <X size={20} />
-            </button>
-
             {/* Header */}
             <div className="text-center mb-6">
               <div className="badge badge-gradient mb-3" style={{ background: 'rgba(11, 167, 89, 0.07)', borderColor: 'rgba(11, 167, 89, 0.25)', color: 'var(--green-deep)', fontWeight: 800 }}>
@@ -1762,10 +1691,9 @@ export default function App() {
                 </div>
               </div>
             )}
-
           </div>
         </div>
-      )}
+      </section>
 
       {/* Norwood scale Interactive Graft & Cost Calculator */}
       <section id="calculator" className="py-24" style={{ background: 'transparent', borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)' }}>
@@ -2242,7 +2170,8 @@ export default function App() {
                     <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)', marginBottom: '2px' }}>Hair Haven</div>
                     <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>Hair transplantation clinic in Jammu, J&K · <span style={{ color: 'var(--green-deep)', fontWeight: 700 }}>Open</span></div>
                     <button
-                      onClick={() => window.open('https://g.page/r/91xZaADhSuWDBvWCC/review', '_blank')}
+                      onClick={() => window.open('https://share.google/91xZaADhSuWDBvWCC', '_blank')}
+
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '6px',
                         padding: '8px 14px', borderRadius: '20px',
@@ -2281,8 +2210,8 @@ export default function App() {
                 className="glass-card" 
                 style={{ 
                   width: '100%', 
-                  maxWidth: '480px', 
-                  padding: '20px', 
+                  maxWidth: '540px', 
+                  padding: '24px', 
                   overflow: 'hidden',
                   position: 'relative',
                   border: '1.5px solid var(--border-green)',
@@ -2297,7 +2226,7 @@ export default function App() {
                 </div>
                 
                 {/* Images Container */}
-                <div style={{ position: 'relative', width: '100%', aspectRatio: '4/3', borderRadius: '16px', overflow: 'hidden', background: '#000' }}>
+                <div style={{ position: 'relative', width: '100%', aspectRatio: '1', borderRadius: '16px', overflow: 'hidden', background: '#000' }}>
                   {swiperImages.map((src, idx) => (
                     <img
                       key={src}
@@ -2556,8 +2485,9 @@ export default function App() {
           <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', marginTop: '48px' }}>
             <button 
               onClick={() => {
-                window.open('https://g.page/r/91xZaADhSuWDBvWCC/review', '_blank');
+                window.open('https://share.google/91xZaADhSuWDBvWCC', '_blank');
               }}
+
               className="btn btn-primary flex align-center gap-2"
               style={{ padding: '14px 28px', fontWeight: 700 }}
             >

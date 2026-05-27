@@ -72,12 +72,31 @@ body.dark-mode {
   --text-tertiary: #64748b;
   --surface-card: #0d120f;
 
+  /* Bright emerald/green tones for high contrast in dark mode */
+  --green-deep:    #34d399; /* Bright emerald for dark mode text */
+  --green-primary: #10b981; /* Medium emerald for highlights */
+  --green-mid:     #059669; /* Forest green */
+  --green-soft:    #064e3b; /* Dark moss green */
+  --green-pale:    #0a2e1d; /* Deep emerald-black for pill backgrounds */
+
+  /* Luxury Gold Accents */
+  --gold-primary: #f59e0b; /* Warmer amber/gold */
+  --gold-light: #fef3c7;
+  --gold-dark: #b45309;
+
+  /* Neutral reuse aliases */
+  --gemini-blue:   #34d399;
+  --gemini-purple: #10b981;
+  --gemini-pink:   #059669;
+  --gemini-cyan:   #064e3b;
+  --gemini-orange: #0a2e1d;
+
   /* Surfaces */
   --surface-glass: rgba(13, 18, 15, 0.70);
   --surface-frost: rgba(13, 18, 15, 0.90);
   --border-glass:  rgba(13, 18, 15, 0.80);
   --border-light:  rgba(255, 255, 255, 0.08);
-  --border-green:  rgba(11, 167, 89, 0.35);
+  --border-green:  rgba(16, 185, 129, 0.35);
   
   --shadow-xs:  0 1px 4px rgba(0,0,0,0.2);
   --shadow-sm:  0 4px 16px rgba(0,0,0,0.25);
@@ -125,60 +144,8 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.10); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.18); }
 
-/* ============================================
-   ORB BACKGROUND SYSTEM
-   ============================================ */
-.orb-container {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-  background: var(--bg-primary);
-  transition: background 0.4s ease;
-}
+/* Background system is directly styled on the body via var(--bg-primary) */
 
-.orb {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.orb-green-1 {
-  width: 80vw;
-  height: 80vw;
-  max-width: 900px;
-  max-height: 900px;
-  background: radial-gradient(circle, rgba(11,167,89,0.30) 0%, transparent 70%);
-  top: -20%;
-  left: -15%;
-  filter: blur(160px);
-  animation: orb-drift-1 30s ease-in-out infinite alternate;
-}
-
-.orb-green-2 {
-  width: 70vw;
-  height: 70vw;
-  max-width: 800px;
-  max-height: 800px;
-  background: radial-gradient(circle, rgba(11,167,89,0.30) 0%, transparent 70%);
-  bottom: -25%;
-  right: -10%;
-  filter: blur(180px);
-  animation: orb-drift-2 38s ease-in-out infinite alternate;
-}
-
-@keyframes orb-drift-1 {
-  0%   { transform: translate(0, 0) scale(1); }
-  50%  { transform: translate(4vw, 5vh) scale(1.08); }
-  100% { transform: translate(-2vw, 3vh) scale(0.95); }
-}
-
-@keyframes orb-drift-2 {
-  0%   { transform: translate(0, 0) scale(1); }
-  50%  { transform: translate(-5vw, -4vh) scale(1.06); }
-  100% { transform: translate(3vw, -2vh) scale(0.97); }
-}
 
 /* ============================================
    LAYOUT
@@ -421,19 +388,20 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-  box-shadow: 0 1px 0 rgba(0,0,0,0.02), 0 4px 20px rgba(0,0,0,0.02);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(11, 167, 89, 0.12);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
   transition: all 0.4s ease;
 }
 
 .glass-header.scrolled {
-  background: rgba(255,255,255,0.96);
-  border-bottom-color: rgba(0,0,0,0.07);
-  box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04);
+  background: rgba(255, 255, 255, 0.6);
+  border-bottom-color: rgba(11, 167, 89, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
 }
+
 
 .nav-link {
   color: var(--text-secondary);
@@ -486,11 +454,11 @@ h1, h2, h3, h4, h5, h6 {
   top: 100%;
   left: 0;
   right: 0;
-  background: rgba(255,255,255,0.97);
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border-light);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
   padding: 20px 24px 28px;
   display: flex;
   flex-direction: column;
@@ -1340,19 +1308,21 @@ h1, h2, h3, h4, h5, h6 {
    DARK MODE OVERRIDES & COMPONENT STYLES
    ============================================ */
 body.dark-mode .glass-header {
-  background: rgba(7, 10, 8, 0.88);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.02), 0 4px 20px rgba(0,0,0,0.4);
+  background: rgba(10, 20, 15, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom-color: rgba(11, 167, 89, 0.15);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 }
 
 body.dark-mode .glass-header.scrolled {
-  background: rgba(7, 10, 8, 0.94);
-  border-bottom-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 8px 24px rgba(0,0,0,0.5);
+  background: rgba(10, 20, 15, 0.6);
+  border-bottom-color: rgba(11, 167, 89, 0.22);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .mobile-nav-drawer {
-  background: rgba(7, 10, 8, 0.96);
+  background: rgba(10, 20, 15, 0.6);
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -1407,10 +1377,20 @@ body.dark-mode .stat-chip:hover {
   border-color: rgba(255, 255, 255, 0.12);
 }
 
+body.dark-mode .stepper-circle {
+  background: var(--bg-secondary);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-tertiary);
+}
+
 body.dark-mode .stepper-step.completed .stepper-circle {
   background: var(--surface-card);
   border-color: var(--green-primary);
   color: var(--green-primary);
+}
+
+body.dark-mode .stepper-line {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 body.dark-mode .treatment-card-premium {
