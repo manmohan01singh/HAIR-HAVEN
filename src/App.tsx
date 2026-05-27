@@ -764,22 +764,22 @@ export default function App() {
               {services.surgical.map((srv, idx) => (
                 <div 
                   key={idx} 
-                  className={`glass-card p-6 flex flex-col justify-between ${srv.title === 'FUE Hair Transplant' ? 'card-vip-gold' : ''}`} 
+                  className="glass-card p-6 flex flex-col justify-between" 
                   style={{ minHeight: '310px' }}
                 >
                   <div>
                     <div className="flex justify-between align-center mb-3">
-                      <h4 className="font-semibold text-lg" style={{ paddingRight: srv.title === 'FUE Hair Transplant' ? '90px' : '0px' }}>{srv.title}</h4>
-                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: srv.title === 'FUE Hair Transplant' ? 'var(--gold-light)' : 'rgba(66, 133, 244, 0.2)', color: srv.title === 'FUE Hair Transplant' ? 'var(--gold-dark)' : 'var(--gemini-blue)', fontWeight: 700 }}>{srv.price}</span>
+                      <h4 className="font-semibold text-lg" style={{ lineHeight: '1.4' }}>{srv.title}</h4>
+                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-deep)', fontWeight: 700 }}>{srv.price}</span>
                     </div>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
                   </div>
                   
                   <div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
                       {srv.features.slice(0, 3).map((feat, fidx) => (
                         <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                          <CheckCircle2 size={12} color={srv.title === 'FUE Hair Transplant' ? 'var(--gold-dark)' : 'var(--gemini-blue)'} />
+                          <CheckCircle2 size={12} color="var(--green-primary)" />
                           <span>{feat}</span>
                         </div>
                       ))}
@@ -804,8 +804,8 @@ export default function App() {
                   width: '36px',
                   height: '36px',
                   borderRadius: '10px',
-                  background: 'rgba(155, 81, 224, 0.1)',
-                  color: 'var(--gemini-purple)',
+                  background: 'rgba(11, 167, 89, 0.1)',
+                  color: 'var(--green-deep)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center'
@@ -816,20 +816,20 @@ export default function App() {
               </div>
 
               {services.lasers.map((srv, idx) => (
-                <div key={idx} className="glass-card p-6 flex flex-col justify-between card-laser-premium" style={{ minHeight: '310px' }}>
+                <div key={idx} className="glass-card p-6 flex flex-col justify-between" style={{ minHeight: '310px' }}>
                   <div>
                     <div className="flex justify-between align-center mb-3">
-                      <h4 className="font-semibold text-lg">{srv.title}</h4>
-                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(155, 81, 224, 0.2)', color: 'var(--gemini-purple)', fontWeight: 700 }}>{srv.price}</span>
+                      <h4 className="font-semibold text-lg" style={{ lineHeight: '1.4' }}>{srv.title}</h4>
+                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-primary)', fontWeight: 700 }}>{srv.price}</span>
                     </div>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
                   </div>
 
                   <div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
                       {srv.features.slice(0, 3).map((feat, fidx) => (
                         <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                          <CheckCircle2 size={12} color="var(--gemini-purple)" />
+                          <CheckCircle2 size={12} color="var(--green-primary)" />
                           <span>{feat}</span>
                         </div>
                       ))}
@@ -853,8 +853,8 @@ export default function App() {
                   width: '36px',
                   height: '36px',
                   borderRadius: '10px',
-                  background: 'rgba(208, 21, 105, 0.1)',
-                  color: 'var(--gemini-pink)',
+                  background: 'rgba(11, 167, 89, 0.1)',
+                  color: 'var(--green-deep)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center'
@@ -865,20 +865,20 @@ export default function App() {
               </div>
 
               {services.dermatology.map((srv, idx) => (
-                <div key={idx} className="glass-card p-6 flex flex-col justify-between card-dermatology-premium" style={{ minHeight: '310px' }}>
+                <div key={idx} className="glass-card p-6 flex flex-col justify-between" style={{ minHeight: '310px' }}>
                   <div>
                     <div className="flex justify-between align-center mb-3">
-                      <h4 className="font-semibold text-lg">{srv.title}</h4>
-                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(208, 21, 105, 0.2)', color: 'var(--gemini-pink)', fontWeight: 700 }}>{srv.price}</span>
+                      <h4 className="font-semibold text-lg" style={{ lineHeight: '1.4' }}>{srv.title}</h4>
+                      <span className="badge" style={{ fontSize: '0.75rem', borderColor: 'rgba(11, 167, 89, 0.2)', color: 'var(--green-mid)', fontWeight: 700 }}>{srv.price}</span>
                     </div>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>{srv.desc}</p>
                   </div>
 
                   <div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
                       {srv.features.slice(0, 3).map((feat, fidx) => (
                         <div key={fidx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                          <CheckCircle2 size={12} color="var(--gemini-pink)" />
+                          <CheckCircle2 size={12} color="var(--green-primary)" />
                           <span>{feat}</span>
                         </div>
                       ))}

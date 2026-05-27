@@ -1273,47 +1273,4 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* ============================================
-   VIP CLINICAL CARD SPECIFICATION
-   ============================================ */
-.card-vip-gold {
-  border: 1px solid rgba(212, 175, 55, 0.35) !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 252, 249, 0.95) 100%) !important;
-  box-shadow: var(--shadow-md), 0 10px 30px rgba(11, 167, 89, 0.03), 0 0 20px rgba(212, 175, 55, 0.12) !important;
-  position: relative;
-}
 
-.card-vip-gold::after {
-  content: "★ VIP CLINICAL CHOICE";
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
-  color: #ffffff;
-  font-size: 0.6rem;
-  font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 99px;
-  letter-spacing: 0.05em;
-  box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
-}
-
-.card-dermatology-premium {
-  border: 1px solid rgba(208, 21, 105, 0.15) !important;
-  transition: all 0.35s var(--ease-spring);
-}
-
-.card-dermatology-premium:hover {
-  border-color: rgba(208, 21, 105, 0.35) !important;
-  box-shadow: var(--shadow-md), 0 10px 25px rgba(208, 21, 105, 0.05) !important;
-}
-
-.card-laser-premium {
-  border: 1px solid rgba(155, 81, 224, 0.15) !important;
-  transition: all 0.35s var(--ease-spring);
-}
-
-.card-laser-premium:hover {
-  border-color: rgba(155, 81, 224, 0.35) !important;
-  box-shadow: var(--shadow-md), 0 10px 25px rgba(155, 81, 224, 0.05) !important;
-}
