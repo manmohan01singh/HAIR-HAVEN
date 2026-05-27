@@ -34,7 +34,6 @@ function MagicalOrbs() {
     <div className="orb-container" aria-hidden="true">
       <div className="orb orb-1" />
       <div className="orb orb-2" />
-      <div className="orb orb-3" />
     </div>
   );
 }
@@ -163,7 +162,7 @@ function ConsultationPage({
 
   return (
     <div className="consultation-page">
-      <MagicalOrbs />
+      {/* Orbs are already rendered globally in App */}
 
       {/* Header */}
       <div className="consult-header">
@@ -178,7 +177,7 @@ function ConsultationPage({
             <div style={{ fontSize:'0.65rem', color:'var(--gemini-purple)', fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase' }}>Book Consultation</div>
           </div>
         </div>
-        <div style={{ width:'80px' }} />
+        <div style={{ width:'60px' }} />
       </div>
 
       <div className="consult-body">
@@ -731,8 +730,12 @@ export default function App() {
             <a href="#reviews" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>⭐ Reviews</a>
             <a href="#map" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>📍 Location</a>
             <div className="mobile-nav-divider" />
-            <button onClick={() => { setCurrentPage('consultation'); setMobileMenuOpen(false); }} className="btn btn-primary btn-sm">
-              Book Consultation
+            <button onClick={() => { setCurrentPage('consultation'); setMobileMenuOpen(false); }} className="btn btn-primary" style={{ width:'100%', marginTop:'8px' }}>
+              Book Free Consultation
+            </button>
+            <button onClick={() => setIsDarkMode(!isDarkMode)} className="btn btn-secondary" style={{ width:'100%', marginTop:'8px', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px' }}>
+              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+              {isDarkMode ? 'Light Mode' : 'Dark Mode'}
             </button>
           </div>
         )}
@@ -1401,7 +1404,7 @@ export default function App() {
       <div style={{ position:'fixed', top:0, left:0, height:'3px', width:`${scrollProgress}%`, background:'linear-gradient(90deg, var(--green-deep) 0%, var(--green-primary) 60%, #22d3ee 100%)', zIndex:10000, transition:'width 0.1s linear', borderRadius:'0 2px 2px 0', boxShadow:'0 0 8px rgba(11,167,89,0.5)' }} />
 
       {/* WhatsApp FAB */}
-      <div style={{ position:'fixed', bottom:'96px', right:'24px', zIndex:900, display:'flex', flexDirection:'column', alignItems:'center', gap:'10px' }}>
+      <div style={{ position:'fixed', bottom:'100px', right:'20px', zIndex:900, display:'flex', flexDirection:'column', alignItems:'center', gap:'10px' }}>
         {scrollY > 400 && (
           <button onClick={() => window.scrollTo({ top:0, behavior:'smooth' })} title="Back to top"
             style={{ width:'44px', height:'44px', borderRadius:'50%', background:'var(--surface-card)', border:'1.5px solid var(--border-light)', boxShadow:'0 4px 16px rgba(0,0,0,0.10)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--text-secondary)' }}>
