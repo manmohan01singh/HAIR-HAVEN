@@ -5,7 +5,7 @@ import {
   Heart, Award, Compass,
   MessageSquare, Search, SlidersHorizontal,
   Sun, Moon, Home, Stethoscope, Image as ImageIcon, MessageCircle, Calendar,
-  Download
+  Download, User, Phone, Mail, FileText
 } from 'lucide-react';
 // @ts-ignore
 import confetti from 'canvas-confetti';
@@ -221,18 +221,27 @@ function ConsultationPage({
                 <div className="consult-form-grid">
                   <div className="consult-field">
                     <label className="consult-label">Full Name *</label>
-                    <input type="text" placeholder="Enter your complete name" className="consult-input"
-                      value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} />
+                    <div className="consult-input-wrapper">
+                      <User size={18} className="consult-input-icon" />
+                      <input type="text" placeholder="Enter your complete name" className="consult-input"
+                        value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} />
+                    </div>
                   </div>
                   <div className="consult-field">
                     <label className="consult-label">Phone Number *</label>
-                    <input type="tel" placeholder="+91 88997 08659" className="consult-input"
-                      value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
+                    <div className="consult-input-wrapper">
+                      <Phone size={18} className="consult-input-icon" />
+                      <input type="tel" placeholder="+91 88997 08659" className="consult-input"
+                        value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
+                    </div>
                   </div>
                   <div className="consult-field" style={{ gridColumn: '1 / -1' }}>
                     <label className="consult-label">Email Address (Optional)</label>
-                    <input type="email" placeholder="patient@example.com" className="consult-input"
-                      value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+                    <div className="consult-input-wrapper">
+                      <Mail size={18} className="consult-input-icon" />
+                      <input type="email" placeholder="patient@example.com" className="consult-input"
+                        value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+                    </div>
                   </div>
                 </div>
                 <button className="consult-next-btn btn btn-primary" onClick={() => {
@@ -255,26 +264,40 @@ function ConsultationPage({
                   Choose Your Treatment
                 </div>
                 <div className="consult-treatment-grid">
-                  {treatments.map(t => (
-                    <div key={t.value}
-                      className={`consult-treatment-card ${form.service === t.value ? 'active' : ''}`}
-                      onClick={() => setForm({...form, service: t.value})}>
-                      <div className="consult-treatment-icon">{t.icon}</div>
-                      <div style={{ flex:1 }}>
-                        <div style={{ fontWeight:800, fontSize:'0.9rem', color:'var(--text-primary)', marginBottom:'2px' }}>{t.label}</div>
-                        <div style={{ fontSize:'0.75rem', color:'var(--text-secondary)' }}>{t.desc}</div>
+                  {treatments.map(t => {
+                    let priceText = "";
+                    if (t.value === 'FUE Hair Transplant') priceText = "Starting at ₹21,000";
+                    else if (t.value === 'BioSapphire FUE Technique') priceText = "Starting at ₹31,000";
+                    else if (t.value.includes('PRP')) priceText = "₹2,000 / session";
+                    else if (t.value.includes('GFC')) priceText = "₹4,500 / session";
+                    else if (t.value.includes('Beard') || t.value.includes('Eyebrow')) priceText = "Starting at ₹25,000";
+                    else priceText = "Free Evaluation";
+
+                    return (
+                      <div key={t.value}
+                        className={`consult-treatment-card ${form.service === t.value ? 'active' : ''}`}
+                        onClick={() => setForm({...form, service: t.value})}>
+                        <div className="consult-treatment-icon">{t.icon}</div>
+                        <div style={{ flex:1 }}>
+                          <div style={{ fontWeight:800, fontSize:'0.95rem', color:'var(--text-primary)', marginBottom:'2px' }}>{t.label}</div>
+                          <div style={{ fontSize:'0.75rem', color:'var(--text-secondary)', marginBottom:'6px', lineHeight:'1.4' }}>{t.desc}</div>
+                          <div style={{ fontSize:'0.82rem', fontWeight:800, color:'var(--green-primary)' }}>{priceText}</div>
+                        </div>
+                        <span className="consult-category-pill">{t.category}</span>
+                        {form.service === t.value && (
+                          <div className="consult-check"><CheckCircle2 size={18} color="var(--green-primary)" /></div>
+                        )}
                       </div>
-                      <span className="consult-category-pill">{t.category}</span>
-                      {form.service === t.value && (
-                        <div className="consult-check"><CheckCircle2 size={18} color="var(--green-primary)" /></div>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="consult-prior-q">
-                  <div className="consult-label" style={{ marginBottom:'12px' }}>Had a hair transplant before?</div>
-                  <div style={{ display:'flex', gap:'12px' }}>
+                  <div className="consult-prior-header">
+                    <span style={{ fontSize:'1.1rem' }}>🙋‍♂️</span>
+                    <div className="consult-label">Had a hair transplant before?</div>
+                  </div>
+                  <div style={{ display:'flex', gap:'12px', marginTop:'12px' }}>
                     {['yes','no'].map(val => (
                       <button key={val} type="button"
                         className={`consult-yesno-btn ${form.hadPriorConsultation === val ? 'active' : ''}`}
@@ -302,38 +325,52 @@ function ConsultationPage({
 
                 <div className="consult-field">
                   <label className="consult-label">Preferred Date</label>
-                  <input type="date" className="consult-input" style={{ fontWeight:700 }}
-                    value={form.date} onChange={e => setForm({...form, date: e.target.value})} />
+                  <div className="consult-input-wrapper">
+                    <Calendar size={18} className="consult-input-icon" />
+                    <input type="date" className="consult-input" style={{ fontWeight:700, paddingLeft:'46px' }}
+                      value={form.date} onChange={e => setForm({...form, date: e.target.value})} />
+                  </div>
                 </div>
 
                 <div className="consult-field" style={{ marginTop:'20px' }}>
                   <label className="consult-label">Preferred Time Slot</label>
                   <div className="consult-timeslot-grid">
-                    {timeSlots.map(ts => (
-                      <div key={ts.value}
-                        className={`consult-timeslot ${form.time === ts.value ? 'active' : ''}`}
-                        onClick={() => setForm({...form, time: ts.value})}>
-                        <div style={{ fontWeight:800, fontSize:'0.95rem', color:'var(--text-primary)' }}>{ts.value}</div>
-                        <div style={{ fontSize:'0.7rem', color:'var(--text-tertiary)', marginTop:'2px' }}>{ts.period}</div>
-                      </div>
-                    ))}
+                    {timeSlots.map(ts => {
+                      const isMorning = ts.period === 'Morning';
+                      const isAfternoon = ts.period === 'Afternoon';
+                      return (
+                        <div key={ts.value}
+                          className={`consult-timeslot ${form.time === ts.value ? 'active' : ''}`}
+                          onClick={() => setForm({...form, time: ts.value})}>
+                          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'6px', fontWeight:800, fontSize:'0.95rem', color:'var(--text-primary)' }}>
+                            {isMorning ? '🌅' : isAfternoon ? '☀️' : '🌇'} {ts.value}
+                          </div>
+                          <div style={{ fontSize:'0.7rem', color:'var(--text-tertiary)', marginTop:'2px', fontWeight:700, textTransform:'uppercase' }}>{ts.period}</div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 
                 <div className="consult-field" style={{ marginTop:'20px' }}>
                   <label className="consult-label">Additional Notes (Optional)</label>
-                  <textarea rows={3} placeholder="Any scalp concerns, allergies, medications, or surgical history..."
-                    className="consult-input" style={{ resize:'none' }}
-                    value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
+                  <div className="consult-input-wrapper">
+                    <FileText size={18} className="consult-input-icon" style={{ top:'22px' }} />
+                    <textarea rows={3} placeholder="Any scalp concerns, allergies, medications, or surgical history..."
+                      className="consult-input" style={{ resize:'none', paddingLeft:'46px' }}
+                      value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
+                  </div>
                 </div>
 
-                <label style={{ display:'flex', alignItems:'center', gap:'12px', cursor:'pointer', marginTop:'16px',
-                  padding:'14px 18px', borderRadius:'16px', border:'1.5px solid var(--border-light)',
-                  background:'var(--surface-glass)', fontSize:'0.87rem', color:'var(--text-secondary)' }}>
+                <label className={`consult-checkbox-card ${form.bloodSugarCheck === 'yes' ? 'active' : ''}`} style={{ marginTop:'24px' }}>
                   <input type="checkbox" checked={form.bloodSugarCheck === 'yes'}
                     onChange={e => setForm({...form, bloodSugarCheck: e.target.checked ? 'yes' : 'no'})}
-                    style={{ accentColor:'var(--green-primary)', width:'18px', height:'18px' }} />
-                  <span style={{ fontWeight:700, color:'var(--text-primary)' }}>Include on-site Blood Sugar Safety Screening</span>
+                    style={{ accentColor:'var(--green-primary)', width:'20px', height:'20px', cursor:'pointer' }} />
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontWeight:800, color:'var(--text-primary)', fontSize:'0.9rem' }}>Include on-site Blood Sugar Safety Screening</div>
+                    <div style={{ fontSize:'0.75rem', color:'var(--text-secondary)', marginTop:'2px' }}>Highly recommended for diabetic patients or transplants over 2000 grafts.</div>
+                  </div>
+                  <span className="badge badge-gradient">🛡️ Safety First</span>
                 </label>
 
                 <div style={{ display:'flex', gap:'12px', marginTop:'28px' }}>

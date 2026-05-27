@@ -2351,4 +2351,176 @@ body.dark-mode .consult-ticket {
   color: var(--text-primary);
 }
 
+/* Custom Input Wrapper with Left Icons */
+.consult-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.consult-input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+  transition: color 0.25s ease;
+}
+
+.consult-input:focus + .consult-input-icon,
+.consult-input-wrapper:focus-within .consult-input-icon {
+  color: var(--green-primary);
+}
+
+.consult-input-wrapper .consult-input {
+  padding-left: 48px;
+}
+
+/* Prior transplant header */
+.consult-prior-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Checkbox Selection Card */
+.consult-checkbox-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-light);
+  background: var(--surface-glass);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-xs);
+  user-select: none;
+}
+
+.consult-checkbox-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--green-soft);
+  box-shadow: var(--shadow-sm);
+}
+
+.consult-checkbox-card.active {
+  border-color: var(--green-primary);
+  background: var(--green-pale);
+  box-shadow: 0 4px 16px rgba(11, 167, 89, 0.08);
+}
+
+body.dark-mode .consult-checkbox-card {
+  background: rgba(18, 24, 21, 0.5);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .consult-checkbox-card.active {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: var(--green-primary);
+}
+
+/* PWA App Install Banner Styling */
+.pwa-banner {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100000;
+  width: calc(100% - 32px);
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid var(--green-soft);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  box-shadow: 0 16px 40px -10px rgba(11, 167, 89, 0.2), var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  animation: slideDownIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+body.dark-mode .pwa-banner {
+  background: rgba(13, 18, 15, 0.92);
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 16px 45px -10px rgba(0, 0, 0, 0.5), var(--shadow-lg);
+}
+
+.pwa-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+@keyframes slideDownIn {
+  from { transform: translate(-50%, -30px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+/* PWA Install Modal Styling */
+.pwa-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000000;
+  animation: fadeIn 0.25s ease;
+}
+
+.pwa-modal {
+  background: var(--surface-frost);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl), 0 24px 50px -12px rgba(11, 167, 89, 0.15);
+  padding: 36px 32px;
+  max-width: 420px;
+  width: calc(100% - 32px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+body.dark-mode .pwa-modal {
+  background: rgba(13, 18, 15, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.pwa-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.pwa-modal-close:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.pwa-modal-logo {
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+  border-width: 2.5px !important;
+}
+
 
