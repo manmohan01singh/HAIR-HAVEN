@@ -687,6 +687,30 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 4px 16px rgba(11,167,89,0.25);
 }
 
+.filter-slider-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 32px auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.filter-slider {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 8px 4px 16px 4px;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  justify-content: flex-start;
+}
+
+.filter-slider::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
 /* ============================================
    FORMS
    ============================================ */

@@ -1743,15 +1743,16 @@ export default function App() {
               <div style={{
                 background: 'rgba(15, 23, 42, 0.01)',
                 borderRadius: '24px',
-                padding: '24px',
+                padding: '32px 24px',
                 border: '1.5px solid var(--border-light)',
-                display: 'grid',
-                gridTemplateColumns: '140px 1fr',
+                display: 'flex',
+                flexDirection: 'column',
                 gap: '24px',
-                alignItems: 'center'
-              }} className="flex-col-mobile">
+                alignItems: 'center',
+                textAlign: 'center'
+              }}>
                 
-                {/* Left: Beautiful Diagnostic SVG */}
+                {/* Top: Beautiful Diagnostic SVG */}
                 <div style={{
                   background: '#ffffff',
                   borderRadius: '16px',
@@ -1763,21 +1764,20 @@ export default function App() {
                   boxShadow: 'var(--shadow-sm)',
                   height: '140px',
                   width: '140px',
-                  flexShrink: 0,
-                  margin: '0 auto'
+                  flexShrink: 0
                 }}>
                   <NorwoodStageVisual stage={selectedNorwood} />
                 </div>
 
-                {/* Right: Description & Simple English */}
-                <div style={{ textAlign: 'left' }}>
-                  <div className="badge badge-gradient mb-2" style={{ fontSize: '0.7rem' }}>
+                {/* Bottom: Description & Simple English */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <div className="badge badge-gradient mb-3" style={{ fontSize: '0.7rem' }}>
                     Stage {selectedNorwood} Scalp Pattern
                   </div>
                   <h4 className="font-semibold text-lg mb-2" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
                     {currentNorwoodInfo.name}
                   </h4>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: '1.6', maxWidth: '480px', margin: '0 auto' }}>
                     {currentNorwoodInfo.description}
                   </p>
                 </div>
@@ -1928,350 +1928,134 @@ export default function App() {
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-8 flex-col-mobile mb-12">
-            
-            {/* Post 1: FUE Hairline */}
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            {/* Single Premium Instagram Profile Widget Card */}
             <div 
-              className="glass-card flex flex-col cursor-pointer" 
+              className="glass-card flex flex-col cursor-pointer"
               onClick={() => window.open('https://instagram.com/hairhaventransplantclinic', '_blank')}
-              style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px', transition: 'all 0.3s ease' }}
+              style={{
+                width: '100%',
+                maxWidth: '580px',
+                background: '#ffffff',
+                border: '1.5px solid rgba(255, 255, 255, 0.85)',
+                borderRadius: '32px',
+                padding: '32px',
+                boxShadow: 'var(--shadow-lg), 0 20px 40px -15px rgba(0,0,0,0.05)',
+                transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                textAlign: 'left'
+              }}
             >
-              {/* Instagram Card Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid var(--border-light)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--green-pale)', border: '1px solid var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 800 }}>HH</div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      hairhaventransplantclinic
-                      <span style={{ display: 'inline-flex', width: '10px', height: '10px', borderRadius: '50%', background: '#0095f6', color: '#fff', fontSize: '0.45rem', alignItems: 'center', justifyContent: 'center' }}>✓</span>
-                    </span>
-                    <span style={{ fontSize: '0.6rem', color: 'var(--text-tertiary)' }}>Jammu, India</span>
+              {/* Instagram Profile Header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
+                <div style={{
+                  width: '76px',
+                  height: '76px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                  padding: '3px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <div style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '50%',
+                    background: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                    border: '2px solid #ffffff'
+                  }}>
+                    <HairHavenLogo size={70} />
                   </div>
                 </div>
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--text-tertiary)" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-              </div>
 
-              {/* Image Visual Representation */}
-              <div style={{
-                height: '200px',
-                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderBottom: '1px solid var(--border-light)',
-                flexDirection: 'column',
-                gap: '12px'
-              }}>
-                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
-                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>BEFORE</div>
-                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>AFTER (9 Months)</div>
-                </div>
-                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>🧔</div>
-                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
-                  FUE Hair Transplant
-                </span>
-              </div>
-              {/* Content */}
-              <div style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>2,800 Grafts FUE</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 192 Likes</span>
-                </div>
-                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
-                  M-Shape hairline Restructuring
-                </h4>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                  Complete closure of receding temple zones. Restored an optimal natural hairline contour using micro-graft placement.
-                </p>
-              </div>
-            </div>
-
-            {/* Post 2: PRP Growth */}
-            <div 
-              className="glass-card flex flex-col cursor-pointer" 
-              onClick={() => window.open('https://instagram.com/hairhaventransplantclinic', '_blank')}
-              style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px', transition: 'all 0.3s ease' }}
-            >
-              {/* Instagram Card Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid var(--border-light)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--green-pale)', border: '1px solid var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 800 }}>HH</div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      hairhaventransplantclinic
-                      <span style={{ display: 'inline-flex', width: '10px', height: '10px', borderRadius: '50%', background: '#0095f6', color: '#fff', fontSize: '0.45rem', alignItems: 'center', justifyContent: 'center' }}>✓</span>
-                    </span>
-                    <span style={{ fontSize: '0.6rem', color: 'var(--text-tertiary)' }}>Jammu, India</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <h3 style={{
+                    fontSize: '1.25rem',
+                    fontWeight: 800,
+                    color: 'var(--text-primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontFamily: 'var(--font-display)',
+                    margin: 0
+                  }}>
+                    hairhaventransplantclinic
+                    <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '15px', height: '15px', borderRadius: '50%', background: '#0095f6', color: '#fff', fontSize: '0.55rem', fontWeight: 900 }}>✓</span>
+                  </h3>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--green-deep)', fontWeight: 700 }}>Hair Restoration Clinic • Jammu</span>
+                  <div style={{ display: 'flex', gap: '16px', marginTop: '4px', fontSize: '0.82rem' }}>
+                    <span><strong>146</strong> posts</span>
+                    <span><strong>1,894</strong> followers</span>
+                    <span><strong>82</strong> following</span>
                   </div>
                 </div>
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--text-tertiary)" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
               </div>
 
-              {/* Image Visual Representation */}
-              <div style={{
-                height: '200px',
-                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderBottom: '1px solid var(--border-light)',
-                flexDirection: 'column',
-                gap: '12px'
-              }}>
-                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
-                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>BEFORE</div>
-                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>AFTER (PRP x3)</div>
-                </div>
-                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>💉</div>
-                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
-                  PRP Therapy
-                </span>
-              </div>
-              {/* Content */}
-              <div style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>3 PRP Sessions</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 154 Likes</span>
-                </div>
-                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
-                  Crown Area Follicle Density Boost
-                </h4>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                  Strengthened miniaturized, thinning hairs on the vertex crown using concentrated, autologous growth-factor micro-injects.
+              {/* Bio Details */}
+              <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '20px', marginBottom: '24px' }}>
+                <p style={{ fontSize: '0.88rem', color: 'var(--text-primary)', fontWeight: 600, marginBottom: '6px' }}>
+                  Hair Haven — Premium Restoration & Laser Center
+                </p>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                  🏥 Official Handle of Jammu's Leading Hair Restoration Center.<br />
+                  👨‍⚕️ Clinical Consultation led by Dr. Suby Kakkar.<br />
+                  ✨ Verified FUE Transplant Results, PRP Therapy & Scalp Care Cases.
                 </p>
               </div>
-            </div>
 
-            {/* Post 3: Crown Area FUE */}
-            <div 
-              className="glass-card flex flex-col cursor-pointer" 
-              onClick={() => window.open('https://instagram.com/hairhaventransplantclinic', '_blank')}
-              style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px', transition: 'all 0.3s ease' }}
-            >
-              {/* Instagram Card Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid var(--border-light)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--green-pale)', border: '1px solid var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 800 }}>HH</div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      hairhaventransplantclinic
-                      <span style={{ display: 'inline-flex', width: '10px', height: '10px', borderRadius: '50%', background: '#0095f6', color: '#fff', fontSize: '0.45rem', alignItems: 'center', justifyContent: 'center' }}>✓</span>
-                    </span>
-                    <span style={{ fontSize: '0.6rem', color: 'var(--text-tertiary)' }}>Jammu, India</span>
+              {/* Curated Grid Preview Mockup */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '12px',
+                marginBottom: '28px'
+              }}>
+                {[
+                  { label: 'FUE Hairline', emoji: '🧔' },
+                  { label: 'PRP Therapy', emoji: '💉' },
+                  { label: 'Crown Cover', emoji: '👑' }
+                ].map((item, idx) => (
+                  <div key={idx} style={{
+                    background: 'rgba(11, 167, 89, 0.04)',
+                    border: '1px solid var(--border-light)',
+                    borderRadius: '16px',
+                    aspectRatio: '1',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    transition: 'all 0.3s ease'
+                  }}>
+                    <div style={{ fontSize: '1.8rem' }}>{item.emoji}</div>
+                    <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase' }}>{item.label}</span>
                   </div>
-                </div>
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--text-tertiary)" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                ))}
               </div>
 
-              {/* Image Visual Representation */}
-              <div style={{
-                height: '200px',
-                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderBottom: '1px solid var(--border-light)',
-                flexDirection: 'column',
-                gap: '12px'
-              }}>
-                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
-                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>BEFORE</div>
-                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>AFTER (12 Months)</div>
-                </div>
-                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>👑</div>
-                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
-                  FUE Hair Transplant
-                </span>
-              </div>
-              {/* Content */}
-              <div style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>3,500 Grafts FUE</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 227 Likes</span>
-                </div>
-                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
-                  Merged Crown & Vertex Restoration
-                </h4>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                  Full-head reconstruction targeting extensive crown balding (Norwood Stage 5). Complete coverage with high survival rate.
-                </p>
-              </div>
+              {/* Open Feed Button */}
+              <button 
+                onClick={() => window.open('https://instagram.com/hairhaventransplantclinic', '_blank')}
+                className="btn btn-primary w-100 flex align-center justify-center gap-2 pulse-button"
+                style={{
+                  background: 'linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%)',
+                  border: 'none',
+                  color: '#ffffff',
+                  boxShadow: '0 8px 24px rgba(225, 48, 108, 0.25)',
+                  padding: '14px 20px',
+                  fontWeight: 800,
+                  fontSize: '0.95rem'
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                Open Instagram Feed & Results
+              </button>
             </div>
-
-            {/* Post 4: Laser Scar Removal */}
-            <div 
-              className="glass-card flex flex-col cursor-pointer" 
-              onClick={() => window.open('https://instagram.com/hairhaventransplantclinic', '_blank')}
-              style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px', transition: 'all 0.3s ease' }}
-            >
-              {/* Instagram Card Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid var(--border-light)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--green-pale)', border: '1px solid var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 800 }}>HH</div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      hairhaventransplantclinic
-                      <span style={{ display: 'inline-flex', width: '10px', height: '10px', borderRadius: '50%', background: '#0095f6', color: '#fff', fontSize: '0.45rem', alignItems: 'center', justifyContent: 'center' }}>✓</span>
-                    </span>
-                    <span style={{ fontSize: '0.6rem', color: 'var(--text-tertiary)' }}>Jammu, India</span>
-                  </div>
-                </div>
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--text-tertiary)" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-              </div>
-
-              {/* Image Visual Representation */}
-              <div style={{
-                height: '200px',
-                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderBottom: '1px solid var(--border-light)',
-                flexDirection: 'column',
-                gap: '12px'
-              }}>
-                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
-                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>BEFORE</div>
-                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>AFTER (Laser x2)</div>
-                </div>
-                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>✨</div>
-                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
-                  Aesthetic Lasers
-                </span>
-              </div>
-              {/* Content */}
-              <div style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Laser Scar Correction</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 118 Likes</span>
-                </div>
-                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
-                  Aesthetic Dermal Scar Correction
-                </h4>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                  Restoring smooth dermal texture and minimizing deep surgical or injury marks via fractional precision laser therapy.
-                </p>
-              </div>
-            </div>
-
-            {/* Post 5: Hairline Precision */}
-            <div 
-              className="glass-card flex flex-col cursor-pointer" 
-              onClick={() => window.open('https://instagram.com/hairhaventransplantclinic', '_blank')}
-              style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px', transition: 'all 0.3s ease' }}
-            >
-              {/* Instagram Card Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid var(--border-light)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--green-pale)', border: '1px solid var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 800 }}>HH</div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      hairhaventransplantclinic
-                      <span style={{ display: 'inline-flex', width: '10px', height: '10px', borderRadius: '50%', background: '#0095f6', color: '#fff', fontSize: '0.45rem', alignItems: 'center', justifyContent: 'center' }}>✓</span>
-                    </span>
-                    <span style={{ fontSize: '0.6rem', color: 'var(--text-tertiary)' }}>Jammu, India</span>
-                  </div>
-                </div>
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--text-tertiary)" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-              </div>
-
-              {/* Image Visual Representation */}
-              <div style={{
-                height: '200px',
-                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderBottom: '1px solid var(--border-light)',
-                flexDirection: 'column',
-                gap: '12px'
-              }}>
-                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
-                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>ACTIVE</div>
-                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>STERILE OT</div>
-                </div>
-                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>🔬</div>
-                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
-                  Clinical Precision
-                </span>
-              </div>
-              {/* Content */}
-              <div style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Graft Implantation</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 241 Likes</span>
-                </div>
-                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
-                  Micro-Graft Hairline Sculpting
-                </h4>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                  Close-up look at Kashish Gupta’s precise hairline packing. Ensuring natural direction, correct angles, and micro-spacing.
-                </p>
-              </div>
-            </div>
-
-            {/* Post 6: Custom Scalp Mapping */}
-            <div 
-              className="glass-card flex flex-col cursor-pointer" 
-              onClick={() => window.open('https://instagram.com/hairhaventransplantclinic', '_blank')}
-              style={{ overflow: 'hidden', border: '1px solid var(--border-light)', background: '#ffffff', borderRadius: '24px', transition: 'all 0.3s ease' }}
-            >
-              {/* Instagram Card Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid var(--border-light)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--green-pale)', border: '1px solid var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', fontWeight: 800 }}>HH</div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      hairhaventransplantclinic
-                      <span style={{ display: 'inline-flex', width: '10px', height: '10px', borderRadius: '50%', background: '#0095f6', color: '#fff', fontSize: '0.45rem', alignItems: 'center', justifyContent: 'center' }}>✓</span>
-                    </span>
-                    <span style={{ fontSize: '0.6rem', color: 'var(--text-tertiary)' }}>Jammu, India</span>
-                  </div>
-                </div>
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--text-tertiary)" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-              </div>
-
-              {/* Image Visual Representation */}
-              <div style={{
-                height: '200px',
-                background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%)',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderBottom: '1px solid var(--border-light)',
-                flexDirection: 'column',
-                gap: '12px'
-              }}>
-                <div style={{ display: 'flex', gap: '16px', zIndex: 2 }}>
-                  <div style={{ background: 'rgba(255,255,255,0.9)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>DIAGNOSTICS</div>
-                  <div style={{ background: 'var(--green-pale)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(11,167,89,0.3)', color: 'var(--green-deep)' }}>PLANNING</div>
-                </div>
-                <div style={{ fontSize: '2.5rem', opacity: 0.85 }}>🔍</div>
-                <span className="badge" style={{ position: 'absolute', top: '14px', right: '14px', background: 'rgba(255,255,255,0.9)', fontSize: '0.68rem', fontWeight: 800 }}>
-                  Pre-Op Diagnostics
-                </span>
-              </div>
-              {/* Content */}
-              <div style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--green-deep)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Norwood Mapping</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>❤️ 137 Likes</span>
-                </div>
-                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.3', fontFamily: 'var(--font-display)' }}>
-                  Norwood Stage 4 Graft Mapping
-                </h4>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                  Diagnostic mapping of temple recession and crown thinning. Visualizing structural restoration before transplant.
-                </p>
-              </div>
-            </div>
-
           </div>
 
           {/* Follow CTA Banner */}
@@ -2430,17 +2214,30 @@ export default function App() {
             </div>
           </div>
 
-          {/* Review Filter Tabs */}
-          <div className="flex gap-3 flex-wrap mb-10 justify-center">
-            {reviewTags.map((tag) => (
-              <button
-                key={tag}
-                onClick={() => setSelectedReviewTag(tag)}
-                className={`filter-pill ${selectedReviewTag === tag ? 'active' : ''}`}
-              >
-                {tag}
-              </button>
-            ))}
+          {/* Review Filter Slider */}
+          <div className="filter-slider-container">
+            <div className="filter-slider">
+              {reviewTags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => setSelectedReviewTag(tag)}
+                  className={`filter-pill ${selectedReviewTag === tag ? 'active' : ''}`}
+                  style={{ flexShrink: 0 }}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+            {/* Subtle side gradient indicating scrollability on touch devices */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 16,
+              width: '40px',
+              background: 'linear-gradient(to left, rgba(248,250,252,0.95), transparent)',
+              pointerEvents: 'none'
+            }}></div>
           </div>
 
           {/* Testimonial Cards Grid */}
@@ -2452,7 +2249,7 @@ export default function App() {
                   className="glass-card p-6 flex flex-col justify-between" 
                   style={{ 
                     position: 'relative', 
-                    minHeight: '250px',
+                    minHeight: '260px',
                     border: '1.5px solid rgba(255, 255, 255, 0.85)',
                     boxShadow: 'var(--shadow-md)',
                     transition: 'all 0.3s ease',
@@ -2460,8 +2257,8 @@ export default function App() {
                   }}
                 >
                   {/* Google G logo branding in bottom right */}
-                  <div style={{ position: 'absolute', bottom: '16px', right: '16px', opacity: 0.18 }}>
-                    <svg viewBox="0 0 24 24" width="20" height="20">
+                  <div style={{ position: 'absolute', bottom: '16px', right: '16px', opacity: 0.12 }}>
+                    <svg viewBox="0 0 24 24" width="18" height="18">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
@@ -2470,58 +2267,69 @@ export default function App() {
                   </div>
 
                   <div>
-                    {/* Header with name, stars and verified badge */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                      <div style={{ display: 'flex', color: '#ffb627' }}>
-                        {[...Array(review.rating)].map((_, i) => (
-                          <Star key={i} size={12} fill="#ffb627" color="#ffb627" />
-                        ))}
+                    {/* Header Row: Google branding and Reviewer Metadata */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, var(--green-pale) 0%, rgba(11, 167, 89, 0.05) 100%)',
+                          color: 'var(--green-deep)',
+                          fontWeight: 800,
+                          fontSize: '0.8rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                          border: '1px solid rgba(11, 167, 89, 0.15)'
+                        }}>
+                          {review.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                            {review.name}
+                            <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '10px', height: '10px', borderRadius: '50%', background: '#4285f4', color: '#fff', fontSize: '0.45rem', fontWeight: 900 }}>✓</span>
+                          </span>
+                          <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)' }}>Google Review</span>
+                        </div>
                       </div>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 500 }}>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--text-tertiary)', fontWeight: 500 }}>
                         {review.date || '3 days ago'}
                       </span>
                     </div>
 
+                    {/* Rating sub-row: E.g., '5.0' and Star icons */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-primary)' }}>{review.rating.toFixed(1)}</span>
+                      <div style={{ display: 'flex', color: '#ffb627' }}>
+                        {[...Array(review.rating)].map((_, i) => (
+                          <Star key={i} size={11} fill="#ffb627" color="#ffb627" />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Divider Line */}
+                    <div style={{ height: '1.2px', background: 'rgba(0, 0, 0, 0.06)', width: '100%', margin: '12px 0' }}></div>
+
+                    {/* Review content details inside the card */}
                     <p style={{
                       fontSize: '0.875rem',
                       color: 'var(--text-secondary)',
-                      lineHeight: '1.6',
-                      marginBottom: '20px',
+                      lineHeight: '1.65',
                       wordBreak: 'break-word',
                       overflowWrap: 'break-word',
-                      textAlign: 'left'
+                      textAlign: 'left',
+                      marginTop: '6px'
                     }}>
                       "{review.quote}"
                     </p>
                   </div>
 
-                  {/* Reviewer Details */}
-                  <div className="flex align-center gap-3" style={{ borderTop: '1px solid var(--border-light)', paddingTop: '14px', marginTop: 'auto' }}>
-                    <div style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, var(--green-pale) 0%, rgba(11, 167, 89, 0.05) 100%)',
-                      color: 'var(--green-deep)',
-                      fontWeight: 800,
-                      fontSize: '0.85rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                      border: '1.5px solid rgba(11, 167, 89, 0.15)'
-                    }}>
-                      {review.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
-                    </div>
-                    <div className="flex flex-col text-left">
-                      <span className="font-semibold" style={{ fontSize: '0.9rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        {review.name}
-                        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '12px', height: '12px', borderRadius: '50%', background: '#4285f4', color: '#fff', fontSize: '0.5rem', fontWeight: 900 }}>✓</span>
-                      </span>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 500 }}>
-                        Google Local Guide • <span style={{ color: 'var(--green-primary)', fontWeight: 600 }}>{review.tag}</span>
-                      </span>
-                    </div>
+                  {/* Tag details */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '14px', borderTop: '1px solid rgba(0,0,0,0.03)', paddingTop: '10px' }}>
+                    <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: 'var(--green-primary)' }}></span>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--green-deep)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em' }}>{review.tag}</span>
                   </div>
                 </div>
               ))}
@@ -2573,9 +2381,9 @@ export default function App() {
           </div>
 
           <div className="map-wrapper">
-            {/* Embedded Google Map centered at Channi Himmat, Jammu */}
+            {/* Embedded Google Map centered at Hair Haven, Channi Himmat, Jammu */}
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3356.5684347712395!2d74.8765251!3d32.7059000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391e84eb00000001%3A0x6b8eb6a7c36a8e8b!2sChanni%20Himmat%2C%20Jammu!5e0!3m2!1sen!2sin!4v1716000000000!5m2!1sen!2sin"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3356.5684347712395!2d74.8765251!3d32.7059000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391e85b54a3a83eb%3A0x5f9d84ca705aefbb!2sHair%20Haven!5e0!3m2!1sen!2sin!4v1716000000000!5m2!1sen!2sin"
               className="map-iframe"
               allowFullScreen={true}
               loading="lazy"
@@ -2605,7 +2413,7 @@ export default function App() {
               </div>
 
               <button 
-                onClick={() => window.open('https://www.google.com/maps/dir/?api=1&destination=Channi+Himmat+Jammu', '_blank')}
+                onClick={() => window.open('https://maps.app.goo.gl/QFGD7kxLjtaQFP739', '_blank')}
                 className="btn btn-primary w-100 flex align-center justify-center gap-2 pulse-button"
                 style={{
                   background: 'linear-gradient(135deg, var(--green-deep) 0%, var(--green-primary) 100%)',
