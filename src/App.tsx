@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
   MapPin, Clock, Shield, Star, CheckCircle2, 
-  Sparkles, Menu, X, ArrowRight, ArrowLeft,
+  Sparkles, X, ArrowRight, ArrowLeft,
   Heart, Award, Compass,
   MessageSquare, Search, SlidersHorizontal,
   Sun, Moon, Home, Stethoscope, Image as ImageIcon, MessageCircle, Calendar,
-  Download, User, Phone, Mail, FileText
+  Download, User, Phone, Mail, FileText, LogOut, Copy
 } from 'lucide-react';
 // @ts-ignore
 import confetti from 'canvas-confetti';
+import { signInWithGoogle, signOutUser, onAuthChange, saveUserToFirestore, getUserDoc, saveMedicalProfileToFirestore } from './firebase';
+import type { User as FirebaseUser } from 'firebase/auth';
 
 /* ─── LOGO COMPONENT ─────────────────────────────────── */
 function HairHavenLogo({ className = "", size = 40 }: { className?: string; size?: number }) {
@@ -458,7 +460,14 @@ interface ChatMessage {
   timestamp: string;
 }
 
-const SYSTEM_PROMPT = `You are "Haven", the ultra-advanced, empathetic, and expert Personal AI Hair Restoration Consultant for Hair Haven, the premier hair transplant clinic in Jammu.
+interface ChatSession {
+  id: string;
+  title: string;
+  messages: ChatMessage[];
+  createdAt: number;
+}
+
+const SYSTEM_PROMPT = `You are "Aman", the ultra-advanced, empathetic, and expert Personal AI Hair Restoration Consultant for Hair Haven, the premier hair transplant clinic in Jammu.
 
 Your purpose is to answer any hair transplant and hair restoration questions with clinical precision, immense warm hospitality, and 100% factual accuracy based on Hair Haven's offerings.
 
@@ -506,58 +515,345 @@ Help patients estimate their hair loss stage and cost:
 - Keep answers concise, highly informative, and easy to read. Never use placeholders.
 - Speak about Hair Haven's 100% success rate, subsidies, and high patient satisfaction (e.g., Manmohan Singh, Saleem, and Sunny's 5-star reviews!).`;
 
-function AIChatbot({ onBookNow }: { onBookNow: () => void }) {
+// Import the premium Aman chatbot CSS
+import './aman-chatbot.css';
+
+function AIChatbot({ onBookNow, currentUser, userMedicalProfile, onProfileUpdate }: { onBookNow: () => void; currentUser?: FirebaseUser | null; userMedicalProfile?: any; onProfileUpdate?: (updated: any) => void }) {
   const [chatOpen, setChatOpen] = useState(false);
+
+  const userName = useMemo(() => {
+    if (currentUser) {
+      if (currentUser.displayName) return currentUser.displayName;
+      if (currentUser.email) {
+        const namePart = currentUser.email.split('@')[0];
+        return namePart
+          .split(/[\._-]/)
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(' ');
+      }
+    }
+    return 'Guest';
+  }, [currentUser]);
+  const [chatState, setChatState] = useState<'idle' | 'thinking' | 'replying'>('idle');
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     const saved = localStorage.getItem('hh_chat_messages');
     if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error('Failed to parse saved chat messages', e);
-      }
+      try { return JSON.parse(saved); } catch { /* ignore */ }
     }
-    return [
-      {
-        role: 'assistant',
-        content: `👋 Hello! I am **Haven**, your personal AI Hair Restoration expert at Hair Haven. 🌿\n\nI can help you estimate your required hair grafts, check treatment pricing, learn about our doctor-led procedures, or explain the FUE recovery process.\n\nWhat can I assist you with today?`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }
-    ];
+    return [];
   });
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
+  // Dynamic greeting sync once profile / user details are loaded (if new session)
   useEffect(() => {
-    localStorage.setItem('hh_chat_messages', JSON.stringify(messages));
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (messages.length <= 1) {
+      const ts = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      let greeting = `👋 Hello! I'm **Aman**, your personal AI Hair Restoration expert at Hair Haven. 🌿\n\nI can help you estimate your required hair grafts, check treatment pricing, learn about our specialist team, or walk you through the FUE recovery process.\n\nHow can I assist you today?`;
+      
+      if (currentUser && userMedicalProfile) {
+        if (userMedicalProfile.fullName || userMedicalProfile.age) {
+          greeting = `👋 Welcome back, **${userMedicalProfile.fullName || userName}**! I'm **Aman**, your personal AI Hair Restoration assistant. 🌿\n\nI remember you are a **${userMedicalProfile.age || '28'}**-year-old patient. I have your Norwood **Stage ${userMedicalProfile.stage || 3}** file securely recorded.\n\nHow can I help you with your hair restoration journey today?`;
+        } else {
+          greeting = `👋 Hello **${userName}**! I'm **Aman**, your personal AI Hair Restoration assistant. 🌿\n\nI know your name is **${userName}** from your Google account. To help me customize your clinical hair file and graft estimates, could you please tell me your **full name, age, and gender**? Also, feel free to tell me if you have any hair loss concerns or prior treatments tried!`;
+        }
+      }
+      
+      setMessages([{
+        role: 'assistant',
+        content: greeting,
+        timestamp: ts
+      }]);
     }
+  }, [currentUser, userMedicalProfile]);
+
+  // Voice & attachment states
+  const [speakingText, setSpeakingText] = useState<string | null>(null);
+  const [isListeningVoice, setIsListeningVoice] = useState(false);
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  // Chat sessions (history)
+  const [sessions, setSessions] = useState<ChatSession[]>(() => {
+    try { return JSON.parse(localStorage.getItem('hh_chat_sessions') || '[]'); } catch { return []; }
+  });
+  const [currentSessionId, setCurrentSessionId] = useState<string>(() =>
+    localStorage.getItem('hh_current_session_id') || ('session_' + Date.now())
+  );
+  const [showSidebar, setShowSidebar] = useState(false);
+
+  // Stop speech on close
+  useEffect(() => {
+    return () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); };
+  }, [chatOpen]);
+
+  // Persist sessions whenever messages change
+  useEffect(() => {
+    const hasUserMsg = messages.some(m => m.role === 'user');
+    if (!hasUserMsg) return;
+    const firstUserMsg = messages.find(m => m.role === 'user');
+    const title = firstUserMsg
+      ? firstUserMsg.content.replace(/^📎.*?\]\s*/,'').slice(0, 42) + (firstUserMsg.content.length > 42 ? '…' : '')
+      : 'New Chat';
+    setSessions(prev => {
+      const idx = prev.findIndex(s => s.id === currentSessionId);
+      if (idx >= 0) {
+        const updated = [...prev];
+        updated[idx] = { ...updated[idx], messages, title };
+        return updated;
+      }
+      return [{ id: currentSessionId, title, messages, createdAt: Date.now() }, ...prev];
+    });
+    localStorage.setItem('hh_chat_messages', JSON.stringify(messages));
+  }, [messages, currentSessionId]);
+
+  useEffect(() => {
+    localStorage.setItem('hh_chat_sessions', JSON.stringify(sessions));
+  }, [sessions]);
+
+  const startNewChat = () => {
+    // Explicitly save the previous session if it contains user messages
+    const hasUserMsg = messages.some(m => m.role === 'user');
+    if (hasUserMsg) {
+      const firstUserMsg = messages.find(m => m.role === 'user');
+      const title = firstUserMsg
+        ? firstUserMsg.content.replace(/^📎.*?\]\s*/,'').slice(0, 42) + (firstUserMsg.content.length > 42 ? '…' : '')
+        : 'New Chat';
+      setSessions(prev => {
+        const idx = prev.findIndex(s => s.id === currentSessionId);
+        if (idx >= 0) {
+          const updated = [...prev];
+          updated[idx] = { ...updated[idx], messages, title };
+          return updated;
+        }
+        return [{ id: currentSessionId, title, messages, createdAt: Date.now() }, ...prev];
+      });
+    }
+
+    const newId = 'session_' + Date.now();
+    let greeting = `✨ New conversation! I'm **Aman**, ready to help. 🌿\n\nWhat would you like to know about Hair Haven?`;
+    if (currentUser && userMedicalProfile) {
+      if (userMedicalProfile.fullName || userMedicalProfile.age) {
+        greeting = `✨ New conversation! Welcome back, **${userMedicalProfile.fullName || userName}**! I'm **Aman**, ready to help. 🌿\n\nI remember you are a **${userMedicalProfile.age || '28'}**-year-old patient. I have your Norwood **Stage ${userMedicalProfile.stage || 3}** file securely recorded. How can I help you with your hair restoration today?`;
+      } else {
+        greeting = `✨ New conversation! Hello **${userName}**! I'm **Aman**, ready to help. 🌿\n\nI know your name is **${userName}** from your Google account. To personalize your clinical hair file, could you please tell me your **full name, age, and gender**? Or ask me anything about grafts and costs!`;
+      }
+    }
+
+    setMessages([{
+      role: 'assistant',
+      content: greeting,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }]);
+    setCurrentSessionId(newId);
+    localStorage.setItem('hh_current_session_id', newId);
+    setChatState('idle');
+    setShowSidebar(false);
+    setInputText('');
+  };
+
+  const loadSession = (session: ChatSession) => {
+    setMessages(session.messages);
+    setCurrentSessionId(session.id);
+    localStorage.setItem('hh_current_session_id', session.id);
+    setShowSidebar(false);
+  };
+
+  const deleteSession = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSessions(prev => prev.filter(s => s.id !== id));
+    if (currentSessionId === id) startNewChat();
+  };
+
+  const handleSpeak = (text: string) => {
+    if (!('speechSynthesis' in window)) { alert("Text-to-speech not supported in this browser."); return; }
+    if (speakingText === text) {
+      window.speechSynthesis.cancel();
+      setSpeakingText(null);
+    } else {
+      window.speechSynthesis.cancel();
+      const clean = text.replace(/[\*\_#]/g, '').replace(/[👋🌿✨📅💉🧮💎⚠️]/gu, '');
+      const utt = new SpeechSynthesisUtterance(clean);
+      utt.lang = 'en-IN';
+      utt.onend = () => setSpeakingText(null);
+      utt.onerror = () => setSpeakingText(null);
+      window.speechSynthesis.speak(utt);
+      setSpeakingText(text);
+    }
+  };
+
+  const startVoiceSearch = () => {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) { alert("Voice input requires Google Chrome or Safari."); return; }
+    const rec = new SR();
+    rec.continuous = false;
+    rec.lang = 'en-IN';
+    rec.interimResults = false;
+    rec.onstart = () => setIsListeningVoice(true);
+    rec.onresult = (e: any) => { setInputText(e.results[0][0].transcript); setIsListeningVoice(false); };
+    rec.onerror = () => setIsListeningVoice(false);
+    rec.onend = () => setIsListeningVoice(false);
+    rec.start();
+  };
+
+  const handlePlusClick = () => fileInputRef.current?.click();
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) { setAttachedFile(f); e.target.value = ''; }
+  };
+
+  useEffect(() => {
+    document.body.classList.toggle('aman-chat-open', chatOpen);
+    return () => document.body.classList.remove('aman-chat-open');
+  }, [chatOpen]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const simulateTyping = (fullText: string, onComplete: () => void) => {
+    // 1. Check for PROFILE_UPDATE comment block
+    const match = fullText.match(/<!-- PROFILE_UPDATE:\s*({.*?})\s*-->/);
+    let displayText = fullText;
+    let profileUpdateData: any = null;
+
+    if (match) {
+      try {
+        profileUpdateData = JSON.parse(match[1]);
+        // Strip the block from the text to display so it remains hidden
+        displayText = fullText.replace(/<!-- PROFILE_UPDATE:\s*({.*?})\s*-->/g, '').trim();
+      } catch (e) {
+        console.error("Error parsing profile update comment:", e);
+      }
+    }
+
+    setChatState('replying');
+    setIsTyping(true);
+    const words = displayText.split(' ');
+    let text = '';
+    let idx = 0;
+    const ts = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    setMessages(prev => [...prev, { role: 'assistant' as const, content: '', timestamp: ts }]);
+    const iv = setInterval(() => {
+      if (idx < words.length) {
+        text += (idx === 0 ? '' : ' ') + words[idx];
+        setMessages(prev => {
+          const list = [...prev];
+          list[list.length - 1] = { ...list[list.length - 1], content: text };
+          return list;
+        });
+        idx++;
+      } else {
+        clearInterval(iv);
+        setIsTyping(false);
+        setChatState('idle');
+
+        // 2. Perform profile update if user is logged in
+        if (profileUpdateData && currentUser && userMedicalProfile) {
+          const updatedProfile = {
+            ...userMedicalProfile,
+            fullName: profileUpdateData.fullName || userMedicalProfile.fullName || '',
+            age: profileUpdateData.age || userMedicalProfile.age || '',
+            gender: profileUpdateData.gender || userMedicalProfile.gender || '',
+            primaryConcerns: profileUpdateData.primaryConcerns || userMedicalProfile.primaryConcerns || '',
+            priorTreatments: profileUpdateData.priorTreatments || userMedicalProfile.priorTreatments || '',
+            medicalConditions: profileUpdateData.medicalConditions || userMedicalProfile.medicalConditions || '',
+          };
+
+          if (profileUpdateData.stage) {
+            const detectedStage = parseInt(profileUpdateData.stage);
+            if (!isNaN(detectedStage)) {
+              updatedProfile.stage = detectedStage;
+            }
+          }
+
+          if (profileUpdateData.primaryConcerns || profileUpdateData.stage || profileUpdateData.age) {
+            updatedProfile.aiAssessment = `Aman AI Assessment: Patient is a ${updatedProfile.age || '28'}-year-old ${updatedProfile.gender || 'male'}. Norwood Stage ${updatedProfile.stage || 3} pattern hair loss. Discussed concern: ${updatedProfile.primaryConcerns}. Previous treatments tried: ${updatedProfile.priorTreatments}. Highly suitable candidate for FUE Restore or BioSapphire FUE technique.`;
+          }
+
+          saveMedicalProfileToFirestore(currentUser.uid, updatedProfile).then(() => {
+            if (onProfileUpdate) {
+              onProfileUpdate(updatedProfile);
+            }
+            console.log("Firestore: Chat memory sync update successful!");
+          });
+        }
+
+        onComplete();
+      }
+    }, 38);
+  };
 
   const handleSend = async (textToSend: string) => {
     const trimmed = textToSend.trim();
-    if (!trimmed) return;
+    if (!trimmed && !attachedFile) return;
 
     if (trimmed === 'BOOK_NOW_TRIGGER') {
-      setChatOpen(false);
       onBookNow();
+      setChatOpen(false);
       return;
     }
 
     const userTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    let displayContent = trimmed;
+    if (attachedFile) {
+      displayContent = `📎 [Attached: ${attachedFile.name}] ${trimmed}`.trim();
+    }
+
     const newMessages = [
       ...messages,
-      { role: 'user' as const, content: trimmed, timestamp: userTime }
+      { role: 'user' as const, content: displayContent, timestamp: userTime }
     ];
     setMessages(newMessages);
     setInputText('');
+    
+    // Grab copy of attached file and clear state immediately
+    const currentAttachment = attachedFile;
+    setAttachedFile(null);
+    
     setIsTyping(true);
+    setChatState('thinking'); // Teal gradient at top-left active while network request is pending
 
     try {
+      let attachmentInstructions = "";
+      if (currentAttachment) {
+        attachmentInstructions = `\n\n### PATIENT ATTACHMENT DETAILS:\n- Attached File: ${currentAttachment.name}\n- Type: ${currentAttachment.type || 'Scalp Image'}\n\nSPECIAL DIRECTIVE:\n- The patient has attached/uploaded their scalp photo or clinical document ("${currentAttachment.name}").\n- Simulate an advanced dermoscopic/microscopic hair restoration analysis of their attached scalp photo.\n- Describe their donor zone as robust and mention graft yield density (e.g. high density of 2-hair and 3-hair follicular units).\n- Offer highly personalized and custom clinical FUE solutions based on this simulated scalp analysis.`;
+      }
+
+      const dynamicPrompt = currentUser && userMedicalProfile
+        ? `${SYSTEM_PROMPT}
+
+### CURRENT LOGGED-IN CLINIC PATIENT FILE:
+- Account Email: ${currentUser.email || ''}
+- Clinic Registration Date: ${userMedicalProfile.firstConsultationDate || 'First time logged in today'}
+- Patient Full Name: ${userMedicalProfile.fullName || userName}
+- Age: ${userMedicalProfile.age || 'Not set'}
+- Gender: ${userMedicalProfile.gender || 'Not set'}
+- Norwood Hair Loss Stage: Stage ${userMedicalProfile.stage || 3}
+- Primary Hair Concerns: ${userMedicalProfile.primaryConcerns || 'Temple recession & hairline balding'}
+- Prior Treatments Tried: ${userMedicalProfile.priorTreatments || 'None'}
+- Clinical Conditions / Notes: ${userMedicalProfile.medicalConditions || 'None'}
+- Custom Medical Consultation Notes: ${userMedicalProfile.consultationNotes || 'No specific notes.'}
+- Specialist AI Clinical Assessment Summary: ${userMedicalProfile.aiAssessment || 'No custom assessment yet.'}${attachmentInstructions}
+
+### DYNAMIC CONTEXTUAL INSTRUCTIONS:
+1. Address the patient warmly by their full name (${userMedicalProfile.fullName || userName}) and show deep, personalized clinical interest.
+2. Directly reference their Norwood Stage ${userMedicalProfile.stage || 3} and primary concerns (${userMedicalProfile.primaryConcerns || 'their hair loss'}) when offering advice or pricing details.
+3. If their Age or Gender is known, use that for professional clinical context (e.g. as a ${userMedicalProfile.age || '28'}-year-old ${userMedicalProfile.gender || 'male'}).
+4. Offer custom clinical FUE solutions based on their Norwood pattern stage. For example: Norwood Stage ${userMedicalProfile.stage || 3} needs 1,200 - 1,800 grafts, FUE starting at ₹21,000, and Sapphire FUE starting at ₹31,000.
+5. Emphasize that their file is securely recorded in our Firestore medical records.
+
+### CRITICAL PROFILE MEMORY DIRECTIVE:
+- When the patient shares or updates their personal info (such as their full name, age, gender, hair concerns, prior treatments, or clinical conditions), you MUST append a hidden comment block at the very end of your response:
+<!-- PROFILE_UPDATE: { "fullName": "...", "age": "...", "gender": "...", "primaryConcerns": "...", "priorTreatments": "...", "medicalConditions": "..." } -->
+- Fill in only the details they shared or updated in the current turn. Keep the JSON strictly formatted and inside the HTML comment block. This is parsed by the client to update their Firestore file.`
+        : `${SYSTEM_PROMPT}
+
+- Context: Patient is currently browsing as a guest. Direct them to sign in or calculate their Norwood hair loss stage using our visual calculator on the home dashboard.`;
+
       const apiMessages = [
-        { role: 'system' as const, content: SYSTEM_PROMPT },
+        { role: 'system' as const, content: dynamicPrompt },
         ...newMessages.map(m => ({ role: m.role, content: m.content }))
       ];
 
@@ -600,14 +896,16 @@ function AIChatbot({ onBookNow }: { onBookNow: () => void }) {
         assistantReply = data.content;
       }
 
-      const assistantTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      setMessages(prev => [
-        ...prev,
-        { role: 'assistant' as const, content: assistantReply, timestamp: assistantTime }
-      ]);
+      // Stream the response with word-by-word typewriter effect
+      simulateTyping(assistantReply, () => {
+        // Complete callback
+      });
+
     } catch (error: any) {
       console.error("Chat error:", error);
       const assistantTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      setIsTyping(false);
+      setChatState('idle');
       setMessages(prev => [
         ...prev,
         { 
@@ -616,22 +914,27 @@ function AIChatbot({ onBookNow }: { onBookNow: () => void }) {
           timestamp: assistantTime 
         }
       ]);
-    } finally {
-      setIsTyping(false);
     }
   };
 
   const handleClear = () => {
-    if (window.confirm("Are you sure you want to clear your conversation history?")) {
+    if (window.confirm("Clear all your conversation history with Aman?")) {
       const resetMessages: ChatMessage[] = [
         {
           role: 'assistant',
-          content: `👋 Conversation reset! I am **Haven**, your personal AI Hair Restoration expert. \n\nHow can I help you today?`,
+          content: `✨ Conversation cleared! I'm **Aman**, ready to help you again. 🌿\n\nWhat would you like to know about Hair Haven?`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ];
       setMessages(resetMessages);
+      setSessions([]);
+      setChatState('idle');
       localStorage.removeItem('hh_chat_messages');
+      localStorage.removeItem('hh_chat_sessions');
+      const newId = 'session_' + Date.now();
+      setCurrentSessionId(newId);
+      localStorage.setItem('hh_current_session_id', newId);
+      setShowSidebar(false);
     }
   };
 
@@ -643,160 +946,389 @@ function AIChatbot({ onBookNow }: { onBookNow: () => void }) {
     { label: '👨‍⚕️ Meet Dr. Suby Kakkar', text: 'Tell me about Clinical Director Dr. Suby Kakkar and the supportive staff.' }
   ];
 
+  const showWelcomeScreen = messages.length <= 1;
+
   return (
     <>
-      <button 
+      {/* FAB button — rendered in parent layout as right-side */}
+      <button
         onClick={() => setChatOpen(!chatOpen)}
         className="chatbot-fab"
-        title="Consult Haven AI"
+        title="Consult Aman AI"
+        style={!chatOpen ? { padding: 0, overflow: 'visible', border: 'none', background: 'transparent', boxShadow: 'none' } : undefined}
       >
-        <span className="chatbot-fab-sparkles">✨</span>
+        {chatOpen && <span className="chatbot-fab-sparkles">✨</span>}
         {chatOpen ? (
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         ) : (
-          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-          </svg>
+          <img src="/image copy 12.png" alt="Aman AI" style={{ width: '80px', height: '80px', objectFit: 'contain', filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.18))' }} />
         )}
       </button>
 
       {chatOpen && (
         <div className="chatbot-window-container">
-          <div className="chatbot-window">
-            <div className="chatbot-header">
-              <div className="chatbot-header-info">
-                <div className="chatbot-avatar-container">
-                  <span style={{ fontSize: '1.2rem' }}>🌿</span>
-                  <div className="chatbot-status-dot"></div>
-                </div>
-                <div>
-                  <div className="chatbot-header-title">Haven AI</div>
-                  <div className="chatbot-header-subtitle">
-                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
-                    Active Now
-                  </div>
-                </div>
-              </div>
-              <div className="chatbot-header-actions">
-                <button 
-                  onClick={handleClear}
-                  className="chatbot-header-btn"
-                  title="Clear Chat History"
-                >
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
-                </button>
+          <div className={`chatbot-window gemini-theme state-${chatState}`}>
+
+            {/* Alive gradient layer */}
+            <div className="gemini-alive-gradient-layer" />
+
+            {/* ── HEADER: back button on left, history button on right ── */}
+            <div className="chatbot-header" style={{ borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+              <div className="chatbot-header-inner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px' }}>
+                
+                {/* Left: Back button */}
                 <button 
                   onClick={() => setChatOpen(false)}
-                  className="chatbot-header-btn"
-                  title="Minimize Chat"
+                  style={{ 
+                    background: 'rgba(0, 0, 0, 0.05)', 
+                    border: 'none', 
+                    color: 'var(--text-primary)', 
+                    width: '38px', 
+                    height: '38px', 
+                    borderRadius: '50%', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                  }}
+                  title="Back to clinic"
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.1)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'}
                 >
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="12" x2="6" y2="12"></line>
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12" />
+                    <polyline points="12 19 5 12 12 5" />
                   </svg>
                 </button>
+
+                {/* Right: History/Hamburger button */}
+                <button 
+                  onClick={() => setShowSidebar(true)}
+                  style={{ 
+                    background: 'rgba(0, 0, 0, 0.05)', 
+                    border: 'none', 
+                    color: 'var(--text-primary)', 
+                    width: '38px', 
+                    height: '38px', 
+                    borderRadius: '50%', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                  }}
+                  title="Conversation history"
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.1)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'}
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+                  </svg>
+                </button>
+
               </div>
             </div>
 
-            <div className="chatbot-body" style={{ position: 'relative' }}>
-            <div className={`thinking-orb-container ${isTyping ? 'visible' : ''}`}>
-              <div className="thinking-orb-aura"></div>
-              <div className="thinking-orb-core"></div>
-            </div>
-              {messages.map((m, idx) => (
-                <div key={idx} className={`chat-msg ${m.role}`}>
-                  <div className="chat-bubble">
-                    <div style={{ whiteSpace: 'pre-wrap' }}>
-                      {m.content.split('\n').map((line, lIdx) => {
-                        let content: React.ReactNode = line;
-                        
-                        if (line.includes('**')) {
-                          const parts = line.split('**');
-                          content = parts.map((part, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx}>{part}</strong> : part);
-                        }
+            {/* ── GEMINI SIDEBAR (slide-in from left) ── */}
+            {showSidebar && (
+              <div className="aman-sidebar-overlay" onClick={() => setShowSidebar(false)}>
+                <div className="aman-sidebar" onClick={e => e.stopPropagation()}>
+                  {/* Sidebar header */}
+                  <div className="aman-sidebar-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <svg viewBox="0 0 24 24" width="26" height="26" fill="none">
+                        <path d="M12 2C12 7.5 7.5 12 2 12C7.5 12 12 16.5 12 22C12 16.5 16.5 12 22 12C16.5 12 12 7.5 12 2Z" fill="url(#sb-grad)" />
+                        <defs><linearGradient id="sb-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#4285f4" /><stop offset="100%" stopColor="#34d399" /></linearGradient></defs>
+                      </svg>
+                      <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.3rem', fontWeight: 700, color: '#1f1f1f' }}>Aman</span>
+                    </div>
+                    <button className="chatbot-header-icon-btn" onClick={() => setShowSidebar(false)} title="Close sidebar">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
 
-                        if (line.trim().startsWith('- ')) {
-                          return (
-                            <div key={lIdx} style={{ display: 'flex', gap: '8px', marginLeft: '8px', margin: '4px 0' }}>
-                              <span>•</span>
-                              <span>{content}</span>
-                            </div>
-                          );
-                        }
+                  {/* New notebook / start fresh */}
+                  <button className="aman-sidebar-new-btn" onClick={startNewChat}>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><line x1="9" y1="15" x2="15" y2="15" />
+                    </svg>
+                    New Conversation
+                  </button>
 
-                        if (line.trim().startsWith('###')) {
-                          return <h4 key={lIdx} style={{ margin: '12px 0 6px 0', fontSize: '0.92rem', fontWeight: 800, color: 'var(--green-deep)' }}>{line.replace('###', '').trim()}</h4>;
-                        }
+                  {/* Recent sessions label */}
+                  {sessions.length > 0 && (
+                    <div className="aman-sidebar-section-label">Recent</div>
+                  )}
 
-                        return <p key={lIdx} style={{ margin: '0 0 8px 0', lineHeight: 1.5 }}>{content}</p>;
-                      })}
+                  {/* Sessions list */}
+                  <div className="aman-sidebar-sessions">
+                    {sessions.length === 0 ? (
+                      <div style={{ padding: '16px', color: '#9aa0a6', fontSize: '0.85rem', textAlign: 'center' }}>No previous conversations yet</div>
+                    ) : (
+                      sessions.map(session => (
+                        <div
+                          key={session.id}
+                          className={`aman-sidebar-item ${session.id === currentSessionId ? 'active' : ''}`}
+                          onClick={() => loadSession(session)}
+                        >
+                          <span className="aman-sidebar-item-title">{session.title}</span>
+                          <button
+                            className="aman-sidebar-item-delete"
+                            onClick={(e) => deleteSession(session.id, e)}
+                            title="Delete"
+                          >
+                            <X size={13} />
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {sessions.length > 0 && (
+                    <button 
+                      onClick={handleClear} 
+                      style={{
+                        margin: '12px 16px',
+                        padding: '8px 12px',
+                        background: 'transparent',
+                        border: '1px solid rgba(220, 38, 38, 0.25)',
+                        borderRadius: '16px',
+                        color: '#dc2626',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        transition: 'all 0.2s',
+                        zIndex: 10
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.background = 'rgba(220, 38, 38, 0.05)';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.background = 'transparent';
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
+                      Clear All History
+                    </button>
+                  )}
+
+                  {/* User profile at bottom */}
+                  <div className="aman-sidebar-footer">
+                    {currentUser?.photoURL ? (
+                      <img src={currentUser.photoURL} alt={userName} referrerPolicy="no-referrer" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(11,167,89,0.35)' }} />
+                    ) : (
+                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(11,167,89,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <User size={18} color="var(--green-primary)" />
+                      </div>
+                    )}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.88rem', color: '#1f1f1f', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{userName}</div>
+                      {currentUser && <div style={{ fontSize: '0.72rem', color: '#9aa0a6' }}>{currentUser.email}</div>}
                     </div>
                   </div>
-                  <div className="chat-msg-time">{m.timestamp}</div>
                 </div>
-              ))}
-              {isTyping && (
-                <div className="chat-msg assistant">
-                  <div className="chat-bubble" style={{ display: 'flex', alignItems: 'center' }}>
-                    <div className="typing-indicator">
-                      <div className="typing-dot"></div>
-                      <div className="typing-dot"></div>
-                      <div className="typing-dot"></div>
-                    </div>
+              </div>
+            )}
+
+            {/* ── CHAT BODY ── */}
+            <div className="chatbot-body" style={{ position: 'relative' }}>
+
+              {/* Breathing orb overlay */}
+              <div className={`aman-orb-overlay${isTyping ? ' visible' : ''}`}>
+                <div className="aman-orb-stage">
+                  <div className="aman-orb-aura-3" /><div className="aman-orb-aura-2" />
+                  <div className="aman-orb-core" /><div className="aman-orb-spark" />
+                  <div className="aman-thinking-label">Analysing…</div>
+                </div>
+              </div>
+
+              {showWelcomeScreen ? (
+                <div className="gemini-welcome-container">
+                  <div className="gemini-logo-wrapper">
+                    <svg className="gemini-star-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M50 0C50 27.6142 38.8071 50 11.1929 50C38.8071 50 50 72.3858 50 100C50 72.3858 61.1929 50 88.8071 50C61.1929 50 50 27.6142 50 0Z" fill="url(#gemini-gradient-fill)" />
+                      <defs>
+                        <linearGradient id="gemini-gradient-fill" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%" stopColor="#4285F4" /><stop offset="25%" stopColor="#9B51E0" />
+                          <stop offset="50%" stopColor="#E05151" /><stop offset="75%" stopColor="#F2C94C" />
+                          <stop offset="100%" stopColor="#34D399" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
                   </div>
+                  <h1 className="gemini-welcome-text">Your move, {userName}!</h1>
+                </div>
+              ) : (
+                <div className="gemini-feed-container">
+                  {messages.map((m, idx) => (
+                    <div key={idx} className={`gemini-msg-row ${m.role}`}>
+                      {m.role === 'assistant' ? (
+                        <div className="gemini-assistant-message">
+                          <div className="gemini-assistant-avatar-column">
+                            <svg className="gemini-sparkle-inline-icon" viewBox="0 0 24 24" fill="none">
+                              <path d="M12 2C12 7.5 7.5 12 2 12C7.5 12 12 16.5 12 22C12 16.5 16.5 12 22 12C16.5 12 12 7.5 12 2Z" fill="url(#gsi)" />
+                              <defs><linearGradient id="gsi" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#4285f4" /><stop offset="35%" stopColor="#9b51e0" /><stop offset="70%" stopColor="#ef4444" /><stop offset="100%" stopColor="#f59e0b" /></linearGradient></defs>
+                            </svg>
+                          </div>
+                          <div className="gemini-assistant-text-content">
+                            <div className="gemini-parsed-markdown">
+                              {m.content.split('\n').map((line, lIdx) => {
+                                let content: React.ReactNode = line;
+                                if (line.includes('**')) {
+                                  const parts = line.split('**');
+                                  content = parts.map((part, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx}>{part}</strong> : part);
+                                }
+                                if (line.trim().startsWith('- ')) return (
+                                  <div key={lIdx} className="gemini-markdown-list-item">
+                                    <span className="gemini-list-bullet">•</span><span>{content}</span>
+                                  </div>
+                                );
+                                if (line.trim().startsWith('###')) return <h4 key={lIdx} className="gemini-markdown-h3">{line.replace('###', '').trim()}</h4>;
+                                return <p key={lIdx} className="gemini-markdown-paragraph">{content}</p>;
+                              })}
+                            </div>
+
+                            <div className="gemini-message-actions-bar">
+                              <div className="gemini-left-actions">
+                                <button className="gemini-msg-action-btn" title="Good response"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg></button>
+                                <button className="gemini-msg-action-btn" title="Bad response"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm12-5h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3" /></svg></button>
+                                <button className="gemini-msg-action-btn" title="Copy" onClick={() => navigator.clipboard.writeText(m.content)}><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg></button>
+                              </div>
+                              <div className="gemini-right-actions">
+                                <button
+                                  className={`gemini-msg-action-btn ${speakingText === m.content ? 'is-speaking' : ''}`}
+                                  title={speakingText === m.content ? "Stop" : "Read aloud"}
+                                  onClick={() => handleSpeak(m.content)}
+                                >
+                                  {speakingText === m.content ? (
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><rect x="9" y="9" width="6" height="6" /></svg>
+                                  ) : (
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" /></svg>
+                                  )}
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="gemini-message-disclaimer">Aman AI · Verify clinical details with our specialist.</div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="gemini-user-message">
+                          <div className="gemini-user-bubble">{m.content}</div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {isTyping && (
+                    <div className="gemini-msg-row assistant typing">
+                      <div className="gemini-assistant-message">
+                        <div className="gemini-assistant-avatar-column">
+                          <svg className="gemini-sparkle-inline-icon pulse-animation" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2C12 7.5 7.5 12 2 12C7.5 12 12 16.5 12 22C12 16.5 16.5 12 22 12C16.5 12 12 7.5 12 2Z" fill="url(#gst)" />
+                            <defs><linearGradient id="gst" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#4285f4" stopOpacity="0.5" /><stop offset="100%" stopColor="#34d399" stopOpacity="0.5" /></linearGradient></defs>
+                          </svg>
+                        </div>
+                        <div className="gemini-assistant-text-content">
+                          <div className="gemini-typing-capsule">
+                            <div className="gemini-typing-wave"><span className="gemini-typing-dot" /><span className="gemini-typing-dot" /><span className="gemini-typing-dot" /></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
               <div ref={messagesEndRef} />
             </div>
 
+            {/* ── BOTTOM INPUT ── */}
             <div className="chatbot-input-container">
-              {messages.length === 1 && (
-                <div className="chatbot-suggestions">
+              <div className="gemini-suggestions-scroll-wrapper">
+                <div className="gemini-suggestions-row">
                   {suggestions.map((s, idx) => (
-                    <button 
-                      key={idx}
-                      onClick={() => handleSend(s.text)}
-                      className="chatbot-suggestion-pill"
-                    >
-                      {s.label}
-                    </button>
+                    <button key={idx} onClick={() => handleSend(s.text)} className="gemini-suggestion-capsule-pill">{s.label}</button>
                   ))}
                 </div>
+              </div>
+
+              {attachedFile && (
+                <div className="gemini-attachment-pill">
+                  <span>📎 {attachedFile.name}</span>
+                  <button onClick={() => setAttachedFile(null)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 4px' }} title="Remove"><X size={12} /></button>
+                </div>
               )}
-              
+
               <div className="chatbot-input-row">
-                <input 
-                  type="text" 
-                  value={inputText}
-                  onChange={e => setInputText(e.target.value)}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter') handleSend(inputText);
-                  }}
-                  placeholder="Ask Haven about hair transplant..."
-                  className="chatbot-input"
-                  disabled={isTyping}
-                />
-                <button 
-                  onClick={() => handleSend(inputText)}
-                  disabled={!inputText.trim() || isTyping}
-                  className="chatbot-send-btn"
-                  title="Send Message"
-                >
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                  </svg>
-                </button>
+                <div className="gemini-input-capsule">
+                  <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} accept="image/*,application/pdf,text/plain" />
+                  <button className="gemini-capsule-btn gemini-btn-plus" title="Attach file" onClick={handlePlusClick}>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                  </button>
+
+                  <input
+                    type="text"
+                    value={inputText}
+                    onChange={e => setInputText(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') handleSend(inputText); }}
+                    placeholder="Ask Aman..."
+                    className="chatbot-input"
+                    disabled={isTyping}
+                  />
+
+                  <button
+                    className={`gemini-capsule-btn gemini-btn-mic ${isListeningVoice ? 'voice-active' : ''}`}
+                    title={isListeningVoice ? "Listening…" : "Voice input"}
+                    onClick={startVoiceSearch}
+                  >
+                    {isListeningVoice ? (
+                      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <line x1="12" y1="2" x2="12" y2="22" /><line x1="17" y1="5" x2="17" y2="19" /><line x1="7" y1="5" x2="7" y2="19" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" y1="19" x2="12" y2="22" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+
+                <div className="gemini-action-circle-wrap">
+                  {isTyping ? (
+                    <button onClick={() => { setIsTyping(false); setChatState('idle'); }} className="gemini-circle-btn gemini-btn-stop" title="Stop generating">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2" /></svg>
+                    </button>
+                  ) : inputText.trim() || attachedFile ? (
+                    <button onClick={() => handleSend(inputText)} className="gemini-circle-btn gemini-btn-send" title="Send">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+                    </button>
+                  ) : (
+                    <button className="gemini-circle-btn gemini-btn-waveform" title="Voice mode" onClick={startVoiceSearch}>
+                      <div className="waveform-bar-indicator"><span /><span /><span /></div>
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="chatbot-disclaimer">
-                🌿 AI Assistant — Book a clinical consult for full diagnostics.
-              </div>
+
+              <div className="chatbot-disclaimer">🌿 Aman AI · For full diagnostics, book a clinical consultation.</div>
             </div>
+
           </div>
         </div>
       )}
@@ -812,7 +1344,6 @@ export default function App() {
   /* ── Nav & Scroll ── */
   const [activeTab, setActiveTab] = useState('home');
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -853,12 +1384,97 @@ export default function App() {
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [pwaInstalled, setPwaInstalled] = useState(false);
 
+  /* ── Firebase Auth & Patient Profile ── */
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+  const userName = useMemo(() => {
+    if (currentUser) {
+      if (currentUser.displayName) return currentUser.displayName;
+      if (currentUser.email) {
+        const namePart = currentUser.email.split('@')[0];
+        return namePart
+          .split(/[\._-]/)
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(' ');
+      }
+    }
+    return 'Guest';
+  }, [currentUser]);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [showProfileDrawer, setShowProfileDrawer] = useState(false);
+  const [copiedUid, setCopiedUid] = useState(false);
+  const [userMedicalProfile, setUserMedicalProfile] = useState<any>(null);
+  const [profileSaving, setProfileSaving] = useState(false);
+
   /* ─────────────────────────────────────────────── */
 
   useEffect(() => {
     if (isDarkMode) document.body.classList.add('dark-mode');
     else document.body.classList.remove('dark-mode');
   }, [isDarkMode]);
+
+  // Firebase persistent auth listener + Firestore Sync
+  useEffect(() => {
+    const unsubscribe = onAuthChange((user) => {
+      setCurrentUser(user);
+      if (user) {
+        saveUserToFirestore(user);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Fetch patient medical profile from Firestore on auth change
+  useEffect(() => {
+    if (!currentUser) {
+      setUserMedicalProfile(null);
+      return;
+    }
+    const loadProfile = async () => {
+      const data = await getUserDoc(currentUser.uid);
+      if (data && data.medicalProfile) {
+        setUserMedicalProfile(data.medicalProfile);
+      }
+    };
+    loadProfile();
+  }, [currentUser]);
+
+  const handleGoogleLogin = async () => {
+    try {
+      setAuthLoading(true);
+      const user = await signInWithGoogle();
+      if (user) {
+        await saveUserToFirestore(user);
+        const data = await getUserDoc(user.uid);
+        if (data && data.medicalProfile) {
+          setUserMedicalProfile(data.medicalProfile);
+        }
+        setCurrentPage('home');
+        setShowProfileDrawer(false);
+      }
+    } catch (error: any) {
+      console.error('Google Sign-In error:', error);
+      if (error.code !== 'auth/popup-closed-by-user') {
+        alert('Sign-in failed. Please try again.');
+      }
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOutUser();
+      setShowProfileDrawer(false);
+    } catch (error) {
+      console.error('Sign-out error:', error);
+    }
+  };
+
+  const handleCopyUid = (uid: string) => {
+    navigator.clipboard.writeText(uid);
+    setCopiedUid(true);
+    setTimeout(() => setCopiedUid(false), 2000);
+  };
 
   // Swiper auto-play
   useEffect(() => {
@@ -985,6 +1601,428 @@ export default function App() {
     <>
       <MagicalOrbs />
 
+      {/* Profile & Navigation Sidebar Drawer ("Open Everything") */}
+      {showProfileDrawer && (
+        <>
+          {/* Backdrop overlay */}
+          <div className="drawer-backdrop" onClick={() => setShowProfileDrawer(false)} />
+
+          {/* Sidebar Drawer */}
+          <div className="profile-drawer">
+            {/* Header */}
+            <div className="drawer-header">
+              <div className="flex align-center gap-2">
+                <HairHavenLogo size={32} />
+                <div className="flex flex-col">
+                  <span style={{ fontSize:'1rem', fontWeight:800, color:'var(--text-primary)', fontFamily:'var(--font-display)', lineHeight:1.1 }}>Hair Haven</span>
+                  <span style={{ fontSize:'0.55rem', fontWeight:700, color:'var(--gemini-purple)', letterSpacing:'0.05em', textTransform:'uppercase' }}>Transplant Clinic</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowProfileDrawer(false)}
+                style={{ background:'rgba(11,167,89,0.08)', border:'none', borderRadius:'50%', width:'32px', height:'32px', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--text-secondary)', cursor:'pointer', transition:'all 0.2s' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(11,167,89,0.15)'; e.currentTarget.style.color = 'var(--green-primary)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(11,167,89,0.08)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="drawer-content">
+              {/* Profile Card Section */}
+              {currentUser ? (
+                <div style={{ 
+                  background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.08) 0%, rgba(34, 197, 94, 0.03) 100%)', 
+                  border: '1.5px solid rgba(11, 167, 89, 0.15)', 
+                  borderRadius: '24px', 
+                  padding: '20px', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  gap: '16px',
+                  boxShadow: 'var(--shadow-sm)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  flexShrink: 0
+                }}>
+                  {/* Decorative background accent */}
+                  <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '4px', background: 'linear-gradient(90deg, var(--green-deep) 0%, var(--green-primary) 100%)' }} />
+
+                  {/* Horizontal User Info */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', zIndex: 1 }}>
+                    {/* Avatar */}
+                    <div style={{ 
+                      width: '60px', 
+                      height: '60px', 
+                      borderRadius: '50%', 
+                      border: '2.5px solid #ffffff', 
+                      boxShadow: '0 4px 12px rgba(11,167,89,0.2)', 
+                      overflow: 'hidden',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'var(--surface-card)',
+                      flexShrink: 0
+                    }}>
+                      {currentUser.photoURL ? (
+                        <img src={currentUser.photoURL} alt={userName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} referrerPolicy="no-referrer" />
+                      ) : (
+                        <User size={24} color="var(--green-primary)" />
+                      )}
+                    </div>
+
+                    {/* Text info */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', overflow: 'hidden', textAlign: 'left' }}>
+                      <h4 style={{ margin: 0, fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {userName}
+                      </h4>
+                      <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-tertiary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {currentUser.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Badges / ID row */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', zIndex: 1 }}>
+                    <span className="badge badge-gradient" style={{ fontSize: '0.68rem', padding: '4px 10px', border: '1px solid rgba(11,167,89,0.25)', borderRadius: '10px', boxShadow: '0 2px 8px rgba(11,167,89,0.05)' }}>
+                      ✨ VIP Member
+                    </span>
+                    
+                    <div 
+                      onClick={() => handleCopyUid(currentUser.uid)}
+                      style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '6px', 
+                        background: 'var(--surface-card)', 
+                        border: '1px solid var(--border-light)', 
+                        borderRadius: '10px', 
+                        padding: '4px 10px', 
+                        fontSize: '0.68rem', 
+                        color: 'var(--text-secondary)', 
+                        cursor: 'pointer', 
+                        fontWeight: 600,
+                        transition: 'all 0.2s'
+                      }}
+                      title="Click to copy UID"
+                      onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--green-primary)'}
+                      onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-light)'}
+                    >
+                      <Copy size={10} color="var(--green-primary)" />
+                      <span style={{ fontFamily: 'monospace' }}>
+                        ID: {currentUser.uid.slice(0, 8)}...
+                      </span>
+                      {copiedUid && <span style={{ color: 'var(--green-primary)', fontWeight: 800, marginLeft: '4px' }}>Copied!</span>}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ 
+                  background: 'linear-gradient(135deg, rgba(11, 167, 89, 0.04) 0%, rgba(34, 197, 94, 0.01) 100%)', 
+                  border: '1.5px dashed rgba(11, 167, 89, 0.2)', 
+                  borderRadius: '24px', 
+                  padding: '24px 20px', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center', 
+                  gap: '16px',
+                  position: 'relative',
+                  boxShadow: 'var(--shadow-sm)'
+                }}>
+                  <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(11,167,89,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px dashed var(--green-primary)' }}>
+                    <User size={22} color="var(--green-primary)" />
+                  </div>
+                  <div style={{ zIndex: 1, textAlign: 'center' }}>
+                    <h4 style={{ margin: 0, fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)' }}>Welcome to Hair Haven</h4>
+                    <p style={{ margin: '6px 0 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: '1.45' }}>Sign in to synchronize your bookings, consultation estimates, and custom treatment plan.</p>
+                  </div>
+                  
+                  {/* Google Login Button */}
+                  <button 
+                    onClick={handleGoogleLogin} 
+                    disabled={authLoading}
+                    style={{ 
+                      width: '100%', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      gap: '10px', 
+                      background: 'var(--surface-card)', 
+                      border: '1.5px solid var(--border-light)', 
+                      borderRadius: '14px', 
+                      padding: '11px', 
+                      cursor: 'pointer', 
+                      fontWeight: 700, 
+                      fontSize: '0.82rem', 
+                      color: 'var(--text-primary)', 
+                      boxShadow: 'var(--shadow-xs)', 
+                      transition: 'all 0.2s', 
+                      zIndex: 1 
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(11,167,89,0.3)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.boxShadow = 'var(--shadow-xs)'; }}
+                  >
+                    {authLoading ? (
+                      <span style={{ display: 'inline-block', width: '16px', height: '16px', border: '2px solid var(--border-light)', borderTopColor: 'var(--green-primary)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                      </svg>
+                    )}
+                    {authLoading ? 'Signing in...' : 'Sign in with Google'}
+                  </button>
+                </div>
+              )}
+
+              {/* Medical Clinic File Card */}
+              {currentUser && userMedicalProfile && (
+                <div style={{ 
+                  background:'rgba(255, 255, 255, 0.45)', 
+                  border:'1px solid rgba(11, 167, 89, 0.12)', 
+                  borderRadius:'24px', 
+                  padding:'20px', 
+                  display:'flex', 
+                  flexDirection:'column', 
+                  gap:'14px',
+                  boxShadow:'var(--shadow-sm)',
+                  transition:'all 0.3s ease',
+                  flexShrink: 0
+                }} className="drawer-medical-card">
+                  <div style={{ display:'flex', alignItems:'center', gap:'10px', borderBottom:'1px solid rgba(11,167,89,0.08)', paddingBottom:'10px' }}>
+                    <div style={{ width:'28px', height:'28px', borderRadius:'8px', background:'rgba(11,167,89,0.08)', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--green-primary)' }}>
+                      <FileText size={16} />
+                    </div>
+                    <span style={{ fontSize:'0.88rem', fontWeight:800, color:'var(--text-primary)', fontFamily:'var(--font-display)' }}>📋 Hair Clinic File</span>
+                  </div>
+
+                  <div style={{ display:'flex', flexDirection:'column', gap:'10px', fontSize:'0.82rem', textAlign: 'left' }}>
+                    <div style={{ display:'flex', justifyContent:'space-between' }}>
+                      <span style={{ color:'var(--text-tertiary)' }}>Patient Name:</span>
+                      <span style={{ fontWeight:700, color:'var(--text-primary)' }}>{userMedicalProfile.fullName || userName}</span>
+                    </div>
+
+                    <div style={{ display:'flex', justifyContent:'space-between' }}>
+                      <span style={{ color:'var(--text-tertiary)' }}>Age / Gender:</span>
+                      <span style={{ fontWeight:700, color:'var(--text-primary)' }}>
+                        {userMedicalProfile.age ? `${userMedicalProfile.age} yrs` : 'Not set'} • {userMedicalProfile.gender || 'Not set'}
+                      </span>
+                    </div>
+
+                    <div style={{ display:'flex', justifyContent:'space-between' }}>
+                      <span style={{ color:'var(--text-tertiary)' }}>First Visit:</span>
+                      <span style={{ fontWeight:700, color:'var(--text-secondary)' }}>{userMedicalProfile.firstConsultationDate}</span>
+                    </div>
+
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                      <span style={{ color:'var(--text-tertiary)' }}>Norwood Loss Stage:</span>
+                      <span className="badge badge-gradient" style={{ fontSize:'0.75rem', fontWeight:800, padding:'2px 8px', borderRadius: '10px' }}>
+                        Stage {userMedicalProfile.stage}
+                      </span>
+                    </div>
+
+                    <div style={{ display:'flex', flexDirection:'column', gap:'4px', marginTop:'4px' }}>
+                      <span style={{ color:'var(--text-tertiary)' }}>Primary Concern:</span>
+                      <span style={{ fontWeight:700, color:'var(--text-primary)', background:'rgba(11,167,89,0.04)', padding:'6px 10px', borderRadius:'8px', border: '1px solid rgba(11,167,89,0.06)' }}>{userMedicalProfile.primaryConcerns}</span>
+                    </div>
+
+                    <div style={{ display:'flex', flexDirection:'column', gap:'4px' }}>
+                      <span style={{ color:'var(--text-tertiary)' }}>Prior Treatments:</span>
+                      <span style={{ fontWeight:700, color:'var(--text-secondary)', background:'var(--bg-secondary)', padding:'6px 10px', borderRadius:'8px', border: '1px solid var(--border-light)' }}>{userMedicalProfile.priorTreatments}</span>
+                    </div>
+
+                    <div style={{ display:'flex', flexDirection:'column', gap:'4px' }}>
+                      <span style={{ color:'var(--text-tertiary)' }}>Clinical Conditions:</span>
+                      <span style={{ fontWeight:700, color:'var(--text-secondary)', background:'var(--bg-secondary)', padding:'6px 10px', borderRadius:'8px', border: '1px solid var(--border-light)' }}>{userMedicalProfile.medicalConditions}</span>
+                    </div>
+                  </div>
+
+                  {/* AI Specialist Assessment */}
+                  <div style={{ 
+                    background:'linear-gradient(135deg, rgba(11, 167, 89, 0.05) 0%, rgba(34, 197, 94, 0.01) 100%)',
+                    border:'1.5px dashed rgba(11, 167, 89, 0.2)',
+                    borderRadius:'14px',
+                    padding:'12px',
+                    fontSize:'0.78rem',
+                    color:'var(--text-secondary)',
+                    lineHeight:'1.4',
+                    position:'relative',
+                    textAlign: 'left'
+                  }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:'6px', marginBottom:'4px', color:'var(--green-primary)', fontWeight:800, fontSize:'0.75rem' }}>
+                      <Sparkles size={12} className="pulse-button" />
+                      <span>AI Specialist Assessment</span>
+                    </div>
+                    {userMedicalProfile.aiAssessment}
+                  </div>
+
+                  {/* Edit File Button */}
+                  <button 
+                    onClick={() => {
+                      const name = window.prompt("Enter your full name:", userMedicalProfile.fullName || userName);
+                      const age = window.prompt("Enter your age:", userMedicalProfile.age || "");
+                      const gender = window.prompt("Enter your gender (e.g. Male, Female, Other):", userMedicalProfile.gender || "");
+                      const concerns = window.prompt("Enter your primary hair concerns (e.g. Receding hairline, temple hair loss):", userMedicalProfile.primaryConcerns);
+                      const prior = window.prompt("Enter prior treatments tried (e.g. PRP, Minoxidil, none):", userMedicalProfile.priorTreatments);
+                      const conditions = window.prompt("Enter any medical conditions or checks (e.g. Blood Sugar normal, none):", userMedicalProfile.medicalConditions);
+                      const stagePrompt = window.prompt("Enter your Norwood Hair Loss Stage (1 to 7):", userMedicalProfile.stage.toString());
+                      
+                      const newStage = parseInt(stagePrompt || "3");
+                      if (name !== null || age !== null || gender !== null || concerns !== null || prior !== null || conditions !== null || !isNaN(newStage)) {
+                        const updated = {
+                          ...userMedicalProfile,
+                          fullName: name !== null ? name : (userMedicalProfile.fullName || userName),
+                          age: age !== null ? age : (userMedicalProfile.age || ""),
+                          gender: gender !== null ? gender : (userMedicalProfile.gender || ""),
+                          primaryConcerns: concerns !== null ? concerns : userMedicalProfile.primaryConcerns,
+                          priorTreatments: prior !== null ? prior : userMedicalProfile.priorTreatments,
+                          medicalConditions: conditions !== null ? conditions : userMedicalProfile.medicalConditions,
+                          stage: isNaN(newStage) ? userMedicalProfile.stage : newStage,
+                          aiAssessment: `Patient is a ${age || userMedicalProfile.age || '28'}-year-old ${gender || userMedicalProfile.gender || 'male'}. Norwood Stage ${isNaN(newStage) ? userMedicalProfile.stage : newStage} pattern hair loss presenting ${concerns || userMedicalProfile.primaryConcerns}. Prior treatments tried: ${prior || userMedicalProfile.priorTreatments}. Highly suitable candidate for FUE Hair Restoration or BioSapphire FUE technique.`
+                        };
+                        setProfileSaving(true);
+                        saveMedicalProfileToFirestore(currentUser.uid, updated).then(() => {
+                          setUserMedicalProfile(updated);
+                          setProfileSaving(false);
+                          alert("Hair Clinic File saved successfully to Firestore! Aman AI will now personalize its counseling accordingly.");
+                        });
+                      }
+                    }}
+                    disabled={profileSaving}
+                    style={{ 
+                      width:'100%', 
+                      background:'none', 
+                      border:'1.5px solid var(--green-primary)', 
+                      color:'var(--green-primary)', 
+                      borderRadius:'10px', 
+                      padding:'8px 12px', 
+                      cursor:'pointer', 
+                      fontWeight:800, 
+                      fontSize:'0.82rem',
+                      display:'flex',
+                      alignItems:'center',
+                      justifyContent:'center',
+                      gap:'6px',
+                      transition:'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(11,167,89,0.06)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = 'none'; }}
+                  >
+                    {profileSaving ? 'Saving File...' : '✏️ Edit Clinic File'}
+                  </button>
+                </div>
+              )}
+
+              {/* Navigation Menu */}
+              <div className="drawer-nav-menu">
+                <div style={{ padding:'0 16px 8px 16px', fontSize:'0.72rem', fontWeight:800, color:'var(--text-tertiary)', textTransform:'uppercase', letterSpacing:'0.05em' }}>
+                  Navigation & Services
+                </div>
+                {[
+                  { id:'home', label:'Home Dashboard', icon: Home, isHome: true },
+                  { id:'services', label:'Treatments & Services', icon: Stethoscope },
+                  { id:'calculator', label:'Stage Calculator', icon: SlidersHorizontal },
+                  { id:'gallery', label:'Before & Afters', icon: ImageIcon },
+                  { id:'reviews', label:'Patient Reviews', icon: Star },
+                  { id:'map', label:'Location & Contact', icon: MapPin },
+                ].map(item => {
+                  const Icon = item.icon;
+                  const isActive = currentPage === 'home' && activeTab === item.id;
+                  return (
+                    <div 
+                      key={item.id}
+                      className={`drawer-nav-item ${isActive ? 'active' : ''}`}
+                      onClick={() => {
+                        setShowProfileDrawer(false);
+                        if (item.isHome) {
+                          setCurrentPage('home');
+                          setActiveTab('home');
+                          window.scrollTo({ top:0, behavior:'smooth' });
+                        } else {
+                          setCurrentPage('home');
+                          setActiveTab(item.id);
+                          setTimeout(() => scrollToSection(item.id), 100);
+                        }
+                      }}
+                    >
+                      <div className="drawer-nav-icon">
+                        <Icon size={16} />
+                      </div>
+                      <span>{item.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Preferences Card (Theme Switcher) */}
+              <div className="drawer-control-card">
+                <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
+                  <div style={{ width:'32px', height:'32px', borderRadius:'8px', background:'rgba(11,167,89,0.08)', color:'var(--green-primary)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                    {isDarkMode ? <Moon size={16} /> : <Sun size={16} />}
+                  </div>
+                  <div className="flex flex-col">
+                    <span style={{ fontSize:'0.85rem', fontWeight:700, color:'var(--text-primary)' }}>Dark Appearance</span>
+                    <span style={{ fontSize:'0.7rem', color:'var(--text-tertiary)' }}>Optimize battery & style</span>
+                  </div>
+                </div>
+                <label className="toggle-switch">
+                  <input 
+                    type="checkbox" 
+                    checked={isDarkMode} 
+                    onChange={() => setIsDarkMode(!isDarkMode)} 
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+
+              {/* Booking CTA Button */}
+              <button 
+                onClick={() => {
+                  setShowProfileDrawer(false);
+                  handleBookScroll();
+                }} 
+                className="btn btn-primary pulse-button" 
+                style={{ width:'100%', padding:'12px', borderRadius:'14px', fontSize:'0.88rem', fontWeight:800, marginTop:'8px', flexShrink: 0 }}
+              >
+                Book Free Consultation
+              </button>
+
+              {/* Sign Out (at the bottom) */}
+              {currentUser && (
+                <button 
+                  onClick={handleSignOut}
+                  style={{ 
+                    width:'100%', 
+                    display:'flex', 
+                    alignItems:'center', 
+                    justifyContent:'center', 
+                    gap:'10px', 
+                    background:'rgba(239,68,68,0.08)', 
+                    border:'1.5px dashed rgba(239,68,68,0.3)', 
+                    borderRadius:'14px', 
+                    padding:'12px', 
+                    cursor:'pointer', 
+                    color:'#ef4444', 
+                    fontWeight:800, 
+                    fontSize:'0.88rem',
+                    transition:'all 0.2s',
+                    marginTop:'auto',
+                    flexShrink: 0
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.14)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; }}
+                >
+                  <LogOut size={16} />
+                  <span>Sign Out Account</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
       {/* PWA Install Banner */}
       {showInstallBanner && !pwaInstalled && (
         <div className="pwa-banner">
@@ -1035,11 +2073,51 @@ export default function App() {
           <nav className={`glass-header ${scrolled ? 'scrolled' : ''}`}>
         <div className="container py-4 flex justify-between align-center" style={{ minHeight:'70px' }}>
 
-          {/* Dark Mode Toggle */}
-          <button onClick={() => setIsDarkMode(!isDarkMode)}
-            style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-primary)', display:'flex', alignItems:'center', padding:'8px', borderRadius:'50%' }}
-            title="Toggle Dark Mode">
-            {isDarkMode ? <Sun size={20} color="var(--green-primary)" /> : <Moon size={20} color="var(--green-deep)" />}
+          {/* Top-Left Profile Icon Button */}
+          <button 
+            onClick={() => setShowProfileDrawer(true)}
+            style={{ 
+              background:'none', 
+              border: currentUser ? '2px solid var(--green-primary)' : '1.5px solid var(--border-light)', 
+              borderRadius:'50%', 
+              padding:0, 
+              cursor:'pointer', 
+              width:'38px', 
+              height:'38px', 
+              overflow:'hidden', 
+              display:'flex', 
+              alignItems:'center', 
+              justifyContent:'center',
+              boxShadow: currentUser ? '0 0 10px rgba(11,167,89,0.25)' : 'var(--shadow-xs)',
+              transition:'all 0.3s ease',
+              position:'relative'
+            }}
+            title={currentUser ? (currentUser.displayName || 'My Profile') : 'Open Menu & Profile'}
+          >
+            {currentUser ? (
+              currentUser.photoURL ? (
+                <img src={currentUser.photoURL} alt={currentUser.displayName || 'User'} style={{ width:'100%', height:'100%', objectFit:'cover' }} referrerPolicy="no-referrer" />
+              ) : (
+                <div style={{ width:'100%', height:'100%', background:'rgba(11,167,89,0.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <User size={18} color="var(--green-primary)" />
+                </div>
+              )
+            ) : (
+              <User size={18} color="var(--text-secondary)" />
+            )}
+            {currentUser && (
+              <span style={{ 
+                position:'absolute', 
+                bottom:'1px', 
+                right:'1px', 
+                width:'8px', 
+                height:'8px', 
+                background:'#22c55e', 
+                border:'1.5px solid var(--bg-primary)', 
+                borderRadius:'50%',
+                boxShadow:'0 0 4px #22c55e'
+              }} />
+            )}
           </button>
 
           {/* Center Logo */}
@@ -1063,35 +2141,7 @@ export default function App() {
             ))}
             <button onClick={handleBookScroll} className="btn btn-primary btn-sm pulse-button">Book Consultation</button>
           </div>
-
-          {/* Mobile hamburger */}
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="mobile-only-block"
-            style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-primary)' }}>
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </div>
-
-        {/* Mobile Drawer */}
-        {mobileMenuOpen && (
-          <div className="mobile-nav-drawer">
-            <a href="#home" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>🏠 Home</a>
-            <a href="#services" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>💉 Treatments</a>
-            <a href="#team" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>👨‍⚕️ Expert Team</a>
-            <a href="#calculator" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>🧮 Calculator</a>
-            <a href="#gallery" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>📸 Gallery</a>
-            <a href="#reviews" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>⭐ Reviews</a>
-            <a href="#map" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>📍 Location</a>
-            <div className="mobile-nav-divider" />
-            <button onClick={() => { setCurrentPage('consultation'); setMobileMenuOpen(false); }} className="btn btn-primary" style={{ width:'100%', marginTop:'8px' }}>
-              Book Free Consultation
-            </button>
-            <button onClick={() => setIsDarkMode(!isDarkMode)} className="btn btn-secondary" style={{ width:'100%', marginTop:'8px', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px' }}>
-              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-              {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-            </button>
-          </div>
-        )}
       </nav>
 
       {/* Scroll Progress */}
@@ -1766,19 +2816,18 @@ export default function App() {
         />
       )}
 
-      {/* ── BOTTOM NAVIGATION (Instagram Style) ── */}
+      {/* ── BOTTOM NAVIGATION (Ultra Bar) ── */}
       <nav className="bottom-nav">
         {navTabs.map(tab => {
           const Icon = tab.icon;
           const isActive = tab.id === activeTab;
-          const isBook = tab.id === 'consultation';
           return (
             <button
               key={tab.id}
-              className={`bottom-nav-item ${isActive ? 'active' : ''} ${isBook ? 'book' : ''}`}
+              className={`bottom-nav-item ${isActive ? 'active' : ''}`}
               onClick={() => {
                 setActiveTab(tab.id);
-                if (isBook) {
+                if (tab.id === 'consultation') {
                   setCurrentPage('consultation');
                 } else {
                   setCurrentPage('home');
@@ -1786,15 +2835,9 @@ export default function App() {
                 }
               }}
             >
-              {isBook ? (
-                <div className="bottom-nav-book-icon">
-                  <Icon size={22} />
-                </div>
-              ) : (
-                <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
-              )}
+              <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
               <span>{tab.label}</span>
-              {isActive && !isBook && <div className="bottom-nav-dot" />}
+              {isActive && <div className="bottom-nav-dot" />}
             </button>
           );
         })}
@@ -1803,21 +2846,25 @@ export default function App() {
       {/* Scroll Progress Bar */}
       <div style={{ position:'fixed', top:0, left:0, height:'3px', width:`${scrollProgress}%`, background:'linear-gradient(90deg, var(--green-deep) 0%, var(--green-primary) 60%, #22d3ee 100%)', zIndex:10000, transition:'width 0.1s linear', borderRadius:'0 2px 2px 0', boxShadow:'0 0 8px rgba(11,167,89,0.5)' }} />
 
-      {/* WhatsApp FAB */}
-      <div style={{ position:'fixed', bottom:'100px', right:'20px', zIndex:900, display:'flex', flexDirection:'column', alignItems:'center', gap:'10px' }}>
+      {/* WhatsApp FAB — top RIGHT */}
+      <div style={{ position:'fixed', top:'16px', right:'16px', zIndex:10005, display:'flex', flexDirection:'column', alignItems:'center', gap:'10px' }}>
+        <a href="https://wa.me/918899708659?text=Hello%20Hair%20Haven%2C%20I%20would%20like%20to%20book%20a%20consultation." target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp"
+          style={{ width:'38px', height:'38px', borderRadius:'50%', background:'#25D366', boxShadow:'0 4px 16px rgba(37,211,102,0.4)', display:'flex', alignItems:'center', justifyContent:'center', textDecoration:'none', animation:'pulse-wa 2.5s infinite' }}>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="#ffffff">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+        </a>
+      </div>
+
+      {/* Chatbot FAB + window — bottom RIGHT */}
+      <div style={{ position:'fixed', bottom:'95px', right:'20px', zIndex:10005, display:'flex', flexDirection:'column', alignItems:'flex-end', gap:'10px' }}>
         {scrollY > 400 && (
           <button onClick={() => window.scrollTo({ top:0, behavior:'smooth' })} title="Back to top"
             style={{ width:'44px', height:'44px', borderRadius:'50%', background:'var(--surface-card)', border:'1.5px solid var(--border-light)', boxShadow:'0 4px 16px rgba(0,0,0,0.10)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--text-secondary)' }}>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
           </button>
         )}
-        <AIChatbot onBookNow={() => { setCurrentPage('consultation'); setActiveTab('consultation'); }} />
-        <a href="https://wa.me/918899708659?text=Hello%20Hair%20Haven%2C%20I%20would%20like%20to%20book%20a%20consultation." target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp"
-          style={{ width:'56px', height:'56px', borderRadius:'50%', background:'#25D366', boxShadow:'0 4px 20px rgba(37,211,102,0.45)', display:'flex', alignItems:'center', justifyContent:'center', textDecoration:'none', animation:'pulse-wa 2.5s infinite' }}>
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="#ffffff">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-          </svg>
-        </a>
+        <AIChatbot onBookNow={() => { setCurrentPage('consultation'); setActiveTab('consultation'); }} currentUser={currentUser} userMedicalProfile={userMedicalProfile} onProfileUpdate={setUserMedicalProfile} />
       </div>
     </>
   );
