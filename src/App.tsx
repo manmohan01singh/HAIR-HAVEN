@@ -451,6 +451,355 @@ function ConsultationPage({
 /* ═══════════════════════════════════════════════════════
    MAIN APP
 ═══════════════════════════════════════════════════════ */
+
+interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: string;
+}
+
+const SYSTEM_PROMPT = `You are "Haven", the ultra-advanced, empathetic, and expert Personal AI Hair Restoration Consultant for Hair Haven, the premier hair transplant clinic in Jammu.
+
+Your purpose is to answer any hair transplant and hair restoration questions with clinical precision, immense warm hospitality, and 100% factual accuracy based on Hair Haven's offerings.
+
+### HAIR HAVEN CLINIC DETAILS:
+- Address: 606/B, Sector 3, Channi Himmat, Jammu - 180015, J&K.
+- Contact Number / WhatsApp: +91 88997 08659 (Patients can book by clicking "Book Consultation" or clicking the WhatsApp alert).
+- Timings: 10:00 AM to 06:00 PM, Open 7 Days a week (Monday to Sunday).
+- Facilities: State-of-the-art sterile clinic, premium surgical rooms, diagnostic tools, free on-site parking.
+
+### TREATMENTS & PRICING:
+1. Surgical Treatments:
+   - FUE Hair Transplant: Modern technique where healthy grafts are extracted individually from the donor area (usually back of head) and implanted. Minimally invasive, no major scars, natural density, fast recovery. Starting from ₹21,000.
+   - BioSapphire FUE Technique: Advanced FUE using premium sapphire blades to make micro-channels. Superior graft density, rapid scalp healing, extremely natural. Starting from ₹31,000.
+2. Non-Surgical Growth Treatments:
+   - PRP Therapy (Platelet Rich Plasma): Injecting own platelets into scalp to strengthen hair roots, reduce hair fall, and stimulate growth. ₹2,000 / session.
+   - GFC Therapy (Growth Factor Concentrate): Advanced regenerative treatment using concentrated growth factors from patient's blood. Nourishes follicles, improves thickness, controls hair fall. ₹4,500 / session.
+3. Specialized Transplants:
+   - Beard Transplant: Fuller, dense, natural beard restoration. Custom pricing.
+   - Eyebrow Transplant: Restore thin/uneven brows with directional graft placement. Custom pricing.
+
+### NORWOOD SCALE & SURGICAL PLANNING (GRAFTS & COSTS):
+Help patients estimate their hair loss stage and cost:
+- Stage 1: Minimal hair loss. No transplant needed. Preventive PRP/GFC recommended.
+- Stage 2: Minor temple receding. 500 - 1,000 grafts. Starting from ₹21,000 to ₹25,000.
+- Stage 3: Clear M/V-shaped hairline recession. 1,200 - 1,800 grafts. Starting from ₹30,000 (Base).
+- Stage 4: Receding front & crown thinning. 2,000 - 2,800 grafts. Starting from ₹35,000 to ₹40,000.
+- Stage 5: Advanced hair loss (thin bridge between front & crown). 2,800 - 3,500 grafts. Starting from ₹40,000 to ₹45,000.
+- Stage 6: Severe hair loss (merged front & crown). 3,500 - 4,500 grafts. Starting from ₹45,000 (Base).
+- Stage 7: Extreme balding (narrow horseshoe band remaining). 4,500+ grafts. Custom quote, starting from ₹45,000+.
+
+### OUR SUPPORTIVE TEAM:
+- Clinical Director: Dr. Suby Kakkar (MBBS, E. Dermatology, Germany, Ex-Consultant Max Hospital Delhi. Highly experienced in advanced dermatological therapies).
+- Master Technician: Maxon Epstin (Hair Transplant & PRP Specialist, expert in hair extraction, PRP growth therapies, and surgical support).
+- Senior Implanter: Kashish Gupta (Skilled in precise graft placement and natural hair line work with years of hands-on expertise).
+- Patient Care Coordinator: Ronika Bhardwaj (Manages post-transplant recovery logs, patient check-ups, and guides incoming clinical leads).
+- Certified Clinical Staff: Shazia mam and Rimpy mam (renowned by patients for their attentive care, friendly behavior, and excellent work supervision).
+
+### RECOVERY & POST-CARE RULES:
+- Recovery Timeline: 3-5 days for temple work, 7-10 days for crown. Scalp heals completely in 10-14 days. New hair starts growing in 3-4 months, full density achieved in 8-12 months.
+- Immediate Post-Care: Avoid scratching, sleeping directly on the grafts for the first 3 days, avoid heavy workouts for 10 days, and use the prescribed saline spray and mild shampoo.
+
+### STYLE & BEHAVIOR:
+- Be warm, highly supportive, and professional. Use bullet points for structured information (e.g., costs, recovery steps).
+- Promote Hair Haven's booking pass tool and WhatsApp integration! If a patient expresses interest in booking, guide them to click the "Book" button in the navigation bar or use the "Book Consultation" page.
+- Keep answers concise, highly informative, and easy to read. Never use placeholders.
+- Speak about Hair Haven's 100% success rate, subsidies, and high patient satisfaction (e.g., Manmohan Singh, Saleem, and Sunny's 5-star reviews!).`;
+
+function AIChatbot({ onBookNow }: { onBookNow: () => void }) {
+  const [chatOpen, setChatOpen] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    const saved = localStorage.getItem('hh_chat_messages');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved chat messages', e);
+      }
+    }
+    return [
+      {
+        role: 'assistant',
+        content: `👋 Hello! I am **Haven**, your personal AI Hair Restoration expert at Hair Haven. 🌿\n\nI can help you estimate your required hair grafts, check treatment pricing, learn about our doctor-led procedures, or explain the FUE recovery process.\n\nWhat can I assist you with today?`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    ];
+  });
+  const [inputText, setInputText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    localStorage.setItem('hh_chat_messages', JSON.stringify(messages));
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
+  const handleSend = async (textToSend: string) => {
+    const trimmed = textToSend.trim();
+    if (!trimmed) return;
+
+    if (trimmed === 'BOOK_NOW_TRIGGER') {
+      setChatOpen(false);
+      onBookNow();
+      return;
+    }
+
+    const userTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const newMessages = [
+      ...messages,
+      { role: 'user' as const, content: trimmed, timestamp: userTime }
+    ];
+    setMessages(newMessages);
+    setInputText('');
+    setIsTyping(true);
+
+    try {
+      const apiMessages = [
+        { role: 'system' as const, content: SYSTEM_PROMPT },
+        ...newMessages.map(m => ({ role: m.role, content: m.content }))
+      ];
+
+      const clientApiKey = import.meta.env.VITE_GROQ_API_KEY;
+      let assistantReply = '';
+
+      if (clientApiKey) {
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${clientApiKey}`
+          },
+          body: JSON.stringify({
+            model: "llama-3.3-70b-versatile",
+            messages: apiMessages,
+            temperature: 0.5,
+            max_tokens: 1024
+          })
+        });
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData?.error?.message || `Groq API responded with status ${response.status}`);
+        }
+        const data = await response.json();
+        assistantReply = data.choices[0].message.content;
+      } else {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ messages: apiMessages })
+        });
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`Server responded with status ${response.status}: ${errText}`);
+        }
+        const data = await response.json();
+        assistantReply = data.content;
+      }
+
+      const assistantTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      setMessages(prev => [
+        ...prev,
+        { role: 'assistant' as const, content: assistantReply, timestamp: assistantTime }
+      ]);
+    } catch (error: any) {
+      console.error("Chat error:", error);
+      const assistantTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      setMessages(prev => [
+        ...prev,
+        { 
+          role: 'assistant' as const, 
+          content: `⚠️ Sorry, I encountered an issue connecting to my hair transplant knowledge system. Please check your internet connection or try again. \n\n*Error: ${error.message || 'Unknown network error'}*`, 
+          timestamp: assistantTime 
+        }
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const handleClear = () => {
+    if (window.confirm("Are you sure you want to clear your conversation history?")) {
+      const resetMessages: ChatMessage[] = [
+        {
+          role: 'assistant',
+          content: `👋 Conversation reset! I am **Haven**, your personal AI Hair Restoration expert. \n\nHow can I help you today?`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ];
+      setMessages(resetMessages);
+      localStorage.removeItem('hh_chat_messages');
+    }
+  };
+
+  const suggestions = [
+    { label: '📅 Book Online Pass', text: 'BOOK_NOW_TRIGGER' },
+    { label: '🧮 Estimate Grafts & Cost', text: 'How many grafts do I need and what is the cost of hair transplant?' },
+    { label: '💎 FUE vs Sapphire FUE', text: 'What is the difference between standard FUE and BioSapphire FUE technique?' },
+    { label: '💉 GFC vs PRP Cost', text: 'What are the pricing details for GFC and PRP therapy sessions?' },
+    { label: '👨‍⚕️ Meet Dr. Suby Kakkar', text: 'Tell me about Clinical Director Dr. Suby Kakkar and the supportive staff.' }
+  ];
+
+  return (
+    <>
+      <button 
+        onClick={() => setChatOpen(!chatOpen)}
+        className="chatbot-fab"
+        title="Consult Haven AI"
+      >
+        <span className="chatbot-fab-sparkles">✨</span>
+        {chatOpen ? (
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        )}
+      </button>
+
+      {chatOpen && (
+        <div className="chatbot-window-container">
+          <div className="chatbot-window">
+            <div className="chatbot-header">
+              <div className="chatbot-header-info">
+                <div className="chatbot-avatar-container">
+                  <span style={{ fontSize: '1.2rem' }}>🌿</span>
+                  <div className="chatbot-status-dot"></div>
+                </div>
+                <div>
+                  <div className="chatbot-header-title">Haven AI</div>
+                  <div className="chatbot-header-subtitle">
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }}></span>
+                    Active Now
+                  </div>
+                </div>
+              </div>
+              <div className="chatbot-header-actions">
+                <button 
+                  onClick={handleClear}
+                  className="chatbot-header-btn"
+                  title="Clear Chat History"
+                >
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => setChatOpen(false)}
+                  className="chatbot-header-btn"
+                  title="Minimize Chat"
+                >
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="12" x2="6" y2="12"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div className="chatbot-body">
+              {messages.map((m, idx) => (
+                <div key={idx} className={`chat-msg ${m.role}`}>
+                  <div className="chat-bubble">
+                    <div style={{ whiteSpace: 'pre-wrap' }}>
+                      {m.content.split('\n').map((line, lIdx) => {
+                        let content: React.ReactNode = line;
+                        
+                        if (line.includes('**')) {
+                          const parts = line.split('**');
+                          content = parts.map((part, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx}>{part}</strong> : part);
+                        }
+
+                        if (line.trim().startsWith('- ')) {
+                          return (
+                            <div key={lIdx} style={{ display: 'flex', gap: '8px', marginLeft: '8px', margin: '4px 0' }}>
+                              <span>•</span>
+                              <span>{content}</span>
+                            </div>
+                          );
+                        }
+
+                        if (line.trim().startsWith('###')) {
+                          return <h4 key={lIdx} style={{ margin: '12px 0 6px 0', fontSize: '0.92rem', fontWeight: 800, color: 'var(--green-deep)' }}>{line.replace('###', '').trim()}</h4>;
+                        }
+
+                        return <p key={lIdx} style={{ margin: '0 0 8px 0', lineHeight: 1.5 }}>{content}</p>;
+                      })}
+                    </div>
+                  </div>
+                  <div className="chat-msg-time">{m.timestamp}</div>
+                </div>
+              ))}
+              {isTyping && (
+                <div className="chat-msg assistant">
+                  <div className="chat-bubble" style={{ display: 'flex', alignItems: 'center' }}>
+                    <div className="typing-indicator">
+                      <div className="typing-dot"></div>
+                      <div className="typing-dot"></div>
+                      <div className="typing-dot"></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            <div className="chatbot-input-container">
+              {messages.length === 1 && (
+                <div className="chatbot-suggestions">
+                  {suggestions.map((s, idx) => (
+                    <button 
+                      key={idx}
+                      onClick={() => handleSend(s.text)}
+                      className="chatbot-suggestion-pill"
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+              
+              <div className="chatbot-input-row">
+                <input 
+                  type="text" 
+                  value={inputText}
+                  onChange={e => setInputText(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') handleSend(inputText);
+                  }}
+                  placeholder="Ask Haven about hair transplant..."
+                  className="chatbot-input"
+                  disabled={isTyping}
+                />
+                <button 
+                  onClick={() => handleSend(inputText)}
+                  disabled={!inputText.trim() || isTyping}
+                  className="chatbot-send-btn"
+                  title="Send Message"
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </div>
+              <div className="chatbot-disclaimer">
+                🌿 AI Assistant — Book a clinical consult for full diagnostics.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function App() {
   /* ── Page Routing ── */
   const [currentPage, setCurrentPage] = useState<'home' | 'consultation'>('home');
@@ -1458,6 +1807,7 @@ export default function App() {
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
           </button>
         )}
+        <AIChatbot onBookNow={() => { setCurrentPage('consultation'); setActiveTab('consultation'); }} />
         <a href="https://wa.me/918899708659?text=Hello%20Hair%20Haven%2C%20I%20would%20like%20to%20book%20a%20consultation." target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp"
           style={{ width:'56px', height:'56px', borderRadius:'50%', background:'#25D366', boxShadow:'0 4px 20px rgba(37,211,102,0.45)', display:'flex', alignItems:'center', justifyContent:'center', textDecoration:'none', animation:'pulse-wa 2.5s infinite' }}>
           <svg viewBox="0 0 24 24" width="28" height="28" fill="#ffffff">
