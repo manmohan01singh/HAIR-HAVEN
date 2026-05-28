@@ -829,15 +829,15 @@ export default function App() {
 
           <div className="grid grid-cols-4 gap-6 flex-col-mobile">
             {[
-              { step: '01', title: 'Local Anesthesia', desc: 'Painless administration of local anesthesia for a comfortable procedure.', icon: <Shield size={28}/> },
-              { step: '02', title: 'Harvest from Donor Area', desc: 'Precise and careful extraction of healthy hair follicles from the donor zone.', icon: <Compass size={28}/> },
-              { step: '03', title: 'Implantation of The Grafts', desc: 'Strategic placement of grafts at the correct angle to match natural hair growth.', icon: <Search size={28}/> },
-              { step: '04', title: 'Result', desc: 'Natural-looking, dense hair growth and complete restoration of your confidence.', icon: <CheckCircle2 size={28}/> }
+              { step: '01', title: 'Local Anesthesia', desc: 'Painless administration of local anesthesia for a comfortable procedure.', image: '/process-1.png' },
+              { step: '02', title: 'Harvest from Donor Area', desc: 'Precise and careful extraction of healthy hair follicles from the donor zone.', image: '/process-2.png' },
+              { step: '03', title: 'Implantation of The Grafts', desc: 'Strategic placement of grafts at the correct angle to match natural hair growth.', image: '/process-3.png' },
+              { step: '04', title: 'Result', desc: 'Natural-looking, dense hair growth and complete restoration of your confidence.', image: '/process-4.png' }
             ].map((p, i) => (
               <div key={i} className="glass-card p-6 flex flex-col align-center text-center" style={{ position: 'relative', overflow: 'hidden', borderTop: '4px solid var(--green-primary)' }}>
                 <div style={{ position: 'absolute', top: '-5px', right: '-10px', fontSize: '6rem', fontWeight: 900, color: 'var(--green-primary)', opacity: 0.05, fontFamily: 'var(--font-display)', lineHeight: 1 }}>{p.step}</div>
-                <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(11,167,89,0.1)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', zIndex: 1 }}>
-                  {p.icon}
+                <div style={{ width: '140px', height: '140px', borderRadius: '50%', background: 'rgba(11,167,89,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', zIndex: 1, padding: '10px' }}>
+                  <img src={p.image} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 </div>
                 <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px', zIndex: 1 }}>{p.title}</h4>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.5, zIndex: 1 }}>{p.desc}</p>
