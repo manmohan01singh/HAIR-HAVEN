@@ -703,7 +703,11 @@ function AIChatbot({ onBookNow }: { onBookNow: () => void }) {
               </div>
             </div>
 
-            <div className="chatbot-body">
+            <div className="chatbot-body" style={{ position: 'relative' }}>
+            <div className={`thinking-orb-container ${isTyping ? 'visible' : ''}`}>
+              <div className="thinking-orb-aura"></div>
+              <div className="thinking-orb-core"></div>
+            </div>
               {messages.map((m, idx) => (
                 <div key={idx} className={`chat-msg ${m.role}`}>
                   <div className="chat-bubble">
