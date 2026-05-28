@@ -1568,7 +1568,7 @@ export default function App() {
   const currentNorwoodInfo = norwoodStages[selectedNorwood - 1];
 
   const calculateCalculatorPrice = () => {
-    let base = norwoodStages[selectedNorwood - 1].basePrice;
+    const base = norwoodStages[selectedNorwood - 1].basePrice;
     let extra = includePRPSessions * 2000;
     if (includeScreening) extra += 999;
     if (useBioSapphire) extra += 10000;
