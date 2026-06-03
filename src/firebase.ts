@@ -5,12 +5,12 @@ import { initializeFirestore, doc, setDoc, getDoc, serverTimestamp } from "fireb
 
 // Hair Haven Firebase Project Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCFm1ByIvUbca__K-eaGldfWszClYJ0VqU",
-  authDomain: "hair-haven-5ac0c.firebaseapp.com",
-  projectId: "hair-haven-5ac0c",
-  storageBucket: "hair-haven-5ac0c.firebasestorage.app",
-  messagingSenderId: "551517483508",
-  appId: "1:551517483508:web:161385d419884s5309a1"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Initialize Firebase App
