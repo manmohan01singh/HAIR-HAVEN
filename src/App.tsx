@@ -2502,7 +2502,10 @@ export default function App() {
           <img
             src={clinicSettings.doctorAvatarUrl || '/doctor-avatar.png'}
             alt='Aman AI'
+            className="doctor-floating-img"
             style={{
+              width: '110px',
+              height: '110px',
               objectFit: 'contain',
               filter: 'none',
               transition: 'transform 0.3s ease',
@@ -2510,20 +2513,23 @@ export default function App() {
           />
         </InlineImageEdit>
         {/* AI badge */}
-        <div style={{
-          position: 'absolute',
-          top: '10px',
-          left: '8px',
-          background: 'linear-gradient(135deg, var(--green-primary), var(--green-deep))',
-          borderRadius: '99px',
-          padding: '2px 7px',
-          fontSize: '0.55rem',
-          fontWeight: 800,
-          color: '#fff',
-          letterSpacing: '0.04em',
-          boxShadow: '0 2px 8px rgba(11,167,89,0.4)',
-          pointerEvents: 'none'
-        }}>AI</div>
+        <div 
+          className="doctor-ai-badge"
+          style={{
+            position: 'absolute',
+            top: '10px',
+            left: '8px',
+            background: 'linear-gradient(135deg, var(--green-primary), var(--green-deep))',
+            borderRadius: '99px',
+            padding: '2px 7px',
+            fontSize: '0.55rem',
+            fontWeight: 800,
+            color: '#fff',
+            letterSpacing: '0.04em',
+            boxShadow: '0 2px 8px rgba(11,167,89,0.4)',
+            pointerEvents: 'none'
+          }}
+        >AI</div>
       </div>
 
 

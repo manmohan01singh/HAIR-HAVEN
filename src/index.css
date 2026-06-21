@@ -2908,24 +2908,9 @@ input:checked + .toggle-slider:before {
 .doctor-floating-btn:active {
   transform: scale(0.95) translateY(0) !important;
 }
-.doctor-floating-btn img {
-  width: 110px;
-  height: 110px;
-}
 @keyframes doctor-bob {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
-}
-
-@media (max-width: 768px) {
-  .doctor-floating-btn {
-    bottom: 120px !important;
-    right: -5px !important;
-  }
-  .doctor-floating-btn img {
-    width: 80px !important;
-    height: 80px !important;
-  }
 }
 
 /* ── TAB CONTENT TRANSITIONS ── */
@@ -4376,6 +4361,24 @@ body.dark-mode .hero-glass-visual-card {
 input[type="password"]:focus {
   border-color: rgba(128, 90, 213, 0.6) !important;
   box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.12);
+}
+
+/* Responsive overrides for Doctor Floating Button to avoid overlapping bottom navigation on mobile */
+@media (max-width: 768px) {
+  .doctor-floating-btn {
+    bottom: 130px !important;
+    right: -10px !important;
+  }
+  .doctor-floating-img {
+    width: 82px !important;
+    height: 82px !important;
+  }
+  .doctor-ai-badge {
+    top: 7px !important;
+    left: 4px !important;
+    font-size: 0.48rem !important;
+    padding: 1px 5px !important;
+  }
 }
 
 
