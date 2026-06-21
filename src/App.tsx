@@ -1652,6 +1652,23 @@ export default function App() {
   const [scrollY, setScrollY] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
 
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleBookScroll = () => {
+    // If the calculator is on the home page, scroll to it.
+    if (currentPage !== 'home') {
+      setCurrentPage('home');
+      setTimeout(() => scrollToSection('calculator'), 100);
+    } else {
+      scrollToSection('calculator');
+    }
+  };
+
   /* ── Dark Mode ── */
   const [isDarkMode, setIsDarkMode] = useState(() => document.body.classList.contains('dark-mode'));
 
