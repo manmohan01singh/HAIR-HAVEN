@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "firebase/auth";
 import type { User } from "firebase/auth";
 import { 
   initializeFirestore, 
@@ -19,13 +19,14 @@ import {
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Hair Haven Firebase Project Configuration
+// Trim all env vars to prevent %0A (newline) URL-encoding bug in Firebase Auth
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: (import.meta.env.VITE_FIREBASE_API_KEY || '').trim(),
+  authDomain: (import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '').trim(),
+  projectId: (import.meta.env.VITE_FIREBASE_PROJECT_ID || '').trim(),
+  storageBucket: (import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '').trim(),
+  messagingSenderId: (import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '').trim(),
+  appId: (import.meta.env.VITE_FIREBASE_APP_ID || '').trim()
 };
 
 // Initialize Firebase App
@@ -67,9 +68,36 @@ export const isAdminUser = (email: string | null): boolean => {
  * Sign in with Google popup
  * Returns the Firebase User on success, throws on failure
  */
+/**
+ * Detect if we're in a popup-hostile environment (mobile, some browsers, or ad-blocked)
+ * In those cases use redirect flow instead of popup
+ */
+const isMobileOrPopupUnsafe = (): boolean => {
+  const ua = navigator.userAgent;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+};
+
 export const signInWithGoogle = async (): Promise<User> => {
+  if (isMobileOrPopupUnsafe()) {
+    // Use redirect flow on mobile — getRedirectResult is called in App.tsx on mount
+    await signInWithRedirect(auth, googleProvider);
+    // This line won't execute on mobile (page redirects), but satisfies the type signature
+    throw new Error('redirect_initiated');
+  }
   const result = await signInWithPopup(auth, googleProvider);
   return result.user;
+};
+
+/**
+ * Call this once on app mount to handle the result of a redirect sign-in
+ */
+export const handleRedirectSignIn = async (): Promise<User | null> => {
+  try {
+    const result = await getRedirectResult(auth);
+    return result ? result.user : null;
+  } catch {
+    return null;
+  }
 };
 
 /**

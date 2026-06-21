@@ -1,28 +1,33 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { 
-  MapPin, Clock, Shield, Star, CheckCircle2, 
-  Sparkles, X, ArrowRight, ArrowLeft,
-  Heart, Award, Compass,
-  MessageSquare, Search, SlidersHorizontal,
-  Sun, Moon, Home, Stethoscope, Image as ImageIcon, MessageCircle, Calendar,
-  Download, User, Phone, Mail, FileText, LogOut, Copy, Settings, Share, Plus
-} from 'lucide-react';
+import { Phone, MapPin, Search, Calendar, ChevronRight, CheckCircle, Clock, Star, MessageCircle, ArrowRight, Play, Pause, ChevronLeft, Volume2, VolumeX, Menu, X, ArrowUpRight, Copy, LogOut, Heart, Award, Compass, MessageSquare, SlidersHorizontal, Sun, Moon, Home, Stethoscope, Image as ImageIcon, Download, User, Mail, FileText, Settings, Plus, CheckCircle2, Sparkles, ArrowLeft } from 'lucide-react';
 // @ts-ignore
 import confetti from 'canvas-confetti';
 import { 
   signInWithGoogle, signOutUser, onAuthChange, saveUserToFirestore, 
   getUserDoc, saveMedicalProfileToFirestore, isAdminUser,
   subscribeToGallery, subscribeToClinicSettings, saveBookingToFirestore,
-  subscribeToReviews, updateClinicSettings
+  subscribeToReviews, updateClinicSettings, uploadGalleryImage, handleRedirectSignIn
 } from './firebase';
 import AdminPanel from './AdminPanel';
 import type { User as FirebaseUser } from 'firebase/auth';
 
 /* ─── LOGO COMPONENT ─────────────────────────────────── */
-function HairHavenLogo({ className = "", size = 40 }: { className?: string; size?: number }) {
+function HairHavenLogo({ className = "", size = 40, logoUrl = '/logo.png', isAdminEditMode = false }: { className?: string; size?: number; logoUrl?: string; isAdminEditMode?: boolean }) {
+  const content = <img src={logoUrl} alt="Hair Haven Logo" style={{ width:'100%', height:'100%', objectFit:'cover', display:'block' }} />;
+
+  if (isAdminEditMode && size > 50) {
+    return (
+      <div className={className} style={{ width:`${size}px`, height:`${size}px`, borderRadius:'50%', overflow:'hidden', border:'2px solid var(--green-primary)', display:'inline-flex', alignItems:'center', justifyContent:'center', background:'var(--surface-card)', flexShrink:0 }}>
+        <InlineImageEdit value={logoUrl} field="logoUrl" isActive={isAdminEditMode}>
+          {content}
+        </InlineImageEdit>
+      </div>
+    );
+  }
+
   return (
     <div className={className} style={{ width:`${size}px`, height:`${size}px`, borderRadius:'50%', overflow:'hidden', border:'2px solid var(--green-primary)', display:'inline-flex', alignItems:'center', justifyContent:'center', background:'var(--surface-card)', flexShrink:0 }}>
-      <img src="/logo.png" alt="Hair Haven Logo" style={{ width:'100%', height:'100%', objectFit:'cover', display:'block' }} />
+      {content}
     </div>
   );
 }
@@ -30,11 +35,12 @@ function HairHavenLogo({ className = "", size = 40 }: { className?: string; size
 /* ─── ADMIN INLINE EDITOR ────────────────────────────── */
 function InlineEdit({
   value, field, isActive, multiline = false, number = false,
-  className = '', style = {}, children
+  className = '', style = {}, children, onChange
 }: {
   value: string | number; field: string; isActive: boolean;
   multiline?: boolean; number?: boolean;
   className?: string; style?: React.CSSProperties; children?: React.ReactNode;
+  onChange: (value: string) => void;
 }) {
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState(String(value));
@@ -54,6 +60,7 @@ function InlineEdit({
     setSaving(true);
     try {
       await updateClinicSettings({ [field]: number ? Number(draft) : draft });
+      onChange(String(draft));
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (err) { console.error(err); }
@@ -160,6 +167,87 @@ function InlineEdit({
   );
 }
 
+/* ─── ADMIN INLINE IMAGE EDITOR ──────────────────────── */
+function InlineImageEdit({
+  value, field, isActive,
+  style = {}, children
+}: {
+  value: string; field: string; isActive: boolean;
+  style?: React.CSSProperties; children: React.ReactElement;
+}) {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = React.useState(false);
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isActive) return;
+    e.stopPropagation();
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadGalleryImage(file);
+      await updateClinicSettings({ [field]: url });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to upload image. Please try again.");
+    }
+    setUploading(false);
+  };
+
+  if (!isActive) return children;
+
+  return (
+    <div
+      onClick={handleClick}
+      style={{
+        position: 'relative',
+        display: 'inline-block',
+        cursor: 'pointer',
+        outline: '2.5px dashed rgba(128,90,213,0.7)',
+        outlineOffset: '2px',
+        borderRadius: '12px',
+        transition: 'all 0.2s',
+        ...style
+      }}
+      title="📷 Click to change image"
+    >
+      {children}
+      <div style={{
+        position: 'absolute',
+        bottom: '8px',
+        right: '8px',
+        background: 'rgba(30,10,60,0.85)',
+        backdropFilter: 'blur(4px)',
+        border: '1px solid rgba(168,85,247,0.5)',
+        color: '#fff',
+        borderRadius: '50%',
+        width: '32px',
+        height: '32px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+        fontSize: '14px',
+        zIndex: 10
+      }}>
+        {uploading ? '⏳' : '📷'}
+      </div>
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        style={{ display: 'none' }}
+      />
+    </div>
+  );
+}
+
+
 /* ─── NORWOOD STAGE VISUAL ────────────────────────────── */
 function NorwoodStageVisual({ stage }: { stage: number }) {
   return (
@@ -255,7 +343,8 @@ function ConsultationPage({
   includePRPSessions,
   includeScreening,
   initialService = 'FUE Hair Transplant',
-  showToast
+  showToast,
+  logoUrl
 }: {
   onBack: () => void;
   selectedNorwood: number;
@@ -263,6 +352,7 @@ function ConsultationPage({
   includeScreening: boolean;
   initialService?: string;
   showToast: (message: string, type?: 'success' | 'info' | 'warning') => void;
+  logoUrl?: string;
 }) {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -354,7 +444,7 @@ function ConsultationPage({
           <span>Back</span>
         </button>
         <div className="consult-header-brand">
-          <HairHavenLogo size={36} />
+          <HairHavenLogo size={36} logoUrl={logoUrl} />
           <div>
             <div style={{ fontWeight:800, fontSize:'1rem', fontFamily:'var(--font-display)', color:'var(--text-primary)' }}>Hair Haven</div>
             <div style={{ fontSize:'0.65rem', color:'var(--gemini-purple)', fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase' }}>Book Consultation</div>
@@ -580,7 +670,7 @@ function ConsultationPage({
 
             <div className="consult-ticket">
               <div className="consult-ticket-header">
-                <HairHavenLogo size={40} />
+                <HairHavenLogo size={40} logoUrl={logoUrl} />
                 <div>
                   <div style={{ fontWeight:900, fontSize:'1.1rem', color:'var(--text-primary)' }}>Hair Haven Clinic</div>
                   <div style={{ fontSize:'0.75rem', color:'var(--text-tertiary)' }}>Channi Himmat, Jammu</div>
@@ -706,7 +796,10 @@ function AIChatbot({
   onProfileUpdate,
   chatOpen,
   setChatOpen,
-  showToast
+  showToast,
+  clinicSettings,
+  logoUrl,
+  isAdminEditMode
 }: { 
   onBookNow: () => void; 
   currentUser?: FirebaseUser | null; 
@@ -715,6 +808,9 @@ function AIChatbot({
   chatOpen: boolean;
   setChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
   showToast: (message: string, type?: 'success' | 'info' | 'warning') => void;
+  clinicSettings: any;
+  logoUrl?: string;
+  isAdminEditMode: boolean;
 }) {
 
 
@@ -1578,8 +1674,6 @@ export default function App() {
 
   /* ── Dynamic Layout & UI States ── */
   const [galleryViewMode, setGalleryViewMode] = useState<'swiper' | 'slider'>('swiper');
-  const [speedDialOpen, setSpeedDialOpen] = useState(false);
-  const [pushSimulated, setPushSimulated] = useState(false);
   const [pullProgress, setPullProgress] = useState(0);
   const [statsRating, setStatsRating] = useState(0);
   const [statsReviews, setStatsReviews] = useState(0);
@@ -1696,7 +1790,6 @@ export default function App() {
   const [showProfileDrawer, setShowProfileDrawer] = useState(false);
   const [copiedUid, setCopiedUid] = useState(false);
   const [userMedicalProfile, setUserMedicalProfile] = useState<any>(null);
-  const [profileSaving, setProfileSaving] = useState(false);
 
   /* ─────────────────────────────────────────────── */
 
@@ -1711,6 +1804,14 @@ export default function App() {
       setCurrentUser(user);
       if (user) {
         saveUserToFirestore(user);
+      }
+    });
+    // Handle redirect sign-in result (for mobile Google auth flow)
+    handleRedirectSignIn().then((user) => {
+      if (user) {
+        saveUserToFirestore(user);
+        setCurrentPage('home');
+        setShowProfileDrawer(false);
       }
     });
     return () => unsubscribe();
@@ -1788,9 +1889,6 @@ export default function App() {
     });
     return () => unsubReviews();
   }, []);
-
-  // JS #27: Before-after slider touch coordinates tracking
-  // Handled by handleSliderMove, handleTouchMove, handleMouseMove, handleMouseUp declared in state
 
   // JS #30: Stats counter animation (countUp) when Home tab loads
   useEffect(() => {
@@ -1880,15 +1978,6 @@ export default function App() {
     sessionStorage.setItem('hh_calculator_norwood', selectedNorwood.toString());
   }, [selectedNorwood]);
 
-  // JS #35: Real-time clock inside Admin Panel
-  const [adminTime, setAdminTime] = useState(new Date().toLocaleTimeString());
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setAdminTime(new Date().toLocaleTimeString());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   // JS #29: Push Notification Request & Simulation
   const requestPushPermission = () => {
     if (!('Notification' in window)) {
@@ -1896,7 +1985,6 @@ export default function App() {
       return;
     }
     Notification.requestPermission().then((permission) => {
-      setPushSimulated(true);
       if (permission === 'granted') {
         showToast("Web Push Notifications enabled successfully! 🔔", "success");
         // Simulated welcome push
@@ -1925,8 +2013,11 @@ export default function App() {
       }
     } catch (error: any) {
       console.error('Google Sign-In error:', error);
+      // 'redirect_initiated' is not a real error — it means the mobile redirect was triggered
+      if (error.message === 'redirect_initiated') return;
       if (error.code !== 'auth/popup-closed-by-user') {
-        showToast('Sign-in failed. Please try again.', 'warning');
+        const errorMessage = error.message || 'Please try again.';
+        showToast(`Sign-in failed: ${errorMessage}`, 'warning');
       }
     } finally {
       setAuthLoading(false);
@@ -2241,9 +2332,6 @@ export default function App() {
     return () => document.removeEventListener('touchstart', handleBodyTap);
   }, [showProfileDrawer]);
 
-  // JS #19: Progressive countdown timer for "limited slots" urgency
-  const [slotsCount] = useState(() => Math.floor(Math.random() * 3) + 2); // 2-4 slots
-
   // JS #20: Share API integration
   const handleShareClinic = useCallback(async () => {
     const shareData = {
@@ -2335,48 +2423,16 @@ export default function App() {
     return result;
   }, [dbReviews, selectedReviewTag, reviewSearchQuery, reviewSortOrder]);
 
-  const currentNorwoodInfo = norwoodStages[selectedNorwood - 1];
-
-  const calculateCalculatorPrice = () => {
-    const base = norwoodStages[selectedNorwood - 1].basePrice;
-    let extra = includePRPSessions * 2000;
-    if (includeScreening) extra += 999;
-    if (useBioSapphire) extra += 10000;
-    return base + extra;
-  };
-
-  const handleBookScroll = () => {
-    setSelectedService('FUE Hair Transplant');
-    setCurrentPage('consultation');
-  };
-  const handleBookService = (service: string) => {
-    setSelectedService(service);
-    setCurrentPage('consultation');
-  };
-
-  const navTabs = [
-    { id:'home', label:'Home', icon: Home },
-    { id:'services', label:'Treatments', icon: Stethoscope },
-    { id:'gallery', label:'Gallery', icon: ImageIcon },
-    { id:'reviews', label:'Reviews', icon: MessageCircle },
-    { id:'consultation', label:'Book', icon: Calendar },
-  ];
-
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <>
       <MagicalOrbs />
 
       {/* Clickable Doctor Avatar (FAB) — hides with animation when chatbot opens */}
       <div 
-        onClick={() => { setChatOpen(prev => !prev); }}
+        onClick={() => { if (!isAdminEditMode) setChatOpen(prev => !prev); }}
         style={{
           position: 'fixed',
-          bottom: '75px',
+          bottom: '110px',
           right: '-10px',
           zIndex: 10010,
           cursor: 'pointer',
@@ -2388,30 +2444,32 @@ export default function App() {
         className="doctor-floating-btn"
         title="Chat with Aman AI Assistant"
       >
-        <img
-          src='/doctor-avatar.png'
-          alt='Aman AI'
-          style={{
-            width: '110px',
-            height: '110px',
-            objectFit: 'contain',
-            filter: 'none',
-            transition: 'transform 0.3s ease',
-          }}
-        />
+        <InlineImageEdit value={clinicSettings.doctorAvatarUrl || '/doctor-avatar.png'} field="doctorAvatarUrl" isActive={isAdminEditMode}>
+          <img
+            src={clinicSettings.doctorAvatarUrl || '/doctor-avatar.png'}
+            alt='Aman AI'
+            style={{
+              width: '110px',
+              height: '110px',
+              objectFit: 'contain',
+              filter: 'none',
+              transition: 'transform 0.3s ease',
+            }}
+          />
+        </InlineImageEdit>
         {/* AI badge */}
         <div style={{
           position: 'absolute',
           top: '10px',
           left: '8px',
-          background: 'linear-gradient(135deg, #4285f4, #9b51e0)',
+          background: 'linear-gradient(135deg, var(--green-primary), var(--green-deep))',
           borderRadius: '99px',
           padding: '2px 7px',
           fontSize: '0.55rem',
           fontWeight: 800,
           color: '#fff',
           letterSpacing: '0.04em',
-          boxShadow: '0 2px 8px rgba(66,133,244,0.4)',
+          boxShadow: '0 2px 8px rgba(11,167,89,0.4)',
           pointerEvents: 'none'
         }}>AI</div>
       </div>
@@ -2428,7 +2486,7 @@ export default function App() {
             {/* Header */}
             <div className="drawer-header">
               <div className="flex align-center gap-2">
-                <HairHavenLogo size={32} />
+                <HairHavenLogo size={32} logoUrl={clinicSettings.logoUrl || '/logo.png'} isAdminEditMode={isAdminEditMode} />
                 <div className="flex flex-col">
                   <span style={{ fontSize:'1rem', fontWeight:800, color:'var(--text-primary)', fontFamily:'var(--font-display)', lineHeight:1.1 }}>Hair Haven</span>
                   <span style={{ fontSize:'0.55rem', fontWeight:700, color:'var(--gemini-purple)', letterSpacing:'0.05em', textTransform:'uppercase' }}>Transplant Clinic</span>
@@ -2893,7 +2951,7 @@ export default function App() {
       {showInstallBanner && !pwaInstalled && (
         <div className="pwa-banner">
           <div className="pwa-banner-left">
-            <HairHavenLogo size={32} />
+            <HairHavenLogo size={32} logoUrl={clinicSettings.logoUrl || '/logo.png'} isAdminEditMode={isAdminEditMode} />
             <div>
               <div style={{ fontWeight:700, fontSize:'0.88rem', color:'var(--text-primary)' }}>Install Hair Haven App</div>
               <div style={{ fontSize:'0.72rem', color:'var(--text-secondary)' }}>Add to home screen for quick access</div>
@@ -2915,7 +2973,7 @@ export default function App() {
         <div className="pwa-modal-overlay" onClick={() => setShowInstallModal(false)}>
           <div className="pwa-modal" onClick={e => e.stopPropagation()}>
             <button className="pwa-modal-close" onClick={() => setShowInstallModal(false)}><X size={18} /></button>
-            <HairHavenLogo size={64} className="pwa-modal-logo" />
+            <HairHavenLogo size={64} className="pwa-modal-logo" logoUrl={clinicSettings.logoUrl || '/logo.png'} isAdminEditMode={isAdminEditMode} />
             <h3 style={{ fontFamily:'var(--font-display)', color:'var(--text-primary)', marginBottom:'8px' }}>Install Hair Haven</h3>
             <p style={{ color:'var(--text-secondary)', fontSize:'0.88rem', lineHeight:'1.6', marginBottom:'24px', textAlign:'center' }}>
               Get instant access to book consultations, explore treatments, and track your hair restoration journey — right from your home screen.
@@ -3011,7 +3069,7 @@ export default function App() {
               window.scrollTo({ top: 0, behavior: 'instant' });
             }}
           >
-            <HairHavenLogo size={40} />
+            <HairHavenLogo size={40} logoUrl={clinicSettings.logoUrl || '/logo.png'} isAdminEditMode={isAdminEditMode} />
             <div className="flex flex-col">
               <span style={{ fontSize:'1.25rem', fontWeight:800, color:'var(--text-primary)', fontFamily:'var(--font-display)', letterSpacing:'-0.02em', lineHeight:1.1 }}>Hair Haven</span>
               <span style={{ fontSize:'0.65rem', fontWeight:700, color:'var(--gemini-purple)', letterSpacing:'0.1em', textTransform:'uppercase' }}>Transplant Clinic</span>
@@ -3167,7 +3225,7 @@ export default function App() {
               <div style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%', opacity:0.15, backgroundSize:'20px 20px', backgroundImage:'radial-gradient(rgba(11,167,89,0.3) 1px, transparent 1px)' }} />
               <div className="logo-bg-glow" style={{ position:'absolute', width:'160px', height:'160px', borderRadius:'50%', background:'rgba(11,167,89,0.12)', zIndex:0 }} />
               <div style={{ zIndex:1, filter:'drop-shadow(0 20px 30px rgba(11,167,89,0.15))', animation:'logo-float 4s infinite ease-in-out' }}>
-                <HairHavenLogo size={180} />
+                <HairHavenLogo size={180} logoUrl={clinicSettings.logoUrl || '/logo.png'} isAdminEditMode={isAdminEditMode} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -3333,7 +3391,7 @@ export default function App() {
           {/* ── FOUNDER PROFILE ── */}
           <div className="mb-20 text-center flex flex-col align-center" style={{ maxWidth: '700px', margin: '0 auto 80px' }}>
             <div style={{ width: '180px', height: '180px', borderRadius: '50%', overflow: 'hidden', border: '4px solid var(--green-primary)', margin: '0 auto 24px', boxShadow: '0 12px 32px rgba(11,167,89,0.15)' }}>
-              <img src="/founder.png" alt="Mr. Harish Kalsotra" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src={clinicSettings.founderImageUrl || '/founder.png'} alt={clinicSettings.founderName || 'Founder'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px', fontFamily: 'var(--font-display)' }}>{clinicSettings.founderName || "Mr. Harish Kalsotra"}</h3>
             <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--green-primary)', marginBottom: '24px' }}>{clinicSettings.founderRole || "(Founder & Client Relations Executive)"}</p>
@@ -3497,7 +3555,7 @@ export default function App() {
               <div style={{ display:'flex', alignItems:'center', gap:'20px', marginBottom:'24px' }}>
                 <div style={{ width:'76px', height:'76px', borderRadius:'50%', background:'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', padding:'3px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                   <div style={{ width:'100%', height:'100%', borderRadius:'50%', background:'var(--surface-card)', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', border:'2px solid var(--surface-card)' }}>
-                    <HairHavenLogo size={70} />
+                    <HairHavenLogo size={70} logoUrl={clinicSettings.logoUrl || '/logo.png'} isAdminEditMode={isAdminEditMode} />
                   </div>
                 </div>
                 <div>
@@ -3864,6 +3922,7 @@ export default function App() {
           includeScreening={includeScreening}
           initialService={selectedService}
           showToast={showToast}
+          logoUrl={clinicSettings.logoUrl || '/logo.png'}
         />
       )}
 
@@ -3910,46 +3969,7 @@ export default function App() {
         />
       </div>
 
-      {/* Floating Action Menu (Speed Dial) */}
-      <div className="speed-dial-container">
-        <button 
-          className={`speed-dial-trigger haptic-btn ${speedDialOpen ? 'open' : ''}`}
-          onClick={() => setSpeedDialOpen(!speedDialOpen)}
-          title="Quick Actions"
-        >
-          <Plus size={20} />
-        </button>
-        <div className={`speed-dial-menu ${speedDialOpen ? 'open' : ''}`}>
-          <button 
-            className="speed-dial-item haptic-btn" 
-            onClick={() => { setSpeedDialOpen(false); handleBookScroll(); }}
-          >
-            <Calendar size={15} />
-            <span className="speed-dial-tooltip">Book Appointment</span>
-          </button>
-          <button 
-            className="speed-dial-item haptic-btn" 
-            onClick={() => { setSpeedDialOpen(false); setChatOpen(true); }}
-          >
-            <MessageCircle size={15} />
-            <span className="speed-dial-tooltip">Aman AI Assistant</span>
-          </button>
-          <button 
-            className="speed-dial-item haptic-btn" 
-            onClick={() => { setSpeedDialOpen(false); handleShareClinic(); }}
-          >
-            <Share size={15} />
-            <span className="speed-dial-tooltip">Share Clinic</span>
-          </button>
-          <button 
-            className="speed-dial-item haptic-btn" 
-            onClick={() => { setSpeedDialOpen(false); setIsDarkMode(!isDarkMode); }}
-          >
-            {isDarkMode ? <Sun size={15} /> : <Moon size={15} />}
-            <span className="speed-dial-tooltip">{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
-          </button>
-        </div>
-      </div>
+
 
       {/* ── ADMIN PASSCODE MODAL ── */}
       {showPasscodeModal && (

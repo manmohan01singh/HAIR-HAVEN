@@ -253,6 +253,43 @@ body.dark-mode .orb {
   .flex-col-mobile { flex-direction: column; }
 }
 
+/* Responsive Grid Classes for Admin Panel */
+@media (max-width: 768px) {
+  .grid-2-mobile {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 480px) {
+  .grid-2-mobile {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.admin-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+}
+@media (max-width: 900px) {
+  .admin-grid-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.admin-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 500px) {
+  .admin-grid-2col {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+
 /* Spacing */
 .py-4  { padding-top: 16px;  padding-bottom: 16px;  }
 .py-8  { padding-top: 32px;  padding-bottom: 32px;  }

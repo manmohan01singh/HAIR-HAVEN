@@ -73,6 +73,11 @@ export default function AdminPanel({ onBack, showToast }: AdminPanelProps) {
   // Settings modification state
   const [savingSettings, setSavingSettings] = useState(false);
 
+  // Image upload states for Settings
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingDoctor, setUploadingDoctor] = useState(false);
+  const [uploadingFounder, setUploadingFounder] = useState(false);
+
   // Subscribe to real-time updates on mount
   useEffect(() => {
     const unsubBookings = subscribeToBookings((data) => {
@@ -319,13 +324,37 @@ export default function AdminPanel({ onBack, showToast }: AdminPanelProps) {
         founderRole: clinicSettings.founderRole || '',
         founderQuote: clinicSettings.founderQuote || '',
         colorTheme: clinicSettings.colorTheme || 'Emerald Green',
-        fontTheme: clinicSettings.fontTheme || 'Outfit'
+        fontTheme: clinicSettings.fontTheme || 'Outfit',
+        logoUrl: clinicSettings.logoUrl || '',
+        doctorAvatarUrl: clinicSettings.doctorAvatarUrl || '',
+        founderImageUrl: clinicSettings.founderImageUrl || ''
       });
       showToast('Clinic core configurations updated!', 'success');
     } catch (err) {
       showToast('Failed to update clinic configurations.', 'warning');
     } finally {
       setSavingSettings(false);
+    }
+  };
+
+  // Generic image uploader for Settings fields
+  const handleSettingsImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: 'logoUrl' | 'doctorAvatarUrl' | 'founderImageUrl',
+    setUploading: (v: boolean) => void
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setUploading(true);
+      showToast('Uploading image...', 'info');
+      const url = await uploadGalleryImage(file);
+      setClinicSettings((prev: any) => ({ ...prev, [field]: url }));
+      showToast('Image uploaded! Click Save to apply.', 'success');
+    } catch (err) {
+      showToast('Image upload failed.', 'warning');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -357,7 +386,7 @@ export default function AdminPanel({ onBack, showToast }: AdminPanelProps) {
     : '5.0';
 
   return (
-    <div className="container" style={{ paddingTop:'100px', paddingBottom:'120px', minHeight:'100vh', display:'flex', flexDirection:'column' }}>
+    <div className="container" style={{ paddingTop:'80px', paddingBottom:'100px', minHeight:'100vh', display:'flex', flexDirection:'column', maxWidth:'960px', margin:'0 auto' }}>
       
       {/* Admin Panel Header */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'32px' }} className="flex-col-mobile align-start gap-4">
@@ -688,7 +717,7 @@ export default function AdminPanel({ onBack, showToast }: AdminPanelProps) {
 
       {/* ────────────────── SUB-TAB: GALLERY MANAGER ────────────────── */}
       {activeSubTab === 'gallery' && (
-        <div className="reveal-on-scroll flex-col-mobile" style={{ display:'grid', gridTemplateColumns:'1fr 2fr', gap:'30px' }}>
+        <div className="reveal-on-scroll admin-grid-layout" style={{ display:'grid', gridTemplateColumns:'1fr 2fr', gap:'30px' }}>
           
           {/* Left panel: Add Image Form */}
           <div className="stat-glass-card" style={{ padding:'24px', borderRadius:'24px', height:'fit-content', display:'flex', flexDirection:'column', gap:'18px' }}>
@@ -881,7 +910,7 @@ export default function AdminPanel({ onBack, showToast }: AdminPanelProps) {
 
       {/* ────────────────── SUB-TAB: REVIEWS BOARD ────────────────── */}
       {activeSubTab === 'reviews' && (
-        <div className="reveal-on-scroll flex-col-mobile" style={{ display:'grid', gridTemplateColumns:'1fr 2fr', gap:'30px' }}>
+        <div className="reveal-on-scroll admin-grid-layout" style={{ display:'grid', gridTemplateColumns:'1fr 2fr', gap:'30px' }}>
           
           {/* Left panel: Add Testimonial Form */}
           <div className="stat-glass-card" style={{ padding:'24px', borderRadius:'24px', height:'fit-content', display:'flex', flexDirection:'column', gap:'18px' }}>
@@ -1117,8 +1146,54 @@ export default function AdminPanel({ onBack, showToast }: AdminPanelProps) {
                 </div>
               </div>
 
-              {/* ── NEW ELEMENT EDITORS ── */}
-              <div style={{ borderTop:'1px solid var(--border-light)', paddingTop:'16px', marginTop:'6px' }} />
+              {/* ── IMAGE UPLOADS ── */}
+              <div style={{ borderTop:'1px solid var(--border-light)', paddingTop:'16px', marginTop:'6px' }}>
+                <h4 style={{ fontSize:'0.82rem', fontWeight:800, color:'var(--text-secondary)', marginBottom:'14px', textTransform:'uppercase', letterSpacing:'0.05em' }}>🖼️ Site Images (Upload to replace)</h4>
+                <div style={{ display:'flex', flexDirection:'column', gap:'12px' }}>
+
+                  {/* Logo Upload */}
+                  <div className="flex flex-col gap-2">
+                    <label style={{ fontSize:'0.78rem', fontWeight:800, color:'var(--text-secondary)' }}>Clinic Logo</label>
+                    <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+                      {clinicSettings.logoUrl && <img src={clinicSettings.logoUrl} alt="Logo" style={{ width:'40px', height:'40px', borderRadius:'8px', objectFit:'cover', border:'1px solid var(--border-light)' }} />}
+                      <label className="btn btn-secondary haptic-btn" style={{ flex:1, padding:'9px 12px', fontSize:'0.8rem', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor: uploadingLogo ? 'not-allowed' : 'pointer', border:'1.5px dashed var(--border-light)' }}>
+                        <Upload size={15} /> {uploadingLogo ? 'Uploading...' : 'Upload Logo'}
+                        <input type="file" accept="image/*" style={{ display:'none' }} disabled={uploadingLogo} onChange={(e) => handleSettingsImageUpload(e, 'logoUrl', setUploadingLogo)} />
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Doctor Image Upload */}
+                  <div className="flex flex-col gap-2">
+                    <label style={{ fontSize:'0.78rem', fontWeight:800, color:'var(--text-secondary)' }}>Doctor / Hero Image</label>
+                    <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+                      {clinicSettings.doctorAvatarUrl && <img src={clinicSettings.doctorAvatarUrl} alt="Doctor" style={{ width:'40px', height:'40px', borderRadius:'8px', objectFit:'cover', border:'1px solid var(--border-light)' }} />}
+                      <label className="btn btn-secondary haptic-btn" style={{ flex:1, padding:'9px 12px', fontSize:'0.8rem', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor: uploadingDoctor ? 'not-allowed' : 'pointer', border:'1.5px dashed var(--border-light)' }}>
+                        <Upload size={15} /> {uploadingDoctor ? 'Uploading...' : 'Upload Doctor Image'}
+                        <input type="file" accept="image/*" style={{ display:'none' }} disabled={uploadingDoctor} onChange={(e) => handleSettingsImageUpload(e, 'doctorAvatarUrl', setUploadingDoctor)} />
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Founder Image Upload */}
+                  <div className="flex flex-col gap-2">
+                    <label style={{ fontSize:'0.78rem', fontWeight:800, color:'var(--text-secondary)' }}>Founder / About Image</label>
+                    <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+                      {clinicSettings.founderImageUrl && <img src={clinicSettings.founderImageUrl} alt="Founder" style={{ width:'40px', height:'40px', borderRadius:'8px', objectFit:'cover', border:'1px solid var(--border-light)' }} />}
+                      <label className="btn btn-secondary haptic-btn" style={{ flex:1, padding:'9px 12px', fontSize:'0.8rem', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', cursor: uploadingFounder ? 'not-allowed' : 'pointer', border:'1.5px dashed var(--border-light)' }}>
+                        <Upload size={15} /> {uploadingFounder ? 'Uploading...' : 'Upload Founder Image'}
+                        <input type="file" accept="image/*" style={{ display:'none' }} disabled={uploadingFounder} onChange={(e) => handleSettingsImageUpload(e, 'founderImageUrl', setUploadingFounder)} />
+                      </label>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* ── CONTENT CMS ── */}
+              <div style={{ borderTop:'1px solid var(--border-light)', paddingTop:'16px' }}>
+                <h4 style={{ fontSize:'0.82rem', fontWeight:800, color:'var(--text-secondary)', marginBottom:'14px', textTransform:'uppercase', letterSpacing:'0.05em' }}>📝 Page Content</h4>
+              </div>
 
               {/* Hero Content CMS */}
               <div className="flex flex-col gap-2">
