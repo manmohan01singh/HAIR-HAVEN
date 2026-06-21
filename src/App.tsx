@@ -3214,21 +3214,11 @@ export default function App() {
       <div style={{ position:'fixed', top:0, left:0, height:'3px', width:`${scrollProgress}%`, background:'linear-gradient(90deg, var(--green-deep) 0%, var(--green-primary) 60%, #22d3ee 100%)', zIndex:10000, transition:'width 0.1s linear', borderRadius:'0 2px 2px 0', boxShadow:'0 0 8px rgba(11,167,89,0.5)' }} />
 
       {activeTab === 'home' && (
-        <div className="fade-in-tab" style={{ paddingTop: '40px' }}>
+        <div className="fade-in-tab" style={{ paddingTop: '100px' }}>
           {/* ── HERO ── */}
-      <section id="home" className="pt-6 py-24 flex align-center" style={{ minHeight:'90vh', position:'relative' }}>
+      <section id="home" className="flex align-center" style={{ minHeight:'80vh', position:'relative', paddingTop:'10px', paddingBottom:'60px' }}>
         <div className="container grid grid-cols-2 align-center gap-12 flex-col-mobile">
-          <div className="fade-in-up flex flex-col align-start-desktop align-center-mobile text-center-mobile" style={{ animationDelay:'0.1s', alignSelf:'center', paddingTop:'10px' }}>
-            <div className="badge badge-gradient mb-4">
-              <Sparkles size={14} style={{ marginRight:'8px', color:'var(--gemini-purple)' }} />
-              <InlineEdit
-                value={clinicSettings.heroBadge || 'Premium Hair Restoration in Jammu'}
-                field="heroBadge"
-                isActive={isAdminEditMode}
-              >
-                {clinicSettings.heroBadge || 'Premium Hair Restoration in Jammu'}
-              </InlineEdit>
-            </div>
+          <div className="fade-in-up flex flex-col align-start-desktop align-center-mobile text-center-mobile" style={{ animationDelay:'0.1s', alignSelf:'center', paddingTop:'0px' }}>
             <h1 className="hero-title mb-6" style={{ minHeight:'2.4em' }}>
               The Art & Science of <br className="mobile-only-block" /><span className="text-gemini-gradient">{displayText}</span><span className="typewriter-cursor"></span>
             </h1>
