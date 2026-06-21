@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Phone, MapPin, Search, Calendar, ChevronRight, CheckCircle, Clock, Star, MessageCircle, ArrowRight, Play, Pause, ChevronLeft, Volume2, VolumeX, Menu, X, ArrowUpRight, Copy, LogOut, Heart, Award, Compass, MessageSquare, SlidersHorizontal, Sun, Moon, Home, Stethoscope, Image as ImageIcon, Download, User, Mail, FileText, Settings, Plus, CheckCircle2, Sparkles, ArrowLeft } from 'lucide-react';
+import { Phone, MapPin, Search, Calendar, ChevronRight, CheckCircle, Clock, Star, MessageCircle, ArrowRight, Play, Pause, ChevronLeft, Volume2, VolumeX, Menu, X, ArrowUpRight, Copy, LogOut, Heart, Award, Compass, MessageSquare, SlidersHorizontal, Sun, Moon, Home, Stethoscope, Image as ImageIcon, Download, User, Mail, FileText, Settings, Plus, CheckCircle2, Sparkles, ArrowLeft, Shield } from 'lucide-react';
 // @ts-ignore
 import confetti from 'canvas-confetti';
 import { 
@@ -40,7 +40,7 @@ function InlineEdit({
   value: string | number; field: string; isActive: boolean;
   multiline?: boolean; number?: boolean;
   className?: string; style?: React.CSSProperties; children?: React.ReactNode;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
 }) {
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState(String(value));
@@ -60,7 +60,7 @@ function InlineEdit({
     setSaving(true);
     try {
       await updateClinicSettings({ [field]: number ? Number(draft) : draft });
-      onChange(String(draft));
+      onChange?.(String(draft));
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (err) { console.error(err); }
@@ -1678,6 +1678,43 @@ export default function App() {
   const [includeScreening, setIncludeScreening] = useState(true);
   const [useBioSapphire, setUseBioSapphire] = useState(false);
 
+  const currentNorwoodInfo = norwoodStages[selectedNorwood - 1];
+
+  const calculateCalculatorPrice = () => {
+    const base = norwoodStages[selectedNorwood - 1].basePrice;
+    let extra = includePRPSessions * 2000;
+    if (includeScreening) extra += 999;
+    if (useBioSapphire) extra += 10000;
+    return base + extra;
+  };
+
+  const handleBookService = (service: string) => {
+    setSelectedService(service);
+    setCurrentPage('consultation');
+    setActiveTab('consultation');
+  };
+
+  const navTabs = [
+    { id: 'home', label: 'Home', icon: Home },
+    { id: 'services', label: 'Treatments', icon: Stethoscope },
+    { id: 'gallery', label: 'Gallery', icon: ImageIcon },
+    { id: 'reviews', label: 'Reviews', icon: MessageCircle },
+    { id: 'consultation', label: 'Book', icon: Calendar },
+  ];
+
+  /* ── Profile & UI Helpers ── */
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [pushSimulated, setPushSimulated] = useState(false);
+  const [adminTime, setAdminTime] = useState(() => new Date().toLocaleTimeString());
+  const slotsCount = 3;
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setAdminTime(new Date().toLocaleTimeString());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   /* ── Real-Time Data (Firestore Subscriptions) ── */
   const [dbGallery, setDbGallery] = useState<any[]>([]);
   const [dbReviews, setDbReviews] = useState<any[]>([]);
@@ -2449,7 +2486,7 @@ export default function App() {
         onClick={() => { if (!isAdminEditMode) setChatOpen(prev => !prev); }}
         style={{
           position: 'fixed',
-          bottom: '110px',
+          bottom: '150px',
           right: '-10px',
           zIndex: 10010,
           cursor: 'pointer',
@@ -3177,11 +3214,11 @@ export default function App() {
       <div style={{ position:'fixed', top:0, left:0, height:'3px', width:`${scrollProgress}%`, background:'linear-gradient(90deg, var(--green-deep) 0%, var(--green-primary) 60%, #22d3ee 100%)', zIndex:10000, transition:'width 0.1s linear', borderRadius:'0 2px 2px 0', boxShadow:'0 0 8px rgba(11,167,89,0.5)' }} />
 
       {activeTab === 'home' && (
-        <div className="fade-in-tab" style={{ paddingTop: '70px' }}>
+        <div className="fade-in-tab" style={{ paddingTop: '40px' }}>
           {/* ── HERO ── */}
-      <section id="home" className="pt-20 py-24 flex align-center" style={{ minHeight:'90vh', position:'relative' }}>
+      <section id="home" className="pt-6 py-24 flex align-center" style={{ minHeight:'90vh', position:'relative' }}>
         <div className="container grid grid-cols-2 align-center gap-12 flex-col-mobile">
-          <div className="fade-in-up flex flex-col align-start-desktop align-center-mobile text-center-mobile" style={{ animationDelay:'0.1s', alignSelf:'center', paddingTop:'48px' }}>
+          <div className="fade-in-up flex flex-col align-start-desktop align-center-mobile text-center-mobile" style={{ animationDelay:'0.1s', alignSelf:'center', paddingTop:'10px' }}>
             <div className="badge badge-gradient mb-4">
               <Sparkles size={14} style={{ marginRight:'8px', color:'var(--gemini-purple)' }} />
               <InlineEdit
@@ -3983,6 +4020,9 @@ export default function App() {
           chatOpen={chatOpen}
           setChatOpen={setChatOpen}
           showToast={showToast}
+          clinicSettings={clinicSettings}
+          logoUrl={clinicSettings.logoUrl || '/logo.png'}
+          isAdminEditMode={isAdminEditMode}
         />
       </div>
 
