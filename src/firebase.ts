@@ -67,25 +67,36 @@ export const isAdminUser = (email: string | null): boolean => {
 /**
  * Sign in with Google popup
  * Returns the Firebase User on success, throws on failure
- */
 /**
- * Detect if we're in a popup-hostile environment (mobile, some browsers, or ad-blocked)
+ * Detect if we're in a popup-hostile environment (mobile browsers)
  * In those cases use redirect flow instead of popup
  */
 const isMobileOrPopupUnsafe = (): boolean => {
   const ua = navigator.userAgent;
+  // Only use redirect on true mobile browsers (not just any small screen)
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
 };
 
 export const signInWithGoogle = async (): Promise<User> => {
   if (isMobileOrPopupUnsafe()) {
     // Use redirect flow on mobile — getRedirectResult is called in App.tsx on mount
-    await signInWithRedirect(auth, googleProvider);
+    try {
+      await signInWithRedirect(auth, googleProvider);
+    } catch (err: any) {
+      console.error('[Auth] signInWithRedirect failed:', err?.code, err?.message);
+      throw err;
+    }
     // This line won't execute on mobile (page redirects), but satisfies the type signature
     throw new Error('redirect_initiated');
   }
-  const result = await signInWithPopup(auth, googleProvider);
-  return result.user;
+  // Desktop: always use popup
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    return result.user;
+  } catch (err: any) {
+    console.error('[Auth] signInWithPopup failed:', err?.code, err?.message);
+    throw err;
+  }
 };
 
 /**
@@ -95,10 +106,12 @@ export const handleRedirectSignIn = async (): Promise<User | null> => {
   try {
     const result = await getRedirectResult(auth);
     return result ? result.user : null;
-  } catch {
+  } catch (err: any) {
+    console.error('[Auth] getRedirectResult failed:', err?.code, err?.message);
     return null;
   }
 };
+
 
 /**
  * Sign out current user

@@ -2064,19 +2064,27 @@ export default function App() {
         }
         setCurrentPage('home');
         setShowProfileDrawer(false);
+        showToast(`Welcome back, ${user.displayName?.split(' ')[0] || 'there'}! 👋`, 'success');
       }
     } catch (error: any) {
-      console.error('Google Sign-In error:', error);
+      console.error('Google Sign-In error:', error?.code, error?.message);
       // 'redirect_initiated' is not a real error — it means the mobile redirect was triggered
       if (error.message === 'redirect_initiated') return;
-      if (error.code !== 'auth/popup-closed-by-user') {
-        const errorMessage = error.message || 'Please try again.';
-        showToast(`Sign-in failed: ${errorMessage}`, 'warning');
-      }
+      // Silently ignore when user just closes the popup
+      if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') return;
+      // Show specific, actionable error for all other failures
+      const code = error.code || '';
+      let msg = 'Sign-in failed. Please try again.';
+      if (code === 'auth/popup-blocked') msg = 'Popup was blocked by your browser. Please allow popups for this site.';
+      else if (code === 'auth/network-request-failed') msg = 'Network error. Check your internet connection.';
+      else if (code === 'auth/unauthorized-domain') msg = 'This domain is not authorized. Please contact support.';
+      else if (error.message) msg = `Sign-in error: ${error.message}`;
+      showToast(msg, 'warning');
     } finally {
       setAuthLoading(false);
     }
   };
+
 
   const handleSignOut = async () => {
     try {
@@ -2486,8 +2494,8 @@ export default function App() {
         onClick={() => { if (!isAdminEditMode) setChatOpen(prev => !prev); }}
         style={{
           position: 'fixed',
-          bottom: '92px',
-          right: '-10px',
+          bottom: '32px',
+          right: '0px',
           zIndex: 10010,
           cursor: 'pointer',
           transition: 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',

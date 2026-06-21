@@ -4364,14 +4364,15 @@ input[type="password"]:focus {
   box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.12);
 }
 
-/* ── Doctor FAB: mobile-safe — peek from right, never overlap content ── */
+/* ── Doctor FAB: sits on the right edge of the bottom nav ── */
 @media (max-width: 600px) {
   .doctor-floating-btn {
-    right: -10px !important;
-    bottom: 92px !important;
+    right: 0px !important;
+    bottom: 32px !important;
   }
   .doctor-floating-btn img {
     width: 82px !important;
     height: 82px !important;
   }
 }
+
