@@ -2486,8 +2486,8 @@ export default function App() {
         onClick={() => { if (!isAdminEditMode) setChatOpen(prev => !prev); }}
         style={{
           position: 'fixed',
-          bottom: '160px',
-          right: '-20px',
+          bottom: '170px',
+          right: '-38px',
           zIndex: 10010,
           cursor: 'pointer',
           transition: 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',

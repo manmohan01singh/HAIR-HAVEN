@@ -301,6 +301,7 @@ body.dark-mode .orb {
 .px-6  { padding-left: 24px; padding-right: 24px;   }
 .px-8  { padding-left: 32px; padding-right: 32px;   }
 .pt-20 { padding-top: 80px; }
+.pt-6  { padding-top: 24px; }
 .p-2   { padding: 8px !important; }
 .p-3   { padding: 12px !important; }
 .p-4   { padding: 16px !important; }
@@ -4363,22 +4364,14 @@ input[type="password"]:focus {
   box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.12);
 }
 
-/* Responsive overrides for Doctor Floating Button to avoid overlapping bottom navigation on mobile */
-@media (max-width: 768px) {
+/* ── Doctor FAB: mobile-safe — peek from right, never overlap content ── */
+@media (max-width: 600px) {
   .doctor-floating-btn {
-    bottom: 130px !important;
-    right: -10px !important;
+    right: -38px !important;
+    bottom: 170px !important;
   }
-  .doctor-floating-img {
+  .doctor-floating-btn img {
     width: 82px !important;
     height: 82px !important;
   }
-  .doctor-ai-badge {
-    top: 7px !important;
-    left: 4px !important;
-    font-size: 0.48rem !important;
-    padding: 1px 5px !important;
-  }
 }
-
-
