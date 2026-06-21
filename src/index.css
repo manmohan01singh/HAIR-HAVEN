@@ -4368,7 +4368,7 @@ input[type="password"]:focus {
 @media (max-width: 600px) {
   .doctor-floating-btn {
     right: 0px !important;
-    bottom: 32px !important;
+    bottom: 88px !important;
   }
   .doctor-floating-btn img {
     width: 82px !important;
