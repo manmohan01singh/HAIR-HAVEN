@@ -1,7 +1,22 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
 import type { User } from "firebase/auth";
-import { initializeFirestore, doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { 
+  initializeFirestore, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  serverTimestamp, 
+  collection, 
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  onSnapshot, 
+  query, 
+  orderBy, 
+  writeBatch 
+} from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Hair Haven Firebase Project Configuration
 const firebaseConfig = {
@@ -24,9 +39,27 @@ export const db = initializeFirestore(app, {
   experimentalForceLongPolling: true,
 });
 
+// Initialize Firebase Storage
+export const storage = getStorage(app);
+
 // Google Auth Provider
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+// ─── Admin Configuration ──────────────────────────────────────────────────
+export const ADMIN_EMAILS = [
+  "hairhaventransplant@gmail.com",
+  "drsubykakkar@gmail.com",
+  "manmohan.admin@gmail.com"
+];
+
+/**
+ * Checks whether a given email is whitelisted as an administrator.
+ */
+export const isAdminUser = (email: string | null): boolean => {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(email.toLowerCase());
+};
 
 // ─── Auth & Firestore Functions ────────────────────────────────────────
 
@@ -129,4 +162,152 @@ export const saveMedicalProfileToFirestore = async (uid: string, profile: any): 
   }
 };
 
+// ─── Real-Time Gallery CRUD Functions ────────────────────────────────────
+
+export const subscribeToGallery = (callback: (images: any[]) => void) => {
+  const q = query(collection(db, "gallery"), orderBy("order", "asc"));
+  return onSnapshot(q, (snapshot) => {
+    const images = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    callback(images);
+  }, (error) => {
+    console.error("Gallery subscription error:", error);
+  });
+};
+
+export const addGalleryImage = async (url: string, caption: string, category: string, order: number) => {
+  return await addDoc(collection(db, "gallery"), {
+    url,
+    caption,
+    category,
+    order,
+    isActive: true,
+    createdAt: serverTimestamp()
+  });
+};
+
+export const updateGalleryImage = async (id: string, updates: any) => {
+  const ref = doc(db, "gallery", id);
+  return await updateDoc(ref, updates);
+};
+
+export const deleteGalleryImage = async (id: string) => {
+  const ref = doc(db, "gallery", id);
+  return await deleteDoc(ref);
+};
+
+export const reorderGalleryImages = async (images: { id: string, order: number }[]) => {
+  const batch = writeBatch(db);
+  images.forEach(img => {
+    const ref = doc(db, "gallery", img.id);
+    batch.update(ref, { order: img.order });
+  });
+  return await batch.commit();
+};
+
+export const uploadGalleryImage = async (file: File): Promise<string> => {
+  const fileRef = ref(storage, `gallery/${Date.now()}_${file.name}`);
+  const snapshot = await uploadBytes(fileRef, file);
+  return await getDownloadURL(snapshot.ref);
+};
+
+// ─── Real-Time Bookings CRUD Functions ──────────────────────────────────
+
+export const subscribeToBookings = (callback: (bookings: any[]) => void) => {
+  const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+  return onSnapshot(q, (snapshot) => {
+    const bookings = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    callback(bookings);
+  }, (error) => {
+    console.error("Bookings subscription error:", error);
+  });
+};
+
+export const saveBookingToFirestore = async (booking: any) => {
+  return await addDoc(collection(db, "bookings"), {
+    ...booking,
+    createdAt: serverTimestamp(),
+    status: booking.status || "Pending" // Pending, Confirmed, Cancelled, Completed
+  });
+};
+
+export const updateBookingStatus = async (id: string, status: string) => {
+  const ref = doc(db, "bookings", id);
+  return await updateDoc(ref, { status });
+};
+
+export const deleteBooking = async (id: string) => {
+  const ref = doc(db, "bookings", id);
+  return await deleteDoc(ref);
+};
+
+// ─── Real-Time Reviews CRUD Functions ───────────────────────────────────
+
+export const subscribeToReviews = (callback: (reviews: any[]) => void) => {
+  const q = query(collection(db, "reviews"), orderBy("isPinned", "desc"));
+  return onSnapshot(q, (snapshot) => {
+    const reviews = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    callback(reviews);
+  }, (error) => {
+    console.error("Reviews subscription error:", error);
+  });
+};
+
+export const addReview = async (review: any) => {
+  return await addDoc(collection(db, "reviews"), {
+    ...review,
+    isPinned: review.isPinned || false,
+    isVisible: review.isVisible !== false,
+    createdAt: serverTimestamp()
+  });
+};
+
+export const updateReview = async (id: string, updates: any) => {
+  const ref = doc(db, "reviews", id);
+  return await updateDoc(ref, updates);
+};
+
+export const deleteReview = async (id: string) => {
+  const ref = doc(db, "reviews", id);
+  return await deleteDoc(ref);
+};
+
+// ─── Real-Time Clinic Settings Functions ───────────────────────────────
+
+export const subscribeToClinicSettings = (callback: (settings: any) => void) => {
+  const ref = doc(db, "settings", "clinic");
+  return onSnapshot(ref, (docSnap) => {
+    if (docSnap.exists()) {
+      callback({ id: docSnap.id, ...docSnap.data() });
+    } else {
+      // Default initial settings
+      const defaultSettings = {
+        announcementBanner: "🌟 Premium BioSapphire FUE Hair Restoration — Book now for up to 30% Off!",
+        isAnnouncementActive: true,
+        whatsappNumber: "+919876543210",
+        slotsAvailable: 3,
+        specialOffer: "Limited slots remaining for this week!"
+      };
+      setDoc(ref, defaultSettings);
+      callback(defaultSettings);
+    }
+  }, (error) => {
+    console.error("Clinic settings subscription error:", error);
+  });
+};
+
+export const updateClinicSettings = async (settings: any) => {
+  const ref = doc(db, "settings", "clinic");
+  return await setDoc(ref, settings, { merge: true });
+};
+
 export default app;
+

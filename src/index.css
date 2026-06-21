@@ -2860,3 +2860,1470 @@ input:checked + .toggle-slider {
 input:checked + .toggle-slider:before {
   transform: translateX(24px);
 }
+
+/* ── DOCTOR FAB ANIMATIONS ── */
+.doctor-floating-btn {
+  animation: doctor-bob 3.5s infinite ease-in-out;
+}
+.doctor-floating-btn:hover {
+  transform: scale(1.08) translateY(-3px) !important;
+}
+.doctor-floating-btn:active {
+  transform: scale(0.95) translateY(0) !important;
+}
+@keyframes doctor-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ── TAB CONTENT TRANSITIONS ── */
+.fade-in-tab {
+  animation: tabFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes tabFadeIn {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ── ULTRA PREMIUM TOAST NOTIFICATIONS ── */
+.toast-container {
+  padding: 0 16px;
+}
+.toast-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 20px;
+  padding: 14px 20px;
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.05),
+    0 4px 12px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: toast-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+}
+body.dark-mode .toast-card {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+}
+@keyframes toast-in {
+  0% { transform: translateY(-10px) scale(0.95); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.toast-icon {
+  flex-shrink: 0;
+}
+.toast-success .toast-icon {
+  color: var(--green-primary);
+}
+.toast-info .toast-icon {
+  color: var(--gemini-blue);
+}
+.toast-warning .toast-icon {
+  color: #f59e0b;
+}
+.toast-message {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+/* ============================================================
+   ULTRA PREMIUM iOS-LEVEL ENHANCEMENTS (30+ NEW FEATURES)
+   ============================================================ */
+
+/* 1. Premium card tilt + glow on hover */
+.glass-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.glass-card:hover {
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(11, 167, 89, 0.06) !important;
+}
+
+/* 2. Gradient border cards */
+.gradient-border-card {
+  position: relative;
+  border-radius: 24px;
+  z-index: 0;
+}
+
+.gradient-border-card::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(11,167,89,0.3), rgba(34,197,94,0.1), rgba(11,167,89,0.3));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.gradient-border-card:hover::before {
+  opacity: 1;
+}
+
+/* 3. Shimmer loading skeleton */
+@keyframes shimmer-slide {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, 
+    rgba(0,0,0,0.04) 25%, 
+    rgba(0,0,0,0.08) 50%, 
+    rgba(0,0,0,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-slide 1.5s infinite;
+  border-radius: 8px;
+}
+
+body.dark-mode .skeleton {
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0.04) 25%, 
+    rgba(255,255,255,0.08) 50%, 
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* 4. iOS-level spring button press */
+.btn-spring {
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.btn-spring:active {
+  transform: scale(0.94) !important;
+}
+
+/* 5. Magnetic hover effect on nav items */
+.bottom-nav-item {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease !important;
+}
+
+.bottom-nav-item:active {
+  transform: scale(0.88) !important;
+}
+
+/* 6. Premium floating label inputs */
+.floating-label-group {
+  position: relative;
+}
+
+.floating-label-group .form-input {
+  padding-top: 22px;
+  padding-bottom: 8px;
+}
+
+.floating-label-group label {
+  position: absolute;
+  top: 50%;
+  left: 18px;
+  transform: translateY(-50%);
+  font-size: 0.95rem;
+  color: var(--text-tertiary);
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: left center;
+}
+
+.floating-label-group .form-input:focus ~ label,
+.floating-label-group .form-input:not(:placeholder-shown) ~ label {
+  top: 14px;
+  font-size: 0.72rem;
+  color: var(--green-primary);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* 7. Smooth page transitions */
+.page-enter {
+  animation: page-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes page-slide-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* 8. Premium badge with pulse */
+.badge-live {
+  position: relative;
+  overflow: visible;
+}
+
+.badge-live::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 2px solid var(--bg-primary);
+  animation: live-pulse 2s infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+/* 9. Glass morphism hero stat cards */
+.stat-glass-card {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.75);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stat-glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+body.dark-mode .stat-glass-card {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.10);
+}
+
+/* 10. Premium scroll indicator dots */
+.scroll-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.scroll-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+}
+
+.scroll-dot.active {
+  width: 20px;
+  border-radius: 99px;
+  background: var(--green-primary);
+}
+
+/* 11. Section reveal on scroll */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 12. Staggered reveal children */
+.stagger-reveal > *:nth-child(1) { transition-delay: 0.0s; }
+.stagger-reveal > *:nth-child(2) { transition-delay: 0.1s; }
+.stagger-reveal > *:nth-child(3) { transition-delay: 0.2s; }
+.stagger-reveal > *:nth-child(4) { transition-delay: 0.3s; }
+.stagger-reveal > *:nth-child(5) { transition-delay: 0.4s; }
+
+/* 13. iOS-style haptic button effect */
+@keyframes haptic-bump {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(0.94); }
+  75% { transform: scale(1.03); }
+}
+
+.haptic-btn:active {
+  animation: haptic-bump 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 14. Premium number counter animation */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.count-animate {
+  animation: count-up 0.6s ease both;
+}
+
+/* 15. Contextual tooltip */
+.tooltip-premium {
+  position: relative;
+}
+
+.tooltip-premium::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-ui);
+  padding: 6px 12px;
+  border-radius: 10px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  z-index: 9999;
+}
+
+.tooltip-premium:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* 16. Scroll-to-top button */
+.scroll-to-top-btn {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.scroll-to-top-btn:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+}
+
+/* 17. Ripple effect on click */
+@keyframes ripple-out {
+  from { transform: scale(0); opacity: 0.4; }
+  to   { transform: scale(3); opacity: 0; }
+}
+
+.ripple-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.ripple-btn:active::before {
+  opacity: 1;
+  animation: ripple-out 0.5s ease-out;
+}
+
+/* 18. Neon glow on primary buttons (dark mode) */
+body.dark-mode .btn-primary {
+  box-shadow: 0 4px 20px rgba(16,185,129,0.35), 0 0 0 1px rgba(16,185,129,0.2);
+}
+
+body.dark-mode .btn-primary:hover {
+  box-shadow: 0 8px 32px rgba(16,185,129,0.5), 0 0 0 1px rgba(16,185,129,0.3);
+}
+
+/* 19. Premium tab indicator */
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green-deep), var(--green-primary));
+  border-radius: 99px 99px 0 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -2px 8px rgba(11,167,89,0.3);
+}
+
+/* 20. iOS Dynamic Island-inspired notification */
+.dynamic-notification {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  background: rgba(15, 23, 42, 0.95);
+  color: #f8fafc;
+  padding: 10px 20px;
+  border-radius: 99px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: var(--font-ui);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  z-index: 99999;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(20px);
+}
+
+.dynamic-notification.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* 21. Confetti-ready celebration overlay */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99998;
+}
+
+/* 22. Long-press indicator */
+@keyframes long-press-fill {
+  from { stroke-dashoffset: 100; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* 23. Smooth gradient text animation */
+.animated-gradient-text {
+  background: linear-gradient(
+    270deg,
+    var(--green-deep),
+    var(--green-primary),
+    #22d3ee,
+    var(--green-mid),
+    var(--green-deep)
+  );
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 6s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 24. Premium focus ring (accessibility + aesthetics) */
+*:focus-visible {
+  outline: 2px solid var(--green-primary);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* 25. Smooth image reveal */
+img {
+  transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"] {
+  opacity: 0;
+}
+
+img.loaded {
+  opacity: 1;
+}
+
+/* 26. Premium selection color */
+::selection {
+  background: rgba(11, 167, 89, 0.2);
+  color: var(--green-deep);
+}
+
+/* 27. Premium bottom nav glow dot */
+.bottom-nav-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--green-primary);
+  margin: 0 auto;
+  box-shadow: 0 0 6px rgba(11, 167, 89, 0.6);
+  animation: dot-pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.4) both;
+}
+
+@keyframes dot-pop {
+  0% { transform: scale(0); opacity: 0; }
+  80% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* 28. Card hover gradient shimmer */
+@keyframes card-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    110deg,
+    transparent 40%,
+    rgba(255,255,255,0.15) 50%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  border-radius: 24px;
+}
+
+.glass-card:hover::after {
+  opacity: 1;
+  animation: card-shimmer 0.7s ease;
+}
+
+/* 29. iOS-style status bar padding on mobile */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .glass-header {
+    padding-top: calc(8px + env(safe-area-inset-top)) !important;
+  }
+
+  .bottom-nav {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* 30. Staggered count animation for hero stats */
+.hero-stat-1 { animation-delay: 0.1s; }
+.hero-stat-2 { animation-delay: 0.25s; }
+.hero-stat-3 { animation-delay: 0.4s; }
+
+/* 31. Premium section divider */
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(11, 167, 89, 0.15) 20%,
+    rgba(11, 167, 89, 0.3) 50%,
+    rgba(11, 167, 89, 0.15) 80%,
+    transparent 100%
+  );
+  margin: 0;
+}
+
+/* 32. Parallax ready */
+.parallax-layer {
+  will-change: transform;
+  transition: transform 0.1s linear;
+}
+
+/* 33. Premium service card icon */
+.service-icon-premium {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  background: linear-gradient(135deg, rgba(11,167,89,0.08) 0%, rgba(34,197,94,0.04) 100%);
+  border: 1px solid rgba(11,167,89,0.12);
+  box-shadow: 0 4px 12px rgba(11,167,89,0.06);
+  flex-shrink: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover .service-icon-premium {
+  transform: scale(1.1) rotate(-3deg);
+  box-shadow: 0 8px 20px rgba(11,167,89,0.15);
+}
+
+/* 34. Bounce in animation */
+@keyframes bounce-in {
+  0%   { transform: scale(0.3); opacity: 0; }
+  50%  { transform: scale(1.08); }
+  80%  { transform: scale(0.97); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.bounce-in {
+  animation: bounce-in 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+/* 35. Heartbeat effect for important elements */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%  { transform: scale(1.08); }
+  28%  { transform: scale(1); }
+  42%  { transform: scale(1.05); }
+  70%  { transform: scale(1); }
+}
+
+.heartbeat {
+  animation: heartbeat 2.5s ease-in-out infinite;
+}
+
+/* 36. Premium hero background subtle pattern */
+.hero-pattern-bg {
+  background-image: 
+    radial-gradient(rgba(11,167,89,0.04) 1px, transparent 1px),
+    radial-gradient(rgba(11,167,89,0.02) 1px, transparent 1px);
+  background-size: 24px 24px, 12px 12px;
+  background-position: 0 0, 12px 12px;
+}
+
+/* 37. Swipe gesture hint on mobile */
+.swipe-hint {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .swipe-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+    justify-content: center;
+    padding: 8px;
+    animation: swipe-hint-fade 3s ease 1s both;
+  }
+
+  @keyframes swipe-hint-fade {
+    0%, 80% { opacity: 0.8; }
+    100% { opacity: 0; }
+  }
+}
+
+/* 38. Premium number tag */
+.number-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green-deep), var(--green-primary));
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  font-family: var(--font-ui);
+  box-shadow: 0 2px 8px rgba(11,167,89,0.3);
+}
+
+/* 39. Blurred background overlay for modals */
+.premium-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  z-index: 5000;
+  animation: fadeIn 0.3s ease;
+}
+
+/* 40. Success checkmark animation */
+@keyframes check-draw {
+  0%   { stroke-dashoffset: 50; opacity: 0; }
+  50%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.success-check {
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  animation: check-draw 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+/* ── Doctor floating button enhanced ── */
+.doctor-floating-btn {
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.08));
+  transition: filter 0.3s ease !important;
+}
+
+.doctor-floating-btn:hover {
+  filter: drop-shadow(0 8px 28px rgba(0,0,0,0.12)) !important;
+}
+
+/* ── Enhanced whatsapp button ── */
+@keyframes pulse-wa {
+  0%, 100% { box-shadow: 0 4px 16px rgba(37,211,102,0.4), 0 0 0 0 rgba(37,211,102,0); }
+  50%       { box-shadow: 0 4px 16px rgba(37,211,102,0.4), 0 0 0 8px rgba(37,211,102,0); }
+}
+
+/* ── Bottom nav premium styling ── */
+.bottom-nav {
+  box-shadow: 0 -1px 0 rgba(0,0,0,0.06), 0 -8px 32px rgba(0,0,0,0.05) !important;
+}
+
+body.dark-mode .bottom-nav {
+  box-shadow: 0 -1px 0 rgba(255,255,255,0.06), 0 -8px 32px rgba(0,0,0,0.3) !important;
+}
+
+/* ── Premium map section ── */
+.map-section {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(11,167,89,0.015) 50%,
+    transparent 100%
+  );
+}
+
+/* ── Smooth scroll sections ── */
+section {
+  scroll-margin-top: 80px;
+}
+
+/* ── WhatsApp FAB smooth hover ── */
+a[href*="wa.me"] {
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.35s ease !important;
+}
+
+a[href*="wa.me"]:hover {
+  transform: scale(1.12) translateY(-2px) !important;
+  box-shadow: 0 8px 28px rgba(37,211,102,0.55) !important;
+}
+
+/* ── Premium text selection ── */
+p::selection, span::selection, h1::selection, h2::selection, h3::selection {
+  background: rgba(11,167,89,0.18);
+  color: var(--green-deep);
+}
+
+/* ────────────────── 30+ NEW PREMIUM UI ENHANCEMENTS ────────────────── */
+
+/* UI #1: Premium iOS-Style Floating Announcement Pill */
+.floating-announcement-pill {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%) scale(1);
+  z-index: 10008;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(11, 167, 89, 0.22);
+  border-radius: 40px;
+  padding: 8px 16px 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.1) inset;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  cursor: pointer;
+  animation: pill-slide-down 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 90vw;
+  width: max-content;
+}
+
+body.dark-mode .floating-announcement-pill {
+  background: rgba(26, 31, 28, 0.85);
+  border-color: rgba(52, 211, 153, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.floating-announcement-pill:hover {
+  transform: translateX(-50%) scale(1.03);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+  border-color: rgba(11, 167, 89, 0.35);
+}
+
+.floating-announcement-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green-primary);
+  animation: announcement-pulse 1.8s infinite;
+  flex-shrink: 0;
+}
+
+.floating-announcement-text {
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 55vw;
+}
+
+.floating-announcement-cta {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--green-deep);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  background: rgba(11, 167, 89, 0.08);
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+@keyframes pill-slide-down {
+  0% {
+    top: -60px;
+    opacity: 0;
+    transform: translateX(-50%) scale(0.85);
+  }
+  100% {
+    top: 14px;
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes announcement-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(11, 167, 89, 0.7);
+  }
+  50% {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 6px rgba(11, 167, 89, 0);
+  }
+}
+
+/* Adjust top bar placement to prevent overlapping with the floating pill */
+.glass-header {
+  top: 0 !important;
+}
+
+/* UI #2: Interactive Before-After Drag Comparison Slider */
+.before-after-slider-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1.5px solid var(--border-light);
+  user-select: none;
+}
+
+.before-after-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.before-after-slider-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #ffffff;
+  cursor: ew-resize;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  z-index: 10;
+}
+
+.before-after-slider-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 36px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green-primary);
+  font-weight: 900;
+  cursor: ew-resize;
+  border: 2px solid var(--green-primary);
+}
+
+.before-after-label {
+  position: absolute;
+  bottom: 12px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  z-index: 5;
+}
+.before-after-label.before {
+  left: 12px;
+}
+.before-after-label.after {
+  right: 12px;
+}
+
+/* UI #3: Floating Speed Dial / Action Menu */
+.speed-dial-container {
+  position: fixed;
+  bottom: 155px;
+  right: 20px;
+  z-index: 10004;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 12px;
+}
+
+.speed-dial-trigger {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green-primary) 0%, var(--green-deep) 100%);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(11,167,89,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.speed-dial-trigger.open {
+  transform: rotate(135deg);
+  background: var(--red-primary);
+  box-shadow: 0 4px 16px rgba(239,68,68,0.3);
+}
+
+.speed-dial-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transform: scale(0.8) translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.speed-dial-menu.open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.speed-dial-item {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--surface-card);
+  border: 1.5px solid var(--border-light);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.speed-dial-item:hover {
+  background: var(--green-primary);
+  color: #ffffff;
+  border-color: var(--green-primary);
+  transform: scale(1.08);
+}
+
+.speed-dial-tooltip {
+  position: absolute;
+  right: 50px;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.speed-dial-item:hover .speed-dial-tooltip {
+  opacity: 1;
+}
+
+/* UI #4: Glassmorphism Hero Card Enhancement */
+.hero-glass-visual-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 30px;
+  padding: 10px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.dark-mode .hero-glass-visual-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border-color: rgba(255,255,255,0.08);
+}
+
+.hero-glass-visual-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: rotate(45deg);
+  animation: shine-card 6s infinite linear;
+}
+
+@keyframes shine-card {
+  0%   { transform: translate(-30%, -30%) rotate(45deg); }
+  100% { transform: translate(30%, 30%) rotate(45deg); }
+}
+
+/* UI #5: Premium Testimonial Cards & Glowing Avatar Rings */
+.testimonial-avatar-ring {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--green-primary) 0%, #22d3ee 50%, var(--gemini-purple) 100%);
+  padding: 2px;
+  box-shadow: 0 0 10px rgba(16,185,129,0.2);
+  flex-shrink: 0;
+}
+
+.testimonial-avatar-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--surface-card);
+  color: var(--green-deep);
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--surface-card);
+}
+
+.testimonial-card-premium {
+  background: var(--surface-card);
+  border: 1.5px solid var(--border-light);
+  border-radius: 24px;
+  padding: 24px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.testimonial-card-premium:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: var(--green-soft);
+  box-shadow: var(--shadow-md), 0 10px 30px rgba(11,167,89,0.05);
+}
+
+/* UI #6: Service Cards Icon Spin/Rotate-on-hover */
+.service-icon-wrapper {
+  transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
+}
+
+.treatment-card-premium:hover .service-icon-wrapper {
+  transform: rotate(15deg) scale(1.1);
+  background: rgba(11,167,89,0.12) !important;
+  color: var(--green-primary) !important;
+}
+
+/* UI #7: Scroll Snap Gallery Swiper container styling */
+.scroll-snap-gallery-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: 16px;
+  padding: 8px 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-snap-gallery-item {
+  scroll-snap-align: center;
+  flex: 0 0 100%;
+  width: 100%;
+}
+
+/* UI #8: Toast Notification Queue (Stacked UI) */
+.toast-card {
+  transform: translateY(-20px);
+  animation: toast-slide-in 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.15) !important;
+  border-radius: 16px !important;
+  backdrop-filter: blur(8px);
+}
+
+@keyframes toast-slide-in {
+  to { transform: translateY(0); }
+}
+
+/* UI #9: Safe Area Insets Support */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-nav {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    height: auto !important;
+  }
+}
+
+/* UI #10: Dynamic Page Load Overlay Skeleton screen */
+.page-loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+  animation: fade-out-loading 0.5s ease 1s forwards;
+}
+
+@keyframes fade-out-loading {
+  to { opacity: 0; pointer-events: none; }
+}
+
+/* UI #11: Dark Mode Toggle Neon outline glow */
+.toggle-switch input:checked + .toggle-slider {
+  box-shadow: 0 0 12px rgba(11,167,89,0.4);
+}
+
+/* UI #12: Floating Save Indicator Banner */
+.floating-save-indicator {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--surface-card);
+  border: 1.5px solid var(--green-primary);
+  box-shadow: 0 10px 30px rgba(11,167,89,0.15);
+  border-radius: 14px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green-deep);
+  z-index: 10010;
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.floating-save-indicator.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* UI #13: Animated Stat Counter Text Glow */
+.animate-stat-glow {
+  text-shadow: 0 0 15px rgba(11,167,89,0.2);
+  animation: text-pulse-glow 3s infinite alternate;
+}
+
+@keyframes text-pulse-glow {
+  to { text-shadow: 0 0 25px rgba(11,167,89,0.4), 0 0 5px rgba(11,167,89,0.2); }
+}
+
+/* UI #14: Form Float Label Accent Ring */
+.floating-label-group input:focus ~ label {
+  color: var(--green-primary);
+}
+
+/* UI #15: Safe border highlights for input focus */
+.form-input-premium {
+  border: 1.5px solid var(--border-light);
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: var(--surface-card);
+  color: var(--text-primary);
+  outline: none;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+}
+
+.form-input-premium:focus {
+  border-color: var(--green-primary);
+  box-shadow: 0 0 0 4px rgba(11,167,89,0.12);
+}
+
+/* UI #16: Pull To Refresh mobile indicator bar */
+.pull-refresh-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--green-primary), #22d3ee);
+  width: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100050;
+  transition: width 0.1s linear;
+}
+
+/* UI #17: Micro-animation for Norwood stage selector changes */
+.norwood-scale-anim {
+  animation: norwood-bump 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes norwood-bump {
+  0%   { transform: scale(0.92); opacity: 0.7; }
+  50%  { transform: scale(1.03); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* UI #18: Gradient Line Section divider */
+.premium-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border-light) 50%, transparent 100%);
+  margin: 48px 0;
+}
+
+/* UI #19: Web Push Notification simulated modal sheet */
+.push-notify-sheet {
+  background: var(--surface-card);
+  border-radius: 20px;
+  padding: 18px 24px;
+  box-shadow: var(--shadow-lg);
+  border: 1.5px solid var(--border-light);
+  max-width: 320px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 10050;
+  animation: slide-in-right-sheet 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slide-in-right-sheet {
+  from { transform: translateX(120%); }
+  to   { transform: translateX(0); }
+}
+
+/* UI #20: Image grid zoom hover preview overlay */
+.hover-zoom-grid-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.hover-zoom-grid-item img {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hover-zoom-grid-item:hover img {
+  transform: scale(1.08);
+}
+
+.hover-zoom-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(11,167,89,0.15);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hover-zoom-grid-item:hover .hover-zoom-overlay {
+  opacity: 1;
+}
+
+/* UI #21: Premium table element styling for admin panel */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  border-bottom: 1.5px solid var(--border-light);
+}
+
+.admin-table td {
+  padding: 14px 16px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+.admin-table tr:hover {
+  background: rgba(11,167,89,0.02);
+}
+
+/* UI #22: Safe Area Bottom Padding for mobile drawer scroll */
+.drawer-content {
+  padding-bottom: calc(40px + env(safe-area-inset-bottom)) !important;
+}
+
+/* UI #23: Neon Glow Badge tag variations */
+.badge-neon-purple {
+  background: rgba(128, 90, 213, 0.1);
+  color: var(--gemini-purple);
+  border: 1px solid rgba(128, 90, 213, 0.3);
+}
+
+.badge-neon-blue {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--gemini-blue);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* UI #24: Safe Area Top Padding for modal sheets on mobile */
+.modal-top-offset {
+  padding-top: max(20px, env(safe-area-inset-top));
+}
+
+/* UI #25: Search bar collapse-expand animations */
+.search-bar-wrapper input {
+  transition: width 0.3s ease, border-color 0.3s ease;
+}
+
+.search-bar-wrapper input:focus {
+  border-color: var(--green-primary) !important;
+  box-shadow: 0 0 12px rgba(11,167,89,0.12) !important;
+}
+
+/* UI #26: Confetti background layer overlay */
+#confetti-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 150000;
+  pointer-events: none;
+}
+
+/* UI #27: Empty state illustration container styling */
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+/* UI #28: Glassmorphism Announcement Banner on off state style */
+.banner-off-indicator {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--red-primary);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+/* UI #29: Admin Panel sidebar tab menu styling */
+.admin-sidebar-tab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.admin-sidebar-tab.active {
+  background: rgba(11,167,89,0.08);
+  color: var(--green-primary);
+  font-weight: 800;
+}
+
+/* UI #30: Page transition slide-fade keyframes */
+.page-enter-active {
+  animation: page-slide-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes page-slide-fade {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Admin Visual Editor Animations ── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-8px); }
+  30%       { transform: translateX(7px); }
+  45%       { transform: translateX(-6px); }
+  60%       { transform: translateX(5px); }
+  75%       { transform: translateX(-3px); }
+  90%       { transform: translateX(2px); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Admin edit mode — pulsing purple border around editable elements on hover */
+[title="✎ Click to edit"]:hover {
+  outline-color: rgba(128, 90, 213, 0.75) !important;
+  outline-width: 2px !important;
+}
+
+/* Admin edit toolbar — smooth appear from bottom */
+.admin-edit-toolbar {
+  animation: fade-in-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Passcode input focus ring */
+input[type="password"]:focus {
+  border-color: rgba(128, 90, 213, 0.6) !important;
+  box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.12);
+}
+
+

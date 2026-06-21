@@ -471,22 +471,20 @@
   40%           { transform: scale(1.2); opacity: 1; }
 }
 
-/* ── GREEN BREATHING ORB (From previous request) ── */
+/* ── Siri/Gemini-like Premium Bouncing Typing Indicator overlay ── */
 .aman-orb-overlay {
   position: absolute;
-  top: 0;
+  bottom: 12px;
   left: 0;
   right: 0;
-  height: 180px;
   z-index: 20;
   pointer-events: none;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  overflow: hidden;
   opacity: 0;
-  transform: translateY(-100%);
-  transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(15px);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .aman-orb-overlay.visible {
@@ -494,88 +492,58 @@
   transform: translateY(0);
 }
 
-.aman-orb-stage {
-  position: relative;
-  width: 250px;
-  height: 180px;
+.aman-thinking-bubble {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-top: -30px;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  padding: 8px 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  pointer-events: auto;
 }
 
-.aman-orb-aura-3 {
-  position: absolute;
-  inset: 0px;
+body.dark-mode .aman-thinking-bubble {
+  background: rgba(30, 30, 30, 0.85);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.aman-thinking-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(52,211,153,0.1) 0%, transparent 70%);
-  filter: blur(20px);
-  animation: orb-breathe-slow 3s infinite ease-in-out;
+  background: linear-gradient(135deg, var(--gemini-purple), var(--gemini-blue));
+  animation: bounce-dot 1.2s infinite ease-in-out;
 }
 
-.aman-orb-aura-2 {
-  position: absolute;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(16,185,129,0.2) 0%, rgba(5,150,105,0.05) 60%, transparent 80%);
-  filter: blur(12px);
-  animation: orb-breathe-mid 2.5s infinite ease-in-out;
+.aman-thinking-dot.dot-1 {
+  animation-delay: 0s;
+}
+.aman-thinking-dot.dot-2 {
+  animation-delay: 0.2s;
+}
+.aman-thinking-dot.dot-3 {
+  animation-delay: 0.4s;
 }
 
-.aman-orb-core {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(52,211,153,0.85) 0%, rgba(16,185,129,0.4) 40%, transparent 70%);
-  filter: blur(4px);
-  animation: orb-breathe-core 2s infinite ease-in-out;
-  box-shadow: 0 0 35px rgba(52,211,153,0.4);
-}
-
-.aman-orb-spark {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(167, 243, 208, 0.9);
-  filter: blur(2px);
-  animation: spark-orbit-gemini 2.2s infinite linear;
-}
-
-@keyframes orb-breathe-slow {
-  0%, 100% { transform: scale(0.9); opacity: 0.6; }
-  50%       { transform: scale(1.1); opacity: 1; }
-}
-@keyframes orb-breathe-mid {
-  0%, 100% { transform: scale(0.9) rotate(-5deg); opacity: 0.8; }
-  50%       { transform: scale(1.15) rotate(10deg); opacity: 1; }
-}
-@keyframes orb-breathe-core {
-  0%, 100% { transform: scale(0.85); opacity: 0.8; }
-  50%       { transform: scale(1.2); opacity: 1; }
-}
-@keyframes spark-orbit-gemini {
-  0%   { transform: rotate(0deg) translateX(42px) scale(0.6); opacity: 0.6; }
-  50%  { transform: rotate(180deg) translateX(42px) scale(1); opacity: 1; }
-  100% { transform: rotate(360deg) translateX(42px) scale(0.6); opacity: 0.6; }
-}
-
-.aman-thinking-label {
-  position: absolute;
-  bottom: 12px;
-  font-size: 0.65rem;
+.aman-thinking-text {
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #059669;
-  animation: label-pulse 1.2s infinite alternate ease-in-out;
+  color: var(--text-secondary);
+  margin-left: 4px;
 }
 
-@keyframes label-pulse {
-  0%   { opacity: 0.5; }
-  100% { opacity: 1; }
+@keyframes bounce-dot {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 /* ── BOTTOM INPUT SYSTEM ── */
@@ -1056,3 +1024,294 @@
   flex-shrink: 0;
 }
 
+/* ============================================================
+   DOCTOR CHATBOT AVATAR — Teleports into chatbot center
+   ============================================================ */
+
+.doctor-chatbot-avatar-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+  animation: doctor-fly-in 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.4) both;
+}
+
+@keyframes doctor-fly-in {
+  0% {
+    opacity: 0;
+    transform: translate(120px, 60px) scale(0.4) rotate(8deg);
+  }
+  60% {
+    transform: translate(-8px, -5px) scale(1.05) rotate(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+}
+
+.doctor-chatbot-avatar-img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.08));
+  animation: doctor-float 4s ease-in-out infinite;
+}
+
+@keyframes doctor-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+.doctor-chatbot-avatar-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid rgba(66, 133, 244, 0.12);
+  animation: ring-pulse 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes ring-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50%       { transform: scale(1.1); opacity: 0.2; }
+}
+
+/* ── Dark mode doctor avatar ── */
+body.dark-mode .doctor-chatbot-avatar-img {
+  filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.35)) brightness(1.05);
+}
+
+/* ── Chatbot window dark mode override ── */
+body.dark-mode .chatbot-window.gemini-theme {
+  background: #1a1f1c !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #e8eaed !important;
+}
+
+body.dark-mode .chatbot-window.gemini-theme.state-idle {
+  background: #1a1f1c !important;
+}
+
+body.dark-mode .chatbot-header {
+  background: transparent !important;
+}
+
+body.dark-mode .gemini-welcome-text {
+  color: #e8eaed !important;
+}
+
+body.dark-mode .gemini-user-bubble {
+  background: #2d3730 !important;
+  color: #e8eaed !important;
+}
+
+body.dark-mode .gemini-assistant-text-content {
+  color: #e8eaed !important;
+}
+
+body.dark-mode .gemini-parsed-markdown p,
+body.dark-mode .gemini-markdown-paragraph {
+  color: #c4c7c5 !important;
+}
+
+body.dark-mode .gemini-input-bar {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+}
+
+body.dark-mode .gemini-text-input {
+  color: #e8eaed !important;
+  background: transparent !important;
+}
+
+body.dark-mode .gemini-text-input::placeholder {
+  color: #80868b !important;
+}
+
+body.dark-mode .chatbot-disclaimer {
+  color: #9aa0a6 !important;
+}
+
+body.dark-mode .aman-sidebar {
+  background: #202124 !important;
+}
+
+body.dark-mode .aman-sidebar-item-title {
+  color: #e8eaed !important;
+}
+
+body.dark-mode .aman-sidebar-header {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ── Suggestions dark mode ── */
+body.dark-mode .gemini-chip-btn {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #c4c7c5 !important;
+}
+
+body.dark-mode .gemini-chip-btn:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* ── Chatbot loading dots dark mode ── */
+body.dark-mode .chatbot-body {
+  background: transparent !important;
+}
+
+/* ── Doctor floating button — premium glow on hover ── */
+.doctor-floating-btn:hover .doctor-floating-btn img {
+  transform: scale(1.05);
+}
+
+/* ── Doctor floating btn hover state ── */
+.doctor-floating-btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* ============================================================
+   CHATBOT SUGGESTION CHIPS MOBILE OPTIMIZATIONS
+   ============================================================ */
+@media (max-width: 768px) {
+  .gemini-suggestion-chips {
+    gap: 8px !important;
+    padding: 12px 16px !important;
+  }
+
+  .gemini-chip-btn {
+    font-size: 0.78rem !important;
+    padding: 8px 14px !important;
+  }
+
+  .gemini-welcome-text {
+    font-size: 1.6rem !important;
+  }
+
+  .doctor-chatbot-avatar-wrapper {
+    width: 100px !important;
+    height: 100px !important;
+  }
+
+  .doctor-chatbot-avatar-img {
+    width: 100px !important;
+    height: 100px !important;
+  }
+
+  .gemini-input-bar {
+    border-radius: 20px !important;
+  }
+}
+
+/* ============================================================
+   PREMIUM MICRO-INTERACTIONS
+   ============================================================ */
+
+/* Message appear animation stagger */
+.gemini-msg-row:nth-child(2) { animation-delay: 0.05s; }
+.gemini-msg-row:nth-child(3) { animation-delay: 0.10s; }
+.gemini-msg-row:nth-child(4) { animation-delay: 0.15s; }
+
+/* Smooth scroll enhancement */
+.chatbot-body {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Input bar focus glow */
+.gemini-input-bar:focus-within {
+  border-color: rgba(11, 167, 89, 0.35) !important;
+  box-shadow: 0 0 0 3px rgba(11, 167, 89, 0.08), 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Action button ripple effect */
+.gemini-msg-action-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.gemini-msg-action-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(0,0,0,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.2s, transform 0.3s;
+}
+
+.gemini-msg-action-btn:active::after {
+  opacity: 1;
+  transform: scale(2);
+  transition: none;
+}
+
+/* Waveform mic animation — active state glow */
+.gemini-btn-waveform:hover .waveform-bar-indicator span {
+  animation-play-state: paused;
+  background: var(--green-primary, #0ba759);
+}
+
+/* Send button premium state */
+.gemini-btn-send {
+  background: linear-gradient(135deg, #065f46, #059669) !important;
+  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.4) !important;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.4), box-shadow 0.2s ease !important;
+}
+
+.gemini-btn-send:hover {
+  transform: scale(1.08) !important;
+  box-shadow: 0 6px 24px rgba(5, 150, 105, 0.55) !important;
+}
+
+.gemini-btn-send:active {
+  transform: scale(0.92) !important;
+}
+
+/* Stop button premium state */
+.gemini-btn-stop {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #ef4444 !important;
+  border: 1.5px solid rgba(239, 68, 68, 0.25) !important;
+}
+
+/* Thinking orb more vibrant */
+.aman-orb-core {
+  background: radial-gradient(circle, #34d399 0%, #059669 50%, #065f46 100%) !important;
+}
+
+/* ── Smooth Tab Transitions ── */
+.fade-in-tab {
+  animation: tabFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── iOS Style Bottom Sheet Feel ── */
+@media (max-width: 768px) {
+  .chatbot-window-container {
+    animation: bottom-sheet-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes bottom-sheet-up {
+    from {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
