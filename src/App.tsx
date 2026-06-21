@@ -2495,7 +2495,7 @@ export default function App() {
         style={{
           position: 'fixed',
           bottom: '68px',
-          right: '0px',
+          right: '15px',
           zIndex: 10010,
           cursor: 'pointer',
           transition: 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',

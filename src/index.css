@@ -4367,11 +4367,12 @@ input[type="password"]:focus {
 /* ── Doctor FAB: sits on the right edge of the bottom nav ── */
 @media (max-width: 600px) {
   .doctor-floating-btn {
-    right: 0px !important;
+    right: 15px !important;
     bottom: 68px !important;
   }
   .doctor-floating-btn img {
     width: 82px !important;
+
     height: 82px !important;
   }
 }
