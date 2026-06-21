@@ -2908,9 +2908,24 @@ input:checked + .toggle-slider:before {
 .doctor-floating-btn:active {
   transform: scale(0.95) translateY(0) !important;
 }
+.doctor-floating-btn img {
+  width: 110px;
+  height: 110px;
+}
 @keyframes doctor-bob {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
+}
+
+@media (max-width: 768px) {
+  .doctor-floating-btn {
+    bottom: 120px !important;
+    right: -5px !important;
+  }
+  .doctor-floating-btn img {
+    width: 80px !important;
+    height: 80px !important;
+  }
 }
 
 /* ── TAB CONTENT TRANSITIONS ── */

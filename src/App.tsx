@@ -2503,8 +2503,6 @@ export default function App() {
             src={clinicSettings.doctorAvatarUrl || '/doctor-avatar.png'}
             alt='Aman AI'
             style={{
-              width: '110px',
-              height: '110px',
               objectFit: 'contain',
               filter: 'none',
               transition: 'transform 0.3s ease',
