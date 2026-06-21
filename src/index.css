@@ -4367,8 +4367,8 @@ input[type="password"]:focus {
 /* ── Doctor FAB: mobile-safe — peek from right, never overlap content ── */
 @media (max-width: 600px) {
   .doctor-floating-btn {
-    right: -38px !important;
-    bottom: 170px !important;
+    right: -10px !important;
+    bottom: 92px !important;
   }
   .doctor-floating-btn img {
     width: 82px !important;
